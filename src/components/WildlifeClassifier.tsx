@@ -179,7 +179,16 @@ export const WildlifeClassifier: React.FC = () => {
     audioInputRef.current?.click();
   };
 
+  console.log('🔍 WildlifeClassifier Debug:', { 
+    showIntro, 
+    showStatistics, 
+    classificationResult: !!classificationResult,
+    animalInfo: !!animalInfo,
+    habitatSuitability: !!habitatSuitability 
+  });
+
   if (showIntro) {
+    console.log('🎬 Showing video intro');
     return <VideoIntro onComplete={() => setShowIntro(false)} />;
   }
 
