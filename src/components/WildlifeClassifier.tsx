@@ -25,6 +25,8 @@ import { AnimalInfoService } from '@/lib/animalInfoService';
 import { HabitatAnalysisService } from '@/lib/habitatAnalysisService';
 import { StatisticsPanel } from '@/components/StatisticsPanel';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { VideoIntro } from '@/components/VideoIntro';
+import { TechnicalInfoPanel } from '@/components/TechnicalInfoPanel';
 
 interface ClassificationResult {
   label: string;
@@ -41,6 +43,9 @@ interface AnimalInfo {
   habitat: string;
   lifespan: string;
   weight: string;
+  dangerousFoods: string[];
+  nativeLocations: string[];
+  wikipediaUrl: string;
 }
 
 interface HabitatSuitability {
@@ -70,6 +75,7 @@ export const WildlifeClassifier: React.FC = () => {
   const [activeTab, setActiveTab] = useState('upload');
   const [showStatistics, setShowStatistics] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showIntro, setShowIntro] = useState(true);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
@@ -173,6 +179,10 @@ export const WildlifeClassifier: React.FC = () => {
     audioInputRef.current?.click();
   };
 
+  if (showIntro) {
+    return <VideoIntro onComplete={() => setShowIntro(false)} />;
+  }
+
   return (
     <div className="w-full max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
@@ -199,7 +209,12 @@ export const WildlifeClassifier: React.FC = () => {
       </div>
 
       {/* Statistics Panel */}
-      {showStatistics && <StatisticsPanel />}
+      {showStatistics && (
+        <div className="space-y-6">
+          <StatisticsPanel />
+          <TechnicalInfoPanel />
+        </div>
+      )}
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -550,6 +565,33 @@ export const WildlifeClassifier: React.FC = () => {
                 <Separator />
 
                 <div>
+                  <h4 className="font-semibold mb-3">Native Locations</h4>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {animalInfo.nativeLocations.map((location, index) => (
+                      <Badge key={index} variant="secondary">
+                        {location}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h4 className="font-semibold mb-3 text-red-600">⚠️ Dangerous Foods - Never Feed</h4>
+                  <ul className="space-y-2">
+                    {animalInfo.dangerousFoods.map((food, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <Badge variant="destructive" className="mt-1">⚠️</Badge>
+                        {food}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <Separator />
+
+                <div>
                   <h4 className="font-semibold mb-3">Interesting Facts</h4>
                   <ul className="space-y-2">
                     {animalInfo.interestingFacts.map((fact, index) => (
@@ -559,6 +601,20 @@ export const WildlifeClassifier: React.FC = () => {
                       </li>
                     ))}
                   </ul>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h4 className="font-semibold mb-3">Learn More</h4>
+                  <Button
+                    variant="outline"
+                    onClick={() => window.open(animalInfo.wikipediaUrl, '_blank')}
+                    className="gap-2"
+                  >
+                    <Info className="w-4 h-4" />
+                    View on Wikipedia
+                  </Button>
                 </div>
               </CardContent>
             </Card>

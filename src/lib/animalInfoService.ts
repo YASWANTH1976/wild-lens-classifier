@@ -7,6 +7,9 @@ interface AnimalInfo {
   habitat: string;
   lifespan: string;
   weight: string;
+  dangerousFoods: string[];
+  nativeLocations: string[];
+  wikipediaUrl: string;
 }
 
 // Comprehensive animal database
@@ -19,6 +22,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '10-15 years in wild, up to 26 years in captivity',
     conservationStatus: 'Endangered',
     habitat: 'Tropical forests, grasslands, and mangrove swamps across Asia',
+    nativeLocations: ['India', 'China', 'Southeast Asia', 'Russia (Siberia)', 'Bangladesh', 'Nepal', 'Bhutan', 'Myanmar'],
+    dangerousFoods: ['Chocolate', 'Onions', 'Garlic', 'Grapes', 'Processed meat', 'Dairy products', 'Any human food'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Tiger',
     interestingFacts: [
       'Each tiger has a unique stripe pattern, like human fingerprints',
       'Tigers can leap up to 10 meters horizontally',
@@ -35,6 +41,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '10-14 years in wild, up to 20 years in captivity',
     conservationStatus: 'Vulnerable',
     habitat: 'African savannas, grasslands, and open woodlands',
+    nativeLocations: ['Kenya', 'Tanzania', 'South Africa', 'Botswana', 'Zambia', 'Zimbabwe', 'Namibia', 'India (Gir Forest)'],
+    dangerousFoods: ['Chocolate', 'Onions', 'Garlic', 'Grapes', 'Processed meat', 'Dairy products', 'Cooked bones', 'Human food'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Lion',
     interestingFacts: [
       'Male lions can sleep up to 20 hours per day',
       'A lion\'s mane indicates age and health - darker manes mean stronger lions',
@@ -51,6 +60,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '60-70 years in wild',
     conservationStatus: 'Endangered',
     habitat: 'African savannas, forests, and Asian tropical forests',
+    nativeLocations: ['Kenya', 'Tanzania', 'Botswana', 'Zimbabwe', 'South Africa', 'India', 'Sri Lanka', 'Thailand', 'Myanmar'],
+    dangerousFoods: ['Chocolate', 'Processed foods', 'Sugary treats', 'Bread', 'Meat', 'Dairy products', 'Alcohol', 'Caffeine'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Elephant',
     interestingFacts: [
       'Elephants can recognize themselves in mirrors, showing self-awareness',
       'They mourn their dead and have been observed holding "vigils"',
@@ -67,6 +79,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '20-30 years in wild',
     conservationStatus: 'Varies by species (Least Concern to Critically Endangered)',
     habitat: 'Mountains, forests, wetlands, and coastal areas worldwide',
+    nativeLocations: ['North America', 'Europe', 'Asia', 'Africa', 'Australia (some species)'],
+    dangerousFoods: ['Chocolate', 'Caffeine', 'Avocado', 'Onions', 'Processed foods', 'Human medication', 'Bread'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Eagle',
     interestingFacts: [
       'Eagles can see up to 8 times farther than humans',
       'They can dive at speeds over 160 km/h (100 mph)',
@@ -83,6 +98,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '6-8 years in wild, up to 13 years in captivity',
     conservationStatus: 'Least Concern (varies by region)',
     habitat: 'Forests, tundra, grasslands, and mountains across the Northern Hemisphere',
+    nativeLocations: ['Canada', 'Alaska', 'Russia', 'Mongolia', 'Eastern Europe', 'Scandinavia', 'Northern US'],
+    dangerousFoods: ['Chocolate', 'Onions', 'Garlic', 'Grapes', 'Cooked bones', 'Human medication', 'Processed foods'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Wolf',
     interestingFacts: [
       'Wolves have an incredible sense of smell, 100 times stronger than humans',
       'A wolf pack can travel 20-30 km (12-19 miles) per day',
@@ -99,6 +117,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '20-30 years in wild',
     conservationStatus: 'Varies by species (Least Concern to Critically Endangered)',
     habitat: 'Forests, mountains, tundra, and coastal areas across North America, Europe, and Asia',
+    nativeLocations: ['North America', 'Europe', 'Asia', 'Arctic (Polar Bears)', 'Scandinavia', 'Russia', 'China'],
+    dangerousFoods: ['Chocolate', 'Processed foods', 'Sugary treats', 'Human food', 'Cooked bones', 'Dairy products'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Bear',
     interestingFacts: [
       'Bears can run up to 60 km/h (37 mph) despite their size',
       'They have an excellent sense of smell, 7 times better than bloodhounds',
@@ -115,6 +136,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '10-20 years in wild',
     conservationStatus: 'Mostly Least Concern',
     habitat: 'Forests, grasslands, and woodland edges worldwide',
+    nativeLocations: ['North America', 'Europe', 'Asia', 'South America', 'New Zealand', 'Australia'],
+    dangerousFoods: ['Chocolate', 'Bread', 'Processed foods', 'Dairy products', 'Human snacks', 'Sugary treats'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Deer',
     interestingFacts: [
       'Deer can jump up to 3 meters (10 feet) high and 9 meters (30 feet) long',
       'Male deer antlers can grow up to 2.5 cm (1 inch) per day',
@@ -131,6 +155,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '2-5 years in wild, up to 14 years in captivity',
     conservationStatus: 'Least Concern',
     habitat: 'Forests, grasslands, mountains, and urban areas across the Northern Hemisphere',
+    nativeLocations: ['Europe', 'Asia', 'North America', 'Australia', 'Africa', 'Arctic regions'],
+    dangerousFoods: ['Chocolate', 'Onions', 'Garlic', 'Grapes', 'Processed foods', 'Dairy products', 'Human food'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Fox',
     interestingFacts: [
       'Foxes can hear low-frequency sounds and rodents digging underground',
       'They use Earth\'s magnetic field to hunt, like a living compass',
@@ -147,6 +174,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '9-10 years in wild, up to 28 years in captivity',
     conservationStatus: 'Varies by species',
     habitat: 'Forests, deserts, wetlands, and grasslands worldwide',
+    nativeLocations: ['Worldwide (all continents except Antarctica)', 'North America', 'Europe', 'Asia', 'Africa', 'Australia'],
+    dangerousFoods: ['Chocolate', 'Caffeine', 'Avocado', 'Onions', 'Human medication', 'Processed foods', 'Bread'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Owl',
     interestingFacts: [
       'Owls can rotate their heads 270 degrees',
       'They fly almost silently due to special feather adaptations',
@@ -163,6 +193,9 @@ const animalDatabase: Record<string, AnimalInfo> = {
     lifespan: '2 weeks to 8 months (most species)',
     conservationStatus: 'Varies by species',
     habitat: 'Gardens, meadows, forests, and tropical regions worldwide',
+    nativeLocations: ['Worldwide (all continents except Antarctica)', 'Tropical regions', 'Temperate zones', 'Gardens globally'],
+    dangerousFoods: ['Pesticides', 'Chemical fertilizers', 'Polluted water', 'Non-native plants', 'Processed sugar'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Butterfly',
     interestingFacts: [
       'Butterflies taste with their feet and smell with their antennae',
       'They can see ultraviolet, red, green, and yellow light',
@@ -225,6 +258,9 @@ export class AnimalInfoService {
         lifespan: 'Information not available',
         conservationStatus: 'Information not available',
         habitat: 'Information not available',
+        nativeLocations: ['Information not available'],
+        dangerousFoods: ['Consult wildlife experts for feeding guidelines'],
+        wikipediaUrl: data.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${encodeURIComponent(animalName)}`,
         interestingFacts: ['More information available on Wikipedia']
       };
     } catch (error) {
@@ -242,6 +278,9 @@ export class AnimalInfoService {
       lifespan: 'Lifespan information not available',
       conservationStatus: 'Conservation status being assessed',
       habitat: 'Habitat information not available',
+      nativeLocations: ['Location data being researched'],
+      dangerousFoods: ['Consult wildlife experts for feeding guidelines', 'Never feed wild animals without professional guidance'],
+      wikipediaUrl: `https://en.wikipedia.org/wiki/${encodeURIComponent(animalName)}`,
       interestingFacts: [
         'This species is part of our ongoing research database',
         'More information will be available as our AI system learns',

@@ -62,7 +62,7 @@ An advanced full-stack multimedia wildlife classification project powered by neu
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/wildlife-classifier.git
+git clone [your-repo-url]
 
 # Navigate to project directory
 cd wildlife-classifier
@@ -89,7 +89,7 @@ npm run preview
 ### Netlify Deployment
 
 1. **Automatic Deployment**:
-   - Connect your GitHub repository to Netlify
+   - Connect your repository to Netlify
    - Set build command: `npm run build`
    - Set publish directory: `dist`
 
@@ -204,7 +204,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support and questions:
-- Open an issue on GitHub
+- Open an issue in the repository
 - Check the documentation
 - Visit the project homepage
 
