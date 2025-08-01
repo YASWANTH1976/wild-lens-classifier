@@ -94,10 +94,9 @@ const Index = () => {
               </Button>
               
               <Button variant="outline" size="xl" asChild>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-                  <Github className="w-5 h-5 mr-2" />
-                  View on GitHub
-                  <ExternalLink className="w-4 h-4 ml-2" />
+                <a href="#features">
+                  <TreePine className="w-5 h-5 mr-2" />
+                  Learn More
                 </a>
               </Button>
             </div>
@@ -126,7 +125,7 @@ const Index = () => {
       </div>
 
       {/* Features Section */}
-      <div className="py-20">
+      <div id="features" className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Powerful AI Features</h2>
@@ -247,7 +246,7 @@ const Index = () => {
           </div>
           
           <div className="mt-8 pt-8 border-t text-center text-muted-foreground">
-            <p>&copy; 2024 Wildlife Classification System. Released under MIT License.</p>
+            <p>Wildlife Classification System - Powered by Advanced AI</p>
           </div>
         </div>
       </footer>

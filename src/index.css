@@ -50,17 +50,19 @@
     --sunset-orange: 35 85% 65%;
     --leaf-green: 120 50% 40%;
 
-    /* Gradients */
+    /* Enhanced gradients for wildlife theme */
     --gradient-hero: linear-gradient(135deg, hsl(140 60% 35%), hsl(120 50% 40%));
     --gradient-card: linear-gradient(145deg, hsl(48 30% 96%), hsl(120 15% 94%));
     --gradient-accent: linear-gradient(135deg, hsl(35 85% 65%), hsl(35 75% 55%));
+    --gradient-nature: linear-gradient(135deg, hsl(140 60% 35%), hsl(140 50% 45%));
 
-    /* Shadows */
+    /* Enhanced shadows with nature theme */
     --shadow-nature: 0 10px 30px -5px hsl(140 60% 35% / 0.3);
     --shadow-card: 0 4px 20px -2px hsl(140 30% 20% / 0.1);
     --shadow-glow: 0 0 30px hsl(35 85% 65% / 0.4);
+    --shadow-elegant: 0 20px 40px -10px hsl(140 60% 35% / 0.25);
 
-    /* Animations */
+    /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 

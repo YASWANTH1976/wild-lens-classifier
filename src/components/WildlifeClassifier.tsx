@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { 
   Camera, 
-  Mic, 
   Upload, 
   Brain, 
   MapPin, 
@@ -18,7 +17,9 @@ import {
   Zap,
   Eye,
   BarChart3,
-  Shield
+  Shield,
+  Globe,
+  ExternalLink
 } from 'lucide-react';
 import { ClassificationService } from '@/lib/classificationService';
 import { AnimalInfoService } from '@/lib/animalInfoService';
@@ -78,7 +79,7 @@ export const WildlifeClassifier: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const audioInputRef = useRef<HTMLInputElement>(null);
+  
   
   const classificationService = new ClassificationService();
   const animalInfoService = new AnimalInfoService();
@@ -88,24 +89,19 @@ export const WildlifeClassifier: React.FC = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    const validAudioTypes = ['audio/mp3', 'audio/wav', 'audio/mpeg'];
+    // Validate file type - only images for better accuracy
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
     
-    if (!validImageTypes.includes(file.type) && !validAudioTypes.includes(file.type)) {
-      toast.error('Please select a valid image (JPG, PNG, WEBP) or audio file (MP3, WAV)');
+    if (!validImageTypes.includes(file.type)) {
+      toast.error('Please select a valid image file (JPG, PNG, WEBP)');
       return;
     }
 
     setSelectedFile(file);
     
     // Create preview for images
-    if (validImageTypes.includes(file.type)) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    } else {
-      setPreviewUrl(null);
-    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
 
     // Clear previous results
     setClassificationResult(null);
@@ -166,7 +162,6 @@ export const WildlifeClassifier: React.FC = () => {
     setUploadProgress(0);
     
     if (fileInputRef.current) fileInputRef.current.value = '';
-    if (audioInputRef.current) audioInputRef.current.value = '';
     
     toast.success('Reset completed');
   }, []);
@@ -175,8 +170,12 @@ export const WildlifeClassifier: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  const handleAudioUpload = () => {
-    audioInputRef.current?.click();
+  const handleWebImageSearch = () => {
+    // Open a new window with wildlife image search
+    const searchQuery = 'wildlife animals';
+    const searchUrl = `https://unsplash.com/s/photos/${encodeURIComponent(searchQuery)}`;
+    window.open(searchUrl, '_blank', 'width=1200,height=800');
+    toast.success('Wildlife image gallery opened in new tab');
   };
 
   console.log('🔍 WildlifeClassifier Debug:', { 
@@ -265,7 +264,7 @@ export const WildlifeClassifier: React.FC = () => {
                   variant="upload" 
                   size="xl" 
                   onClick={handleImageUpload}
-                  className="h-32 flex-col gap-3"
+                  className="h-32 flex-col gap-3 shadow-nature hover:shadow-elegant transition-all"
                 >
                   <Camera className="w-8 h-8" />
                   <span className="text-lg font-semibold">Upload Image</span>
@@ -273,29 +272,22 @@ export const WildlifeClassifier: React.FC = () => {
                 </Button>
                 
                 <Button 
-                  variant="upload" 
+                  variant="hero" 
                   size="xl" 
-                  onClick={handleAudioUpload}
-                  className="h-32 flex-col gap-3"
+                  onClick={handleWebImageSearch}
+                  className="h-32 flex-col gap-3 shadow-glow hover:shadow-elegant transition-all"
                 >
-                  <Mic className="w-8 h-8" />
-                  <span className="text-lg font-semibold">Upload Audio</span>
-                  <span className="text-sm opacity-80">MP3, WAV</span>
+                  <Globe className="w-8 h-8" />
+                  <span className="text-lg font-semibold">Browse Wildlife Images</span>
+                  <span className="text-sm opacity-80">Curated Collection</span>
                 </Button>
               </div>
 
-              {/* Hidden file inputs */}
+              {/* Hidden file input */}
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-              <input
-                ref={audioInputRef}
-                type="file"
-                accept="audio/*"
                 onChange={handleFileSelect}
                 className="hidden"
               />
@@ -311,7 +303,7 @@ export const WildlifeClassifier: React.FC = () => {
                           {selectedFile.type} • {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                       </div>
-                      <Badge variant="secondary">{selectedFile.type.startsWith('image') ? 'Image' : 'Audio'}</Badge>
+                      <Badge variant="secondary">Image File</Badge>
                     </div>
                     
                     {previewUrl && (
