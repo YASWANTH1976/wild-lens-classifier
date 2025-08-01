@@ -28,6 +28,11 @@ import { StatisticsPanel } from '@/components/StatisticsPanel';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { VideoIntro } from '@/components/VideoIntro';
 import { TechnicalInfoPanel } from '@/components/TechnicalInfoPanel';
+import { ConservationAlerts } from '@/components/ConservationAlerts';
+import { AnimalSizeComparison } from '@/components/AnimalSizeComparison';
+import { WildlifePhotographyTips } from '@/components/WildlifePhotographyTips';
+import { EcoTourismRecommendations } from '@/components/EcoTourismRecommendations';
+import { AnimalSoundLibrary } from '@/components/AnimalSoundLibrary';
 
 interface ClassificationResult {
   label: string;
@@ -497,128 +502,148 @@ export const WildlifeClassifier: React.FC = () => {
           )}
         </TabsContent>
 
-        {/* Info Tab */}
+        {/* Species Info Tab - Enhanced with Premium Features */}
         <TabsContent value="info" className="space-y-6">
-          {animalInfo && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Info className="w-5 h-5" />
-                  Species Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="prose prose-sm max-w-none">
-                  <h3>Description</h3>
-                  <p>{animalInfo.description}</p>
-                </div>
-
-                <Separator />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div>
-                    <h4 className="font-semibold mb-2">Physical Characteristics</h4>
-                    <div className="space-y-2 text-sm">
+          {animalInfo && classificationResult && (
+            <div className="space-y-6">
+              {/* Main Species Information */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Info className="w-5 h-5" />
+                      Species Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h3 className="font-semibold mb-2">Description</h3>
+                      <p className="text-sm text-muted-foreground">{animalInfo.description}</p>
+                    </div>
+                    
+                    <Separator />
+                    
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="font-medium">Size: </span>
-                        <span className="text-muted-foreground">{animalInfo.size}</span>
+                        <p className="font-medium text-sm">Diet</p>
+                        <p className="text-sm text-muted-foreground">{animalInfo.diet}</p>
                       </div>
                       <div>
-                        <span className="font-medium">Weight: </span>
-                        <span className="text-muted-foreground">{animalInfo.weight}</span>
+                        <p className="font-medium text-sm">Lifespan</p>
+                        <p className="text-sm text-muted-foreground">{animalInfo.lifespan}</p>
                       </div>
                       <div>
-                        <span className="font-medium">Lifespan: </span>
-                        <span className="text-muted-foreground">{animalInfo.lifespan}</span>
+                        <p className="font-medium text-sm">Size</p>
+                        <p className="text-sm text-muted-foreground">{animalInfo.size}</p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">Weight</p>
+                        <p className="text-sm text-muted-foreground">{animalInfo.weight}</p>
                       </div>
                     </div>
-                  </div>
+                  </CardContent>
+                </Card>
 
-                  <div>
-                    <h4 className="font-semibold mb-2">Ecology</h4>
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <span className="font-medium">Diet: </span>
-                        <span className="text-muted-foreground">{animalInfo.diet}</span>
+                <div className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Native Locations</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        {animalInfo.nativeLocations.map((location, index) => (
+                          <Badge key={index} variant="outline">
+                            {location}
+                          </Badge>
+                        ))}
                       </div>
-                      <div>
-                        <span className="font-medium">Habitat: </span>
-                        <span className="text-muted-foreground">{animalInfo.habitat}</span>
-                      </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
 
-                  <div>
-                    <h4 className="font-semibold mb-2">Conservation</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
+                  <Card className="border-destructive/20">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-lg text-destructive">
                         <Shield className="w-4 h-4" />
-                        <Badge 
-                          variant={animalInfo.conservationStatus.includes('Endangered') ? 'destructive' : 'default'}
-                        >
-                          {animalInfo.conservationStatus}
-                        </Badge>
+                        ⚠️ Dangerous Foods
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Foods toxic to {classificationResult.label}:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {animalInfo.dangerousFoods.map((food, index) => (
+                          <Badge key={index} variant="destructive">
+                            {food}
+                          </Badge>
+                        ))}
                       </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <Button 
+                        variant="outline" 
+                        className="w-full gap-2"
+                        onClick={() => window.open(animalInfo.wikipediaUrl, '_blank')}
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Learn More on Wikipedia
+                      </Button>
+                    </CardContent>
+                  </Card>
                 </div>
+              </div>
 
-                <Separator />
+              {/* Premium Features Section */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Conservation Alerts */}
+                <ConservationAlerts 
+                  animalName={classificationResult.label}
+                  conservationStatus={animalInfo.conservationStatus}
+                />
 
-                <div>
-                  <h4 className="font-semibold mb-3">Native Locations</h4>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {animalInfo.nativeLocations.map((location, index) => (
-                      <Badge key={index} variant="secondary">
-                        {location}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
+                {/* Size Comparison */}
+                <AnimalSizeComparison 
+                  animalName={classificationResult.label}
+                  size={animalInfo.size}
+                  weight={animalInfo.weight}
+                />
+              </div>
 
-                <Separator />
+              {/* Wildlife Photography Tips */}
+              <WildlifePhotographyTips 
+                animalName={classificationResult.label}
+                habitat={animalInfo.habitat}
+              />
 
-                <div>
-                  <h4 className="font-semibold mb-3 text-red-600">⚠️ Dangerous Foods - Never Feed</h4>
-                  <ul className="space-y-2">
-                    {animalInfo.dangerousFoods.map((food, index) => (
-                      <li key={index} className="flex items-start gap-2 text-sm">
-                        <Badge variant="destructive" className="mt-1">⚠️</Badge>
-                        {food}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              {/* Sound Library */}
+              <AnimalSoundLibrary animalName={classificationResult.label} />
 
-                <Separator />
+              {/* Eco-Tourism Recommendations */}
+              <EcoTourismRecommendations 
+                animalName={classificationResult.label}
+                nativeLocations={animalInfo.nativeLocations}
+              />
 
-                <div>
-                  <h4 className="font-semibold mb-3">Interesting Facts</h4>
+              {/* Interesting Facts */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Fascinating Facts</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <ul className="space-y-2">
                     {animalInfo.interestingFacts.map((fact, index) => (
-                      <li key={index} className="flex items-start gap-2 text-sm">
-                        <Badge variant="outline" className="mt-1">•</Badge>
+                      <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                        <span className="text-nature mt-1">•</span>
                         {fact}
                       </li>
                     ))}
                   </ul>
-                </div>
-
-                <Separator />
-
-                <div>
-                  <h4 className="font-semibold mb-3">Learn More</h4>
-                  <Button
-                    variant="outline"
-                    onClick={() => window.open(animalInfo.wikipediaUrl, '_blank')}
-                    className="gap-2"
-                  >
-                    <Info className="w-4 h-4" />
-                    View on Wikipedia
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           )}
         </TabsContent>
       </Tabs>

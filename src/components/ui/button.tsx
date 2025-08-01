@@ -19,11 +19,11 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         // Wildlife-specific variants
-        hero: "bg-gradient-hero text-primary-foreground hover:shadow-nature transition-bounce",
-        nature: "bg-nature text-primary-foreground hover:bg-nature/90 shadow-card",
+        hero: "bg-white/10 text-white border border-white/20 hover:bg-white/20 shadow-glow transition-smooth",
+        nature: "bg-gradient-to-r from-nature to-nature-glow text-white shadow-nature hover:shadow-elegant transition-all duration-300 hover:scale-[1.02]",
+        upload: "bg-gradient-to-r from-nature to-nature-glow text-white shadow-nature hover:shadow-elegant transition-all duration-300 hover:scale-[1.02]",
         accent: "bg-gradient-accent text-accent-foreground hover:shadow-glow transition-bounce",
         earth: "bg-nature-earth text-primary-foreground hover:bg-nature-earth/90",
-        upload: "border-2 border-dashed border-accent bg-accent/10 text-accent-foreground hover:bg-accent/20 hover:border-accent/70",
       },
       size: {
         default: "h-10 px-4 py-2",
