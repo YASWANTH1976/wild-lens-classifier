@@ -377,6 +377,7 @@ export class ClassificationService {
   private primaryClassifier: any = null;
   private secondaryClassifier: any = null;
   private isInitialized = false;
+  private initializationPromise: Promise<void> | null = null;
   private tokenManager = new TokenManager();
   private neuralNetworkInfo = {
     modelType: 'Ensemble Wildlife CNN',
@@ -389,46 +390,65 @@ export class ClassificationService {
   };
 
   constructor() {
-    this.initializeModels();
+    // Don't initialize immediately to avoid blocking
   }
 
   private async initializeModels() {
+    if (this.initializationPromise) {
+      return this.initializationPromise;
+    }
+
+    this.initializationPromise = this.doInitializeModels();
+    return this.initializationPromise;
+  }
+
+  private async doInitializeModels() {
     try {
-      console.log('🔄 Initializing ensemble wildlife classification models...');
+      console.log('🔄 Initializing wildlife classification models...');
       
-      // Primary model - Updated to better wildlife model
-      this.primaryClassifier = await pipeline(
-        'image-classification',
-        'google/vit-base-patch16-224',
-        { device: 'webgpu' }
-      );
-      
-      // Secondary model for ensemble
-      this.secondaryClassifier = await pipeline(
-        'image-classification',
-        'microsoft/resnet-50',
-        { device: 'webgpu' }
-      );
-      
-      this.isInitialized = true;
-      console.log('✅ Wildlife ensemble models initialized successfully');
-    } catch (error) {
-      console.warn('⚠️ WebGPU not available, falling back to CPU:', error);
+      // Try with a simpler, more reliable model first
       try {
         this.primaryClassifier = await pipeline(
           'image-classification',
-          'google/vit-base-patch16-224'
+          'Xenova/vit-base-patch16-224',
+          { 
+            device: 'webgpu',
+            dtype: 'fp32'
+          }
         );
+        console.log('✅ Primary model loaded with WebGPU');
+      } catch (webgpuError) {
+        console.warn('⚠️ WebGPU failed, trying CPU:', webgpuError);
+        this.primaryClassifier = await pipeline(
+          'image-classification',
+          'Xenova/vit-base-patch16-224',
+          { 
+            device: 'cpu',
+            dtype: 'fp32'
+          }
+        );
+        console.log('✅ Primary model loaded with CPU');
+      }
+      
+      // Secondary model is optional
+      try {
         this.secondaryClassifier = await pipeline(
           'image-classification',
-          'microsoft/resnet-50'
+          'Xenova/mobilenet_v2_1.0_224',
+          { device: 'cpu' }
         );
-        this.isInitialized = true;
-        console.log('✅ Wildlife ensemble models initialized with CPU');
-      } catch (cpuError) {
-        console.error('❌ Failed to initialize classification models:', cpuError);
-        this.isInitialized = false;
+        console.log('✅ Secondary model loaded');
+      } catch (error) {
+        console.warn('⚠️ Secondary model failed to load, continuing with primary only');
+        this.secondaryClassifier = null;
       }
+      
+      this.isInitialized = true;
+      console.log('✅ Wildlife classification models ready');
+    } catch (error) {
+      console.error('❌ Failed to initialize classification models:', error);
+      this.isInitialized = false;
+      // Don't throw here, we'll use fallback classification
     }
   }
 
@@ -436,54 +456,93 @@ export class ClassificationService {
     console.log(`🧠 Neural Network: ${this.neuralNetworkInfo.modelType}`);
     console.log(`🔄 Using API Token: ${this.tokenManager.getNextToken()}`);
     
-    // Wait for model initialization
-    if (!this.isInitialized) {
-      await this.initializeModels();
+    // Validate file first
+    if (!file) {
+      throw new Error('No file provided for classification');
     }
 
-    if (!this.primaryClassifier) {
-      throw new Error('Classification models not available');
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Only image files are supported for accurate wildlife classification');
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      throw new Error('File size too large. Please select an image smaller than 10MB');
     }
 
     try {
-      // Only process image files for accurate classification
-      if (!file.type.startsWith('image/')) {
-        throw new Error('Only image files are supported for accurate wildlife classification');
+      // Wait for model initialization with timeout
+      if (!this.isInitialized) {
+        console.log('📥 Models not initialized, starting initialization...');
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Model initialization timeout')), 30000)
+        );
+        
+        await Promise.race([this.initializeModels(), timeoutPromise]);
       }
 
-      console.log('📸 Processing image with ensemble CNN models...');
+      if (!this.primaryClassifier) {
+        console.log('⚠️ Models not available, using intelligent fallback');
+        return this.intelligentFallbackClassification();
+      }
+
+      console.log('📸 Processing image with AI models...');
       
+      // Create image URL with proper cleanup
       const imageUrl = URL.createObjectURL(file);
       
-      // Run ensemble classification
-      const [primaryResults, secondaryResults] = await Promise.all([
-        this.primaryClassifier(imageUrl, { top_k: 10 }),
-        this.secondaryClassifier ? this.secondaryClassifier(imageUrl, { top_k: 10 }) : Promise.resolve([])
-      ]);
-      
-      // Clean up the URL
-      URL.revokeObjectURL(imageUrl);
-
-      if (!primaryResults || primaryResults.length === 0) {
-        throw new Error('No classification results from primary model');
-      }
-
-      // Enhanced ensemble processing
-      const ensembleResults = this.processEnsembleResults(primaryResults, secondaryResults);
-      const bestResult = this.findBestWildlifeMatch(ensembleResults);
-      
-      if (bestResult && this.validateResult(bestResult)) {
-        console.log(`✅ Wildlife classification complete: ${bestResult.label} (${(bestResult.confidence * 100).toFixed(1)}%)`);
-        return bestResult;
-      } else {
-        console.log('⚠️ Low confidence or non-wildlife detection, using enhanced fallback');
-        return this.enhancedFallbackClassification(primaryResults);
+      try {
+        // Run classification with timeout
+        const classificationPromise = this.runClassification(imageUrl);
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Classification timeout')), 15000)
+        );
+        
+        const results = await Promise.race([classificationPromise, timeoutPromise]);
+        
+        if (results && this.validateResult(results)) {
+          console.log(`✅ Classification complete: ${results.label} (${(results.confidence * 100).toFixed(1)}%)`);
+          return results;
+        } else {
+          console.log('⚠️ Low confidence result, using enhanced fallback');
+          return this.enhancedFallbackClassification([{ label: 'unknown', score: 0.1 }]);
+        }
+      } finally {
+        // Always clean up the URL
+        URL.revokeObjectURL(imageUrl);
       }
 
     } catch (error) {
       console.error('❌ Classification error:', error);
       console.log('🔄 Using intelligent fallback classification...');
       return this.intelligentFallbackClassification();
+    }
+  }
+
+  private async runClassification(imageUrl: string): Promise<ClassificationResult | null> {
+    try {
+      // Run primary classification
+      const primaryResults = await this.primaryClassifier(imageUrl, { top_k: 10 });
+      
+      let secondaryResults: any[] = [];
+      if (this.secondaryClassifier) {
+        try {
+          secondaryResults = await this.secondaryClassifier(imageUrl, { top_k: 10 });
+        } catch (error) {
+          console.warn('⚠️ Secondary model failed, using primary only');
+        }
+      }
+
+      if (!primaryResults || primaryResults.length === 0) {
+        return null;
+      }
+
+      // Process ensemble results
+      const ensembleResults = this.processEnsembleResults(primaryResults, secondaryResults);
+      return this.findBestWildlifeMatch(ensembleResults);
+      
+    } catch (error) {
+      console.error('❌ Model inference error:', error);
+      return null;
     }
   }
 
