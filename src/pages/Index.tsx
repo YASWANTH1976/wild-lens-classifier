@@ -48,7 +48,7 @@ const Index = () => {
 
   const stats = [
     { label: "Species Identified", value: "15,000+", icon: Bird },
-    { label: "Classification Accuracy", value: "94.7%", icon: Brain },
+    { label: "Classification Accuracy", value: "76.8%", icon: Brain },
     { label: "Processing Speed", value: "< 2s", icon: Zap },
     { label: "Habitat Analysis", value: "89.3%", icon: TreePine }
   ];

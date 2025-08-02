@@ -26,11 +26,11 @@ export const StatisticsPanel: React.FC = () => {
   const statistics: StatisticItem[] = [
     {
       label: "Image Recognition Accuracy",
-      value: "94.7%",
+      value: "76.8%",
       icon: Eye,
       color: "text-nature",
-      progress: 94.7,
-      description: "Neural network classification accuracy"
+      progress: 76.8,
+      description: "Reliable wildlife identification accuracy"
     },
     {
       label: "Instant Classification",

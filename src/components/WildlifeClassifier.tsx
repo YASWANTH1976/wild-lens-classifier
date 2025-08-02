@@ -155,6 +155,15 @@ export const WildlifeClassifier: React.FC = () => {
       
       setUploadProgress(95);
       
+      // Provide different feedback based on confidence level
+      if (result.confidence < 0.50) {
+        toast.warning(`Low confidence classification: ${result.label} (${(result.confidence * 100).toFixed(1)}%). Please try with a clearer image.`);
+      } else if (result.confidence < 0.70) {
+        toast.info(`Moderate confidence: ${result.label} (${(result.confidence * 100).toFixed(1)}%). Result may need verification.`);
+      } else {
+        toast.success(`High confidence classification: ${result.label} (${(result.confidence * 100).toFixed(1)}%)`);
+      }
+      
       // Get animal information
       const info = await animalInfoService.getAnimalInfo(result.label);
       setAnimalInfo(info);
@@ -165,7 +174,6 @@ export const WildlifeClassifier: React.FC = () => {
       
       setUploadProgress(100);
       setActiveTab('results');
-      toast.success(`Successfully classified: ${result.label}`);
       
     } catch (error) {
       console.error('Classification error:', error);
