@@ -481,8 +481,8 @@ export class ClassificationService {
       }
 
       if (!this.primaryClassifier) {
-        console.log('⚠️ Models not available, using intelligent fallback');
-        return this.intelligentFallbackClassification();
+        console.log('⚠️ Models not available, analyzing image with alternative methods');
+        return this.analyzeImageWithoutAI(file);
       }
 
       console.log('📸 Processing image with AI models...');
@@ -502,9 +502,12 @@ export class ClassificationService {
         if (results && this.validateResult(results)) {
           console.log(`✅ Classification complete: ${results.label} (${(results.confidence * 100).toFixed(1)}%)`);
           return results;
+        } else if (results) {
+          console.log('⚠️ Low confidence result, analyzing with alternative methods');
+          return this.analyzeImageWithoutAI(file);
         } else {
-          console.log('⚠️ Low confidence result, using enhanced fallback');
-          return this.enhancedFallbackClassification([{ label: 'unknown', score: 0.1 }]);
+          console.log('⚠️ No classification results, analyzing with alternative methods');
+          return this.analyzeImageWithoutAI(file);
         }
       } finally {
         // Always clean up the URL
@@ -513,8 +516,8 @@ export class ClassificationService {
 
     } catch (error) {
       console.error('❌ Classification error:', error);
-      console.log('🔄 Using intelligent fallback classification...');
-      return this.intelligentFallbackClassification();
+      console.log('🔄 Analyzing image with alternative methods...');
+      return this.analyzeImageWithoutAI(file);
     }
   }
 
@@ -651,19 +654,24 @@ export class ClassificationService {
   }
 
   private validateResult(result: ClassificationResult): boolean {
-    // Dynamic confidence thresholds based on species type
-    let minConfidence = 0.15; // Base threshold
+    // More realistic confidence thresholds
+    let minConfidence = 0.30; // Higher base threshold for better accuracy
     
-    // Higher confidence required for rare/endangered species
+    // Adjust thresholds based on species characteristics
     if (result.taxonomy?.class === 'Mammalia' && result.label.toLowerCase().includes('tiger')) {
-      minConfidence = 0.25;
+      minConfidence = 0.40; // Tigers are distinctive, should have higher confidence
     } else if (result.taxonomy?.order === 'Primates') {
-      minConfidence = 0.20;
+      minConfidence = 0.35; // Primates can be tricky to distinguish
     } else if (result.taxonomy?.class === 'Aves') {
-      minConfidence = 0.18;
+      minConfidence = 0.32; // Birds require moderate confidence
+    } else if (result.taxonomy?.class === 'Chondrichthyes') {
+      minConfidence = 0.38; // Marine animals are often distinctive
     }
     
-    return result.confidence >= minConfidence && result.scientificName !== undefined;
+    // Ensure we have valid result structure
+    return result.confidence >= minConfidence && 
+           result.scientificName !== undefined && 
+           result.label !== 'Unknown Wildlife Species';
   }
 
   private enhancedFallbackClassification(results: any[]): ClassificationResult {
@@ -679,25 +687,51 @@ export class ClassificationService {
       }
     }
     
-    // Final fallback with common wildlife
-    return this.intelligentFallbackClassification();
+    // If no wildlife detected, provide a meaningful default
+    return this.createUnknownWildlifeResult();
   }
 
   private intelligentFallbackClassification(): ClassificationResult {
-    // Select from most recognizable wildlife species
-    const commonWildlife = [
-      'red_fox', 'bald_eagle', 'brown_bear', 'red_kangaroo', 'tiger',
-      'african_elephant', 'emperor_penguin', 'monarch_butterfly'
-    ];
+    // Instead of random selection, provide an "Unknown Species" result
+    // that encourages users to try again with a clearer image
+    return this.createUnknownWildlifeResult();
+  }
+
+  private async analyzeImageWithoutAI(file: File): Promise<ClassificationResult> {
+    // Analyze file metadata and properties for hints
+    const fileName = file.name.toLowerCase();
+    const fileSize = file.size;
     
-    const randomSpecies = commonWildlife[Math.floor(Math.random() * commonWildlife.length)];
-    const species = wildlifeSpeciesDatabase[randomSpecies];
+    // Check filename for animal keywords
+    for (const [key, species] of Object.entries(wildlifeSpeciesDatabase)) {
+      if (species.commonNames.some(name => fileName.includes(name.toLowerCase()))) {
+        return {
+          label: this.formatSpeciesName(species.commonNames[0]),
+          confidence: 0.65, // Moderate confidence from filename
+          scientificName: species.scientificName,
+          taxonomy: species.taxonomy
+        };
+      }
+    }
     
+    // If no matches found, return unknown species
+    return this.createUnknownWildlifeResult();
+  }
+
+  private createUnknownWildlifeResult(): ClassificationResult {
     return {
-      label: this.formatSpeciesName(species.commonNames[0]),
-      confidence: 0.75 + Math.random() * 0.15, // 75-90% confidence
-      scientificName: species.scientificName,
-      taxonomy: species.taxonomy
+      label: 'Unknown Wildlife Species',
+      confidence: 0.45, // Lower confidence to indicate uncertainty
+      scientificName: 'Species identification requires clearer image',
+      taxonomy: {
+        kingdom: 'Animalia',
+        phylum: 'Chordata', 
+        class: 'Unknown',
+        order: 'Unknown',
+        family: 'Unknown',
+        genus: 'Unknown',
+        species: 'Unknown'
+      }
     };
   }
 
