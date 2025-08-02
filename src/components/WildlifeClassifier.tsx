@@ -136,15 +136,24 @@ export const WildlifeClassifier: React.FC = () => {
     setUploadProgress(0);
     
     try {
+      // Show progress for model loading
+      setUploadProgress(10);
+      toast.info('Initializing AI models...', { duration: 2000 });
+      
       // Simulate upload progress
-      for (let i = 0; i <= 100; i += 10) {
+      for (let i = 20; i <= 80; i += 20) {
         setUploadProgress(i);
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 150));
       }
+
+      setUploadProgress(90);
+      toast.info('Processing image...', { duration: 2000 });
 
       // Classify the animal
       const result = await classificationService.classifyAnimal(selectedFile);
       setClassificationResult(result);
+      
+      setUploadProgress(95);
       
       // Get animal information
       const info = await animalInfoService.getAnimalInfo(result.label);
@@ -154,12 +163,23 @@ export const WildlifeClassifier: React.FC = () => {
       const habitat = await habitatAnalysisService.analyzeHabitat(result.label);
       setHabitatSuitability(habitat);
       
+      setUploadProgress(100);
       setActiveTab('results');
       toast.success(`Successfully classified: ${result.label}`);
       
     } catch (error) {
       console.error('Classification error:', error);
-      toast.error('Classification failed. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Classification failed. Please try again.';
+      
+      if (errorMessage.includes('timeout')) {
+        toast.error('Classification timed out. Please try with a smaller image or try again.');
+      } else if (errorMessage.includes('size')) {
+        toast.error('File too large. Please select an image smaller than 10MB.');
+      } else if (errorMessage.includes('format') || errorMessage.includes('type')) {
+        toast.error('Please select a valid image file (JPG, PNG, WEBP).');
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setIsClassifying(false);
       setUploadProgress(0);
