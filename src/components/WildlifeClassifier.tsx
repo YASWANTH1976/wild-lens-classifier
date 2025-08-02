@@ -164,6 +164,13 @@ export const WildlifeClassifier: React.FC = () => {
         toast.success(`High confidence classification: ${result.label} (${(result.confidence * 100).toFixed(1)}%)`);
       }
       
+      // Additional guidance for uncertain classifications
+      if (result.label.includes('Classification Uncertain') || result.label.includes('Low Confidence')) {
+        toast.error('Unable to reliably identify this animal. Please try:\n• A clearer, well-lit image\n• Different angle or closer view\n• Remove any obstructions', { duration: 5000 });
+      } else if (result.confidence < 0.60 && result.scientificName?.includes('Possible:')) {
+        toast.warning('Classification has low confidence. Consider verifying the result with additional sources.', { duration: 4000 });
+      }
+      
       // Get animal information
       const info = await animalInfoService.getAnimalInfo(result.label);
       setAnimalInfo(info);

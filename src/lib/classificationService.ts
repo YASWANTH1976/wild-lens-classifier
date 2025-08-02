@@ -210,32 +210,79 @@ const wildlifeSpeciesDatabase: Record<string, {
   'bald_eagle': {
     scientificName: 'Haliaeetus leucocephalus',
     commonNames: ['bald eagle', 'american eagle'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Haliaeetus', species: 'H. leucocephalus' },
-    confidence_boost: 1.4
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Haliaeetus', species: 'H. leucocephalus' }
   },
   'golden_eagle': {
     scientificName: 'Aquila chrysaetos',
     commonNames: ['golden eagle', 'eagle'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Aquila', species: 'A. chrysaetos' },
-    confidence_boost: 1.3
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Aquila', species: 'A. chrysaetos' }
+  },
+  'eagle': {
+    scientificName: 'Aquila species',
+    commonNames: ['eagle', 'sea eagle', 'fish eagle', 'harpy eagle', 'steppe eagle'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Aquila', species: 'A. species' }
+  },
+  'red_tailed_hawk': {
+    scientificName: 'Buteo jamaicensis',
+    commonNames: ['red-tailed hawk', 'red tail hawk', 'hawk'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Buteo', species: 'B. jamaicensis' }
+  },
+  'cooper_hawk': {
+    scientificName: 'Accipiter cooperii',
+    commonNames: ['cooper\'s hawk', 'cooper hawk', 'chicken hawk'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Accipiter', species: 'A. cooperii' }
   },
   'peregrine_falcon': {
     scientificName: 'Falco peregrinus',
     commonNames: ['peregrine falcon', 'falcon', 'duck hawk'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Falconiformes', family: 'Falconidae', genus: 'Falco', species: 'F. peregrinus' },
-    confidence_boost: 1.3
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Falconiformes', family: 'Falconidae', genus: 'Falco', species: 'F. peregrinus' }
+  },
+  'kestrel': {
+    scientificName: 'Falco tinnunculus',
+    commonNames: ['kestrel', 'american kestrel', 'sparrow hawk'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Falconiformes', family: 'Falconidae', genus: 'Falco', species: 'F. tinnunculus' }
   },
   'great_horned_owl': {
     scientificName: 'Bubo virginianus',
     commonNames: ['great horned owl', 'hoot owl', 'tiger owl'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Strigiformes', family: 'Strigidae', genus: 'Bubo', species: 'B. virginianus' },
-    confidence_boost: 1.3
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Strigiformes', family: 'Strigidae', genus: 'Bubo', species: 'B. virginianus' }
   },
   'barn_owl': {
     scientificName: 'Tyto alba',
     commonNames: ['barn owl', 'common barn owl', 'white owl'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Strigiformes', family: 'Tytonidae', genus: 'Tyto', species: 'T. alba' },
-    confidence_boost: 1.2
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Strigiformes', family: 'Tytonidae', genus: 'Tyto', species: 'T. alba' }
+  },
+  'screech_owl': {
+    scientificName: 'Megascops asio',
+    commonNames: ['screech owl', 'eastern screech owl', 'little owl'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Strigiformes', family: 'Strigidae', genus: 'Megascops', species: 'M. asio' }
+  },
+
+  // Common Birds
+  'robin': {
+    scientificName: 'Turdus migratorius',
+    commonNames: ['robin', 'american robin', 'red breast'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Passeriformes', family: 'Turdidae', genus: 'Turdus', species: 'T. migratorius' }
+  },
+  'blue_jay': {
+    scientificName: 'Cyanocitta cristata',
+    commonNames: ['blue jay', 'jay'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Passeriformes', family: 'Corvidae', genus: 'Cyanocitta', species: 'C. cristata' }
+  },
+  'cardinal': {
+    scientificName: 'Cardinalis cardinalis',
+    commonNames: ['cardinal', 'northern cardinal', 'red bird'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Passeriformes', family: 'Cardinalidae', genus: 'Cardinalis', species: 'C. cardinalis' }
+  },
+  'crow': {
+    scientificName: 'Corvus brachyrhynchos',
+    commonNames: ['crow', 'american crow'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Passeriformes', family: 'Corvidae', genus: 'Corvus', species: 'C. brachyrhynchos' }
+  },
+  'raven': {
+    scientificName: 'Corvus corax',
+    commonNames: ['raven', 'common raven'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Passeriformes', family: 'Corvidae', genus: 'Corvus', species: 'C. corax' }
   },
 
   // Marine Mammals
@@ -538,9 +585,10 @@ export class ClassificationService {
         return null;
       }
 
-      // Process ensemble results
+      // Process ensemble results with taxonomic filtering
       const ensembleResults = this.processEnsembleResults(primaryResults, secondaryResults);
-      return this.findBestWildlifeMatch(ensembleResults);
+      const filteredResults = this.filterTaxonomicallyConsistent(ensembleResults);
+      return this.findBestWildlifeMatch(filteredResults);
       
     } catch (error) {
       console.error('❌ Model inference error:', error);
@@ -576,12 +624,71 @@ export class ClassificationService {
     })).sort((a, b) => b.confidence - a.confidence);
   }
 
+  private filterTaxonomicallyConsistent(results: any[]): any[] {
+    if (results.length === 0) return results;
+
+    // Group results by taxonomic indicators
+    const taxonomicGroups = {
+      birds: [] as any[],
+      mammals: [] as any[],
+      reptiles: [] as any[],
+      fish: [] as any[],
+      insects: [] as any[],
+      other: [] as any[]
+    };
+
+    const birdKeywords = ['bird', 'eagle', 'hawk', 'owl', 'falcon', 'robin', 'sparrow', 'crow', 'raven', 'dove', 'pigeon', 'heron', 'duck', 'goose', 'swan', 'pelican', 'flamingo', 'penguin', 'ostrich', 'emu'];
+    const mammalKeywords = ['cat', 'dog', 'fox', 'wolf', 'bear', 'lion', 'tiger', 'elephant', 'deer', 'rabbit', 'squirrel', 'mouse', 'rat', 'horse', 'cow', 'pig', 'sheep', 'goat', 'monkey', 'ape'];
+    const reptileKeywords = ['snake', 'lizard', 'gecko', 'iguana', 'chameleon', 'turtle', 'tortoise', 'crocodile', 'alligator'];
+    const fishKeywords = ['fish', 'shark', 'salmon', 'tuna', 'cod', 'bass', 'trout'];
+    const insectKeywords = ['butterfly', 'moth', 'bee', 'wasp', 'ant', 'beetle', 'spider'];
+
+    // Categorize each result
+    results.forEach(result => {
+      const label = result.label.toLowerCase();
+      
+      if (birdKeywords.some(keyword => label.includes(keyword))) {
+        taxonomicGroups.birds.push(result);
+      } else if (mammalKeywords.some(keyword => label.includes(keyword))) {
+        taxonomicGroups.mammals.push(result);
+      } else if (reptileKeywords.some(keyword => label.includes(keyword))) {
+        taxonomicGroups.reptiles.push(result);
+      } else if (fishKeywords.some(keyword => label.includes(keyword))) {
+        taxonomicGroups.fish.push(result);
+      } else if (insectKeywords.some(keyword => label.includes(keyword))) {
+        taxonomicGroups.insects.push(result);
+      } else {
+        taxonomicGroups.other.push(result);
+      }
+    });
+
+    // Find the group with highest total confidence
+    const groupScores = {
+      birds: taxonomicGroups.birds.reduce((sum, r) => sum + r.confidence, 0),
+      mammals: taxonomicGroups.mammals.reduce((sum, r) => sum + r.confidence, 0),
+      reptiles: taxonomicGroups.reptiles.reduce((sum, r) => sum + r.confidence, 0),
+      fish: taxonomicGroups.fish.reduce((sum, r) => sum + r.confidence, 0),
+      insects: taxonomicGroups.insects.reduce((sum, r) => sum + r.confidence, 0),
+      other: taxonomicGroups.other.reduce((sum, r) => sum + r.confidence, 0)
+    };
+
+    // Return only results from the most confident taxonomic group
+    const topGroup = Object.entries(groupScores).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+    
+    if (groupScores[topGroup as keyof typeof groupScores] > 0) {
+      const selectedResults = taxonomicGroups[topGroup as keyof typeof taxonomicGroups];
+      console.log(`🔍 Filtered to ${topGroup}: ${selectedResults.length} results`);
+      return selectedResults;
+    }
+
+    return results; // Fallback to original results if no clear group
+  }
+
   private findBestWildlifeMatch(results: any[]): ClassificationResult | null {
     for (const result of results) {
       const speciesKey = this.findSpeciesKey(result.label);
       if (speciesKey) {
         const species = wildlifeSpeciesDatabase[speciesKey];
-        // Remove artificial confidence boosting - use actual model confidence
         const actualConfidence = result.confidence;
         
         // Only return if confidence meets our strict standards
@@ -596,8 +703,78 @@ export class ClassificationService {
       }
     }
     
-    // If no high-confidence exact match, don't try fuzzy matching
-    // Return null to indicate insufficient confidence
+    // Try broader wildlife detection with taxonomic validation
+    return this.detectWildlifeWithTaxonomicValidation(results);
+  }
+
+  private detectWildlifeWithTaxonomicValidation(results: any[]): ClassificationResult | null {
+    // Group results by likely taxonomic class
+    const birdKeywords = ['bird', 'eagle', 'hawk', 'owl', 'falcon', 'robin', 'sparrow', 'crow', 'raven', 'dove', 'pigeon', 'heron', 'duck', 'goose', 'swan', 'pelican', 'flamingo', 'penguin', 'ostrich', 'emu', 'turkey', 'chicken', 'pheasant', 'peacock', 'parrot', 'toucan', 'woodpecker', 'hummingbird'];
+    const mammalKeywords = ['cat', 'dog', 'fox', 'wolf', 'bear', 'lion', 'tiger', 'elephant', 'deer', 'rabbit', 'squirrel', 'mouse', 'rat', 'horse', 'cow', 'pig', 'sheep', 'goat', 'monkey', 'ape', 'gorilla', 'chimpanzee', 'baboon', 'lemur', 'bat', 'whale', 'dolphin', 'seal', 'otter', 'beaver', 'porcupine', 'hedgehog', 'kangaroo', 'koala'];
+    const reptileKeywords = ['snake', 'lizard', 'gecko', 'iguana', 'chameleon', 'turtle', 'tortoise', 'crocodile', 'alligator', 'dragon', 'monitor'];
+    const fishKeywords = ['fish', 'shark', 'salmon', 'tuna', 'cod', 'bass', 'trout', 'goldfish', 'angelfish', 'clownfish', 'ray', 'eel'];
+    const insectKeywords = ['butterfly', 'moth', 'bee', 'wasp', 'ant', 'beetle', 'spider', 'fly', 'mosquito', 'dragonfly', 'grasshopper', 'cricket', 'mantis'];
+
+    // Analyze all results to determine most likely taxonomic class
+    const classScores = {
+      bird: 0,
+      mammal: 0,
+      reptile: 0,
+      fish: 0,
+      insect: 0
+    };
+
+    results.forEach(result => {
+      const label = result.label.toLowerCase();
+      
+      if (birdKeywords.some(keyword => label.includes(keyword))) {
+        classScores.bird += result.score || result.confidence || 0;
+      }
+      if (mammalKeywords.some(keyword => label.includes(keyword))) {
+        classScores.mammal += result.score || result.confidence || 0;
+      }
+      if (reptileKeywords.some(keyword => label.includes(keyword))) {
+        classScores.reptile += result.score || result.confidence || 0;
+      }
+      if (fishKeywords.some(keyword => label.includes(keyword))) {
+        classScores.fish += result.score || result.confidence || 0;
+      }
+      if (insectKeywords.some(keyword => label.includes(keyword))) {
+        classScores.insect += result.score || result.confidence || 0;
+      }
+    });
+
+    // Find the most likely taxonomic class
+    const topClass = Object.entries(classScores).reduce((a, b) => 
+      classScores[a[0] as keyof typeof classScores] > classScores[b[0] as keyof typeof classScores] ? a : b
+    )[0];
+
+    // Only return results that match the most likely taxonomic class
+    if (classScores[topClass as keyof typeof classScores] > 0) {
+      const relevantKeywords = {
+        bird: birdKeywords,
+        mammal: mammalKeywords,
+        reptile: reptileKeywords,
+        fish: fishKeywords,
+        insect: insectKeywords
+      }[topClass as keyof typeof classScores];
+
+      // Find the best result matching this taxonomic class
+      for (const result of results) {
+        const label = result.label.toLowerCase();
+        const confidence = result.score || result.confidence || 0;
+        
+        if (relevantKeywords.some(keyword => label.includes(keyword)) && confidence >= 0.40) {
+          return {
+            label: this.formatSpeciesName(result.label),
+            confidence: Math.min(confidence, 0.75), // Cap confidence for cross-class detection
+            scientificName: this.generateScientificNameByClass(result.label, topClass),
+            taxonomy: this.generateTaxonomyByClass(topClass)
+          };
+        }
+      }
+    }
+
     return null;
   }
 
@@ -660,12 +837,53 @@ export class ClassificationService {
       minConfidence = 0.68; // Marine animals should be distinctive
     }
     
+    // Check for obvious taxonomic mismatches
+    if (this.hasTaxonomicMismatch(result)) {
+      console.warn(`⚠️ Detected taxonomic mismatch: ${result.label} classified with incompatible features`);
+      return false;
+    }
+    
     // Stricter validation - must have scientific name and valid taxonomy
     return result.confidence >= minConfidence && 
            result.scientificName !== undefined && 
            result.scientificName !== 'Species identification requires clearer image' &&
            result.label !== 'Unknown Wildlife Species' &&
            result.taxonomy?.class !== 'Unknown';
+  }
+
+  private hasTaxonomicMismatch(result: ClassificationResult): boolean {
+    const label = result.label.toLowerCase();
+    const taxonomicClass = result.taxonomy?.class?.toLowerCase() || '';
+    
+    // Define clear taxonomic indicators
+    const birdIndicators = ['eagle', 'hawk', 'owl', 'falcon', 'robin', 'crow', 'raven', 'jay', 'cardinal', 'pigeon', 'dove', 'duck', 'goose', 'swan', 'heron', 'flamingo', 'penguin', 'ostrich', 'peacock', 'parrot', 'toucan', 'woodpecker', 'hummingbird'];
+    const mammalIndicators = ['fox', 'wolf', 'bear', 'cat', 'dog', 'lion', 'tiger', 'leopard', 'cheetah', 'elephant', 'deer', 'rabbit', 'squirrel', 'mouse', 'rat', 'horse', 'cow', 'pig', 'sheep', 'monkey', 'ape', 'whale', 'dolphin'];
+    const reptileIndicators = ['snake', 'lizard', 'turtle', 'crocodile', 'alligator', 'gecko', 'iguana', 'chameleon'];
+    const fishIndicators = ['fish', 'shark', 'salmon', 'tuna', 'cod', 'bass', 'trout'];
+    
+    // Check for bird/mammal confusion (most common error)
+    const hasBirdIndicator = birdIndicators.some(indicator => label.includes(indicator));
+    const hasMammalIndicator = mammalIndicators.some(indicator => label.includes(indicator));
+    
+    if (hasBirdIndicator && taxonomicClass === 'mammalia') {
+      return true; // Bird labeled as mammal
+    }
+    if (hasMammalIndicator && taxonomicClass === 'aves') {
+      return true; // Mammal labeled as bird
+    }
+    
+    // Check for other obvious mismatches
+    const hasReptileIndicator = reptileIndicators.some(indicator => label.includes(indicator));
+    const hasFishIndicator = fishIndicators.some(indicator => label.includes(indicator));
+    
+    if (hasReptileIndicator && !['reptilia'].includes(taxonomicClass)) {
+      return true;
+    }
+    if (hasFishIndicator && !['actinopterygii', 'chondrichthyes'].includes(taxonomicClass)) {
+      return true;
+    }
+    
+    return false;
   }
 
   private enhancedFallbackClassification(results: any[]): ClassificationResult {
@@ -796,6 +1014,73 @@ export class ClassificationService {
         genus: 'Unknown',
         species: 'Unknown'
       };
+    }
+  }
+
+  private generateScientificNameByClass(animalName: string, taxonomicClass: string): string {
+    const cleanName = animalName.toLowerCase().replace(/[^a-z]/g, '');
+    
+    switch (taxonomicClass) {
+      case 'bird':
+        return `Aves ${cleanName}`;
+      case 'mammal':
+        return `Mammalia ${cleanName}`;
+      case 'reptile':
+        return `Reptilia ${cleanName}`;
+      case 'fish':
+        return `Pisces ${cleanName}`;
+      case 'insect':
+        return `Insecta ${cleanName}`;
+      default:
+        return `Animalia ${cleanName}`;
+    }
+  }
+
+  private generateTaxonomyByClass(taxonomicClass: string): any {
+    const baseTaxonomy = {
+      kingdom: 'Animalia',
+      phylum: 'Chordata',
+      class: 'Unknown',
+      order: 'Unknown',
+      family: 'Unknown',
+      genus: 'Unknown',
+      species: 'Unknown'
+    };
+
+    switch (taxonomicClass) {
+      case 'bird':
+        return {
+          ...baseTaxonomy,
+          class: 'Aves',
+          order: 'Passeriformes'
+        };
+      case 'mammal':
+        return {
+          ...baseTaxonomy,
+          class: 'Mammalia',
+          order: 'Carnivora'
+        };
+      case 'reptile':
+        return {
+          ...baseTaxonomy,
+          class: 'Reptilia',
+          order: 'Squamata'
+        };
+      case 'fish':
+        return {
+          ...baseTaxonomy,
+          class: 'Actinopterygii',
+          order: 'Perciformes'
+        };
+      case 'insect':
+        return {
+          ...baseTaxonomy,
+          phylum: 'Arthropoda',
+          class: 'Insecta',
+          order: 'Lepidoptera'
+        };
+      default:
+        return baseTaxonomy;
     }
   }
 
