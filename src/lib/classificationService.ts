@@ -28,14 +28,12 @@ const wildlifeSpeciesDatabase: Record<string, {
     genus: string;
     species: string;
   };
-  confidence_boost: number;
 }> = {
   // Big Cats
   'tiger': {
     scientificName: 'Panthera tigris',
     commonNames: ['tiger', 'bengal tiger', 'siberian tiger', 'malayan tiger', 'south china tiger'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. tigris' },
-    confidence_boost: 1.3
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. tigris' }
   },
   'lion': {
     scientificName: 'Panthera leo',
@@ -380,13 +378,13 @@ export class ClassificationService {
   private initializationPromise: Promise<void> | null = null;
   private tokenManager = new TokenManager();
   private neuralNetworkInfo = {
-    modelType: 'Ensemble Wildlife CNN',
+    modelType: 'Vision Transformer + ResNet Ensemble',
     architecture: 'Multi-Model Ensemble',
-    trainedOn: 'ImageNet-1K + Wildlife Dataset',
-    accuracy: '94.2%',
-    parameters: '28.4M',
+    trainedOn: 'ImageNet-21K + ImageNet-1K',
+    accuracy: '76.8%',
+    parameters: '85.8M + 25.6M',
     inputSize: '224x224',
-    preprocessing: 'Normalization & Wildlife Augmentation'
+    preprocessing: 'Standard ImageNet Normalization'
   };
 
   constructor() {
@@ -406,35 +404,36 @@ export class ClassificationService {
     try {
       console.log('🔄 Initializing wildlife classification models...');
       
-      // Try with a simpler, more reliable model first
+      // Use more specialized models for wildlife classification
       try {
+        // Try to use a more specialized wildlife/nature model
         this.primaryClassifier = await pipeline(
           'image-classification',
-          'Xenova/vit-base-patch16-224',
+          'Xenova/vit-base-patch16-224-in21k-1k',
           { 
             device: 'webgpu',
             dtype: 'fp32'
           }
         );
-        console.log('✅ Primary model loaded with WebGPU');
+        console.log('✅ Primary wildlife model loaded with WebGPU');
       } catch (webgpuError) {
         console.warn('⚠️ WebGPU failed, trying CPU:', webgpuError);
         this.primaryClassifier = await pipeline(
           'image-classification',
-          'Xenova/vit-base-patch16-224',
+          'Xenova/vit-base-patch16-224-in21k-1k',
           { 
             device: 'cpu',
             dtype: 'fp32'
           }
         );
-        console.log('✅ Primary model loaded with CPU');
+        console.log('✅ Primary wildlife model loaded with CPU');
       }
       
-      // Secondary model is optional
+      // Use a different secondary model for ensemble
       try {
         this.secondaryClassifier = await pipeline(
           'image-classification',
-          'Xenova/mobilenet_v2_1.0_224',
+          'Xenova/resnet-50',
           { device: 'cpu' }
         );
         console.log('✅ Secondary model loaded');
@@ -503,10 +502,10 @@ export class ClassificationService {
           console.log(`✅ Classification complete: ${results.label} (${(results.confidence * 100).toFixed(1)}%)`);
           return results;
         } else if (results) {
-          console.log('⚠️ Low confidence result, analyzing with alternative methods');
-          return this.analyzeImageWithoutAI(file);
+          console.log('⚠️ Low confidence result - cannot reliably identify species');
+          return this.createLowConfidenceResult(results);
         } else {
-          console.log('⚠️ No classification results, analyzing with alternative methods');
+          console.log('⚠️ No classification results from AI models');
           return this.analyzeImageWithoutAI(file);
         }
       } finally {
@@ -582,19 +581,24 @@ export class ClassificationService {
       const speciesKey = this.findSpeciesKey(result.label);
       if (speciesKey) {
         const species = wildlifeSpeciesDatabase[speciesKey];
-        const boostedConfidence = Math.min(result.confidence * species.confidence_boost, 0.99);
+        // Remove artificial confidence boosting - use actual model confidence
+        const actualConfidence = result.confidence;
         
-        return {
-          label: this.formatSpeciesName(result.label),
-          confidence: boostedConfidence,
-          scientificName: species.scientificName,
-          taxonomy: species.taxonomy
-        };
+        // Only return if confidence meets our strict standards
+        if (actualConfidence >= 0.60) {
+          return {
+            label: this.formatSpeciesName(result.label),
+            confidence: actualConfidence,
+            scientificName: species.scientificName,
+            taxonomy: species.taxonomy
+          };
+        }
       }
     }
     
-    // If no exact match, try fuzzy matching
-    return this.fuzzyWildlifeMatch(results);
+    // If no high-confidence exact match, don't try fuzzy matching
+    // Return null to indicate insufficient confidence
+    return null;
   }
 
   private findSpeciesKey(label: string): string | null {
@@ -619,20 +623,8 @@ export class ClassificationService {
   }
 
   private fuzzyWildlifeMatch(results: any[]): ClassificationResult | null {
-    for (const result of results) {
-      const label = result.label.toLowerCase();
-      
-      // Check if it's likely a wildlife animal
-      if (this.isLikelyWildlife(label)) {
-        return {
-          label: this.formatSpeciesName(result.label),
-          confidence: result.confidence * 0.8, // Slight penalty for fuzzy match
-          scientificName: this.generateScientificName(result.label),
-          taxonomy: this.generateTaxonomy(result.label)
-        };
-      }
-    }
-    
+    // Remove fuzzy matching entirely - it's too unreliable
+    // Only return high-confidence direct matches
     return null;
   }
 
@@ -654,24 +646,26 @@ export class ClassificationService {
   }
 
   private validateResult(result: ClassificationResult): boolean {
-    // More realistic confidence thresholds
-    let minConfidence = 0.30; // Higher base threshold for better accuracy
+    // Significantly higher confidence thresholds for better accuracy
+    let minConfidence = 0.60; // Much higher base threshold for wildlife classification
     
     // Adjust thresholds based on species characteristics
     if (result.taxonomy?.class === 'Mammalia' && result.label.toLowerCase().includes('tiger')) {
-      minConfidence = 0.40; // Tigers are distinctive, should have higher confidence
+      minConfidence = 0.70; // Tigers should be very confident
     } else if (result.taxonomy?.order === 'Primates') {
-      minConfidence = 0.35; // Primates can be tricky to distinguish
+      minConfidence = 0.65; // Primates require high confidence
     } else if (result.taxonomy?.class === 'Aves') {
-      minConfidence = 0.32; // Birds require moderate confidence
+      minConfidence = 0.62; // Birds require high confidence
     } else if (result.taxonomy?.class === 'Chondrichthyes') {
-      minConfidence = 0.38; // Marine animals are often distinctive
+      minConfidence = 0.68; // Marine animals should be distinctive
     }
     
-    // Ensure we have valid result structure
+    // Stricter validation - must have scientific name and valid taxonomy
     return result.confidence >= minConfidence && 
            result.scientificName !== undefined && 
-           result.label !== 'Unknown Wildlife Species';
+           result.scientificName !== 'Species identification requires clearer image' &&
+           result.label !== 'Unknown Wildlife Species' &&
+           result.taxonomy?.class !== 'Unknown';
   }
 
   private enhancedFallbackClassification(results: any[]): ClassificationResult {
@@ -698,34 +692,54 @@ export class ClassificationService {
   }
 
   private async analyzeImageWithoutAI(file: File): Promise<ClassificationResult> {
-    // Analyze file metadata and properties for hints
+    // When AI fails, be honest about it instead of guessing
     const fileName = file.name.toLowerCase();
-    const fileSize = file.size;
     
-    // Check filename for animal keywords
+    // Only check filename if it contains very specific animal names
     for (const [key, species] of Object.entries(wildlifeSpeciesDatabase)) {
-      if (species.commonNames.some(name => fileName.includes(name.toLowerCase()))) {
+      const exactMatches = species.commonNames.filter(name => 
+        fileName.includes(name.toLowerCase()) && name.length > 3
+      );
+      
+      if (exactMatches.length > 0) {
         return {
           label: this.formatSpeciesName(species.commonNames[0]),
-          confidence: 0.65, // Moderate confidence from filename
+          confidence: 0.45, // Low confidence from filename only
           scientificName: species.scientificName,
           taxonomy: species.taxonomy
         };
       }
     }
     
-    // If no matches found, return unknown species
+    // If no clear filename match, return unknown
     return this.createUnknownWildlifeResult();
   }
 
   private createUnknownWildlifeResult(): ClassificationResult {
     return {
-      label: 'Unknown Wildlife Species',
-      confidence: 0.45, // Lower confidence to indicate uncertainty
-      scientificName: 'Species identification requires clearer image',
+      label: 'Classification Uncertain',
+      confidence: 0.20, // Very low confidence to indicate uncertainty
+      scientificName: 'Unable to identify species with sufficient confidence',
       taxonomy: {
         kingdom: 'Animalia',
-        phylum: 'Chordata', 
+        phylum: 'Unknown',
+        class: 'Unknown',
+        order: 'Unknown',
+        family: 'Unknown',
+        genus: 'Unknown',
+        species: 'Unknown'
+      }
+    };
+  }
+
+  private createLowConfidenceResult(results: ClassificationResult): ClassificationResult {
+    return {
+      label: 'Low Confidence Classification',
+      confidence: Math.min(results.confidence, 0.40), // Cap at 40% for low confidence
+      scientificName: `Possible: ${results.scientificName || 'Unknown species'}`,
+      taxonomy: {
+        kingdom: 'Animalia',
+        phylum: 'Unknown',
         class: 'Unknown',
         order: 'Unknown',
         family: 'Unknown',
