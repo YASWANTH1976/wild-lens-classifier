@@ -2,73 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Wildlife Classification Design System - Nature & Earth Tones */
-
 @layer base {
   :root {
-    /* Base colors */
-    --background: 48 20% 98%;
-    --foreground: 160 20% 15%;
-
-    /* Card colors */
-    --card: 48 30% 96%;
-    --card-foreground: 160 20% 15%;
-
-    /* Popover colors */
-    --popover: 48 30% 96%;
-    --popover-foreground: 160 20% 15%;
-
-    /* Primary - Forest Green */
-    --primary: 140 45% 25%;
-    --primary-foreground: 48 30% 98%;
-
-    /* Secondary - Earth Brown */
-    --secondary: 30 25% 85%;
-    --secondary-foreground: 30 25% 25%;
-
-    /* Muted - Sage Green */
-    --muted: 120 15% 90%;
-    --muted-foreground: 120 15% 45%;
-
-    /* Accent - Wildlife Orange */
-    --accent: 35 85% 65%;
-    --accent-foreground: 35 15% 15%;
-
-    /* Destructive - Warning Red */
-    --destructive: 0 75% 55%;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-
-    /* UI elements */
-    --border: 120 20% 88%;
-    --input: 120 20% 94%;
-    --ring: 140 45% 25%;
-
-    /* Wildlife-specific colors */
-    --nature-green: 140 60% 35%;
-    --earth-brown: 30 40% 45%;
-    --sky-blue: 200 70% 60%;
-    --sunset-orange: 35 85% 65%;
-    --leaf-green: 120 50% 40%;
-
-    /* Enhanced gradients for wildlife theme */
-    --gradient-hero: linear-gradient(135deg, hsl(140 60% 35%), hsl(120 50% 40%));
-    --gradient-card: linear-gradient(145deg, hsl(48 30% 96%), hsl(120 15% 94%));
-    --gradient-accent: linear-gradient(135deg, hsl(35 85% 65%), hsl(35 75% 55%));
-    --gradient-nature: linear-gradient(135deg, hsl(140 60% 35%), hsl(140 50% 45%));
-
-    /* Enhanced shadows with nature theme */
-    --shadow-nature: 0 10px 30px -5px hsl(140 60% 35% / 0.3);
-    --shadow-card: 0 4px 20px -2px hsl(140 30% 20% / 0.1);
-    --shadow-glow: 0 0 30px hsl(35 85% 65% / 0.4);
-    --shadow-elegant: 0 20px 40px -10px hsl(140 60% 35% / 0.25);
-
-    /* Nature colors */
-    --nature: 140 60% 35%;
-    --nature-glow: 140 50% 45%;
-
-    /* Smooth transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
 
     --radius: 0.75rem;
 
@@ -90,47 +44,33 @@
   }
 
   .dark {
-    /* Dark theme - Deep forest night */
-    --background: 160 25% 8%;
-    --foreground: 48 20% 95%;
-
-    --card: 160 20% 12%;
-    --card-foreground: 48 20% 95%;
-
-    --popover: 160 20% 12%;
-    --popover-foreground: 48 20% 95%;
-
-    --primary: 140 50% 40%;
-    --primary-foreground: 48 20% 95%;
-
-    --secondary: 30 15% 20%;
-    --secondary-foreground: 48 20% 90%;
-
-    --muted: 160 15% 18%;
-    --muted-foreground: 160 15% 65%;
-
-    --accent: 35 85% 65%;
-    --accent-foreground: 35 15% 15%;
-
-    --destructive: 0 75% 55%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-
-    --border: 160 15% 25%;
-    --input: 160 15% 20%;
-    --ring: 140 50% 40%;
-
-    /* Dark theme gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(160 25% 8%), hsl(140 30% 15%));
-    --gradient-card: linear-gradient(145deg, hsl(160 20% 12%), hsl(160 15% 18%));
-    
-    --sidebar-background: 160 25% 8%;
-    --sidebar-foreground: 48 20% 90%;
-    --sidebar-primary: 140 50% 40%;
-    --sidebar-primary-foreground: 48 20% 95%;
-    --sidebar-accent: 160 15% 18%;
-    --sidebar-accent-foreground: 48 20% 90%;
-    --sidebar-border: 160 15% 25%;
-    --sidebar-ring: 140 50% 40%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 240 5.9% 10%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
