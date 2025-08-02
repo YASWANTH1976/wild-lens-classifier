@@ -38,6 +38,15 @@ interface ClassificationResult {
   label: string;
   confidence: number;
   scientificName?: string;
+  taxonomy?: {
+    kingdom: string;
+    phylum: string;
+    class: string;
+    order: string;
+    family: string;
+    genus: string;
+    species: string;
+  };
 }
 
 interface AnimalInfo {
@@ -364,12 +373,12 @@ export const WildlifeClassifier: React.FC = () => {
                   Classification Results
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <div className="flex items-center justify-between p-4 bg-gradient-card rounded-lg">
                   <div>
                     <h3 className="text-2xl font-bold">{classificationResult.label}</h3>
                     {classificationResult.scientificName && (
-                      <p className="text-muted-foreground italic">{classificationResult.scientificName}</p>
+                      <p className="text-muted-foreground italic text-lg">{classificationResult.scientificName}</p>
                     )}
                   </div>
                   <div className="text-right">
@@ -386,6 +395,90 @@ export const WildlifeClassifier: React.FC = () => {
                     <span>{(classificationResult.confidence * 100).toFixed(1)}%</span>
                   </div>
                   <Progress value={classificationResult.confidence * 100} className="w-full" />
+                </div>
+
+                {/* Enhanced Taxonomic Information */}
+                {classificationResult.taxonomy && (
+                  <Card className="bg-gradient-to-br from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <BarChart3 className="w-4 h-4" />
+                        Taxonomic Classification
+                      </CardTitle>
+                      <CardDescription>
+                        Complete scientific classification of this species
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Kingdom</p>
+                          <p className="font-semibold">{classificationResult.taxonomy.kingdom}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Phylum</p>
+                          <p className="font-semibold">{classificationResult.taxonomy.phylum}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Class</p>
+                          <p className="font-semibold">{classificationResult.taxonomy.class}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Order</p>
+                          <p className="font-semibold">{classificationResult.taxonomy.order}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Family</p>
+                          <p className="font-semibold">{classificationResult.taxonomy.family}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Genus</p>
+                          <p className="font-semibold">{classificationResult.taxonomy.genus}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Species</p>
+                          <p className="font-semibold">{classificationResult.taxonomy.species}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Classification Quality Indicators */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Shield className="w-4 h-4 text-emerald-600" />
+                        <p className="font-semibold text-emerald-800 dark:text-emerald-200">Quality Score</p>
+                      </div>
+                      <p className="text-2xl font-bold text-emerald-600">
+                        {classificationResult.confidence > 0.8 ? 'Excellent' : 
+                         classificationResult.confidence > 0.6 ? 'Good' : 
+                         classificationResult.confidence > 0.4 ? 'Fair' : 'Low'}
+                      </p>
+                      <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                        {classificationResult.confidence > 0.8 ? 'Highly reliable identification' : 
+                         classificationResult.confidence > 0.6 ? 'Reliable identification' : 
+                         classificationResult.confidence > 0.4 ? 'Moderate confidence' : 'Consider retaking photo'}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Brain className="w-4 h-4 text-violet-600" />
+                        <p className="font-semibold text-violet-800 dark:text-violet-200">AI Analysis</p>
+                      </div>
+                      <p className="text-2xl font-bold text-violet-600">
+                        {classificationResult.taxonomy ? 'Enhanced' : 'Standard'}
+                      </p>
+                      <p className="text-sm text-violet-700 dark:text-violet-300">
+                        {classificationResult.taxonomy ? 'Complete taxonomic classification' : 'Basic species identification'}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
               </CardContent>
             </Card>
