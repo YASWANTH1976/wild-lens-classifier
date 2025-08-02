@@ -136,28 +136,21 @@ export const WildlifeClassifier: React.FC = () => {
     setUploadProgress(0);
     
     try {
-      // Show progress for model loading
-      setUploadProgress(10);
-      toast.info('Initializing AI models...', { duration: 2000 });
+      // Quick progress indication
+      setUploadProgress(20);
+      toast.info('Processing image...', { duration: 1000 });
       
-      // Simulate upload progress
-      for (let i = 20; i <= 80; i += 20) {
-        setUploadProgress(i);
-        await new Promise(resolve => setTimeout(resolve, 150));
-      }
-
-      setUploadProgress(90);
-      toast.info('Processing image...', { duration: 2000 });
-
-      // Classify the animal
+      // Classify the animal (now much faster)
       const result = await classificationService.classifyAnimal(selectedFile);
       setClassificationResult(result);
       
-      setUploadProgress(95);
+      setUploadProgress(60);
       
       // Get animal information
       const info = await animalInfoService.getAnimalInfo(result.label);
       setAnimalInfo(info);
+      
+      setUploadProgress(80);
       
       // Analyze habitat suitability
       const habitat = await habitatAnalysisService.analyzeHabitat(result.label);

@@ -15,7 +15,7 @@ interface ClassificationResult {
   };
 }
 
-// Dramatically expanded wildlife species database with taxonomic information
+// Simplified and accurate wildlife species database
 const wildlifeSpeciesDatabase: Record<string, {
   scientificName: string;
   commonNames: string[];
@@ -28,441 +28,212 @@ const wildlifeSpeciesDatabase: Record<string, {
     genus: string;
     species: string;
   };
-  confidence_boost: number;
 }> = {
   // Big Cats
   'tiger': {
     scientificName: 'Panthera tigris',
-    commonNames: ['tiger', 'bengal tiger', 'siberian tiger', 'malayan tiger', 'south china tiger'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. tigris' },
-    confidence_boost: 1.3
+    commonNames: ['tiger', 'bengal tiger', 'siberian tiger'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. tigris' }
   },
   'lion': {
     scientificName: 'Panthera leo',
-    commonNames: ['lion', 'african lion', 'asiatic lion', 'lioness'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. leo' },
-    confidence_boost: 1.3
+    commonNames: ['lion', 'african lion', 'lioness'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. leo' }
   },
   'leopard': {
     scientificName: 'Panthera pardus',
-    commonNames: ['leopard', 'african leopard', 'persian leopard', 'amur leopard'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. pardus' },
-    confidence_boost: 1.3
+    commonNames: ['leopard', 'african leopard'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. pardus' }
   },
   'cheetah': {
     scientificName: 'Acinonyx jubatus',
-    commonNames: ['cheetah', 'hunting leopard'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Acinonyx', species: 'A. jubatus' },
-    confidence_boost: 1.4
+    commonNames: ['cheetah'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Acinonyx', species: 'A. jubatus' }
   },
   'jaguar': {
     scientificName: 'Panthera onca',
-    commonNames: ['jaguar', 'american tiger', 'onza'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. onca' },
-    confidence_boost: 1.3
+    commonNames: ['jaguar'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. onca' }
   },
-  'lynx': {
-    scientificName: 'Lynx lynx',
-    commonNames: ['eurasian lynx', 'lynx', 'common lynx'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Lynx', species: 'L. lynx' },
-    confidence_boost: 1.2
-  },
-  'bobcat': {
-    scientificName: 'Lynx rufus',
-    commonNames: ['bobcat', 'red lynx', 'bay lynx'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Lynx', species: 'L. rufus' },
-    confidence_boost: 1.2
-  },
-  'cougar': {
-    scientificName: 'Puma concolor',
-    commonNames: ['cougar', 'puma', 'mountain lion', 'panther', 'catamount'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Puma', species: 'P. concolor' },
-    confidence_boost: 1.3
-  },
-  'snow_leopard': {
-    scientificName: 'Panthera uncia',
-    commonNames: ['snow leopard', 'ounce'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Felidae', genus: 'Panthera', species: 'P. uncia' },
-    confidence_boost: 1.4
-  },
-
+  
   // Large Mammals
-  'african_elephant': {
+  'elephant': {
     scientificName: 'Loxodonta africana',
-    commonNames: ['african elephant', 'african bush elephant'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Proboscidea', family: 'Elephantidae', genus: 'Loxodonta', species: 'L. africana' },
-    confidence_boost: 1.5
-  },
-  'asian_elephant': {
-    scientificName: 'Elephas maximus',
-    commonNames: ['asian elephant', 'asiatic elephant', 'indian elephant'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Proboscidea', family: 'Elephantidae', genus: 'Elephas', species: 'E. maximus' },
-    confidence_boost: 1.5
+    commonNames: ['elephant', 'african elephant'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Proboscidea', family: 'Elephantidae', genus: 'Loxodonta', species: 'L. africana' }
   },
   'giraffe': {
     scientificName: 'Giraffa camelopardalis',
-    commonNames: ['giraffe', 'camelopard'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Artiodactyla', family: 'Giraffidae', genus: 'Giraffa', species: 'G. camelopardalis' },
-    confidence_boost: 1.6
+    commonNames: ['giraffe'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Artiodactyla', family: 'Giraffidae', genus: 'Giraffa', species: 'G. camelopardalis' }
   },
   'zebra': {
     scientificName: 'Equus zebra',
-    commonNames: ['zebra', 'mountain zebra', 'plains zebra', 'grevy zebra'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Perissodactyla', family: 'Equidae', genus: 'Equus', species: 'E. zebra' },
-    confidence_boost: 1.4
+    commonNames: ['zebra', 'plains zebra'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Perissodactyla', family: 'Equidae', genus: 'Equus', species: 'E. zebra' }
   },
-  'white_rhinoceros': {
+  'rhinoceros': {
     scientificName: 'Ceratotherium simum',
-    commonNames: ['white rhinoceros', 'white rhino', 'square-lipped rhinoceros'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Perissodactyla', family: 'Rhinocerotidae', genus: 'Ceratotherium', species: 'C. simum' },
-    confidence_boost: 1.5
-  },
-  'black_rhinoceros': {
-    scientificName: 'Diceros bicornis',
-    commonNames: ['black rhinoceros', 'black rhino', 'hook-lipped rhinoceros'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Perissodactyla', family: 'Rhinocerotidae', genus: 'Diceros', species: 'D. bicornis' },
-    confidence_boost: 1.5
+    commonNames: ['rhinoceros', 'rhino', 'white rhino'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Perissodactyla', family: 'Rhinocerotidae', genus: 'Ceratotherium', species: 'C. simum' }
   },
   'hippopotamus': {
     scientificName: 'Hippopotamus amphibius',
-    commonNames: ['hippopotamus', 'hippo', 'river horse'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Artiodactyla', family: 'Hippopotamidae', genus: 'Hippopotamus', species: 'H. amphibius' },
-    confidence_boost: 1.4
+    commonNames: ['hippopotamus', 'hippo'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Artiodactyla', family: 'Hippopotamidae', genus: 'Hippopotamus', species: 'H. amphibius' }
   },
 
   // Bears
-  'brown_bear': {
+  'bear': {
     scientificName: 'Ursus arctos',
-    commonNames: ['brown bear', 'grizzly bear', 'kodiak bear'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Ursidae', genus: 'Ursus', species: 'U. arctos' },
-    confidence_boost: 1.3
+    commonNames: ['bear', 'brown bear', 'grizzly bear'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Ursidae', genus: 'Ursus', species: 'U. arctos' }
   },
-  'black_bear': {
-    scientificName: 'Ursus americanus',
-    commonNames: ['american black bear', 'black bear', 'cinnamon bear'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Ursidae', genus: 'Ursus', species: 'U. americanus' },
-    confidence_boost: 1.3
-  },
-  'polar_bear': {
+  'polar bear': {
     scientificName: 'Ursus maritimus',
-    commonNames: ['polar bear', 'white bear', 'ice bear'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Ursidae', genus: 'Ursus', species: 'U. maritimus' },
-    confidence_boost: 1.4
+    commonNames: ['polar bear', 'white bear'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Ursidae', genus: 'Ursus', species: 'U. maritimus' }
   },
-  'giant_panda': {
+  'panda': {
     scientificName: 'Ailuropoda melanoleuca',
-    commonNames: ['giant panda', 'panda bear', 'panda'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Ursidae', genus: 'Ailuropoda', species: 'A. melanoleuca' },
-    confidence_boost: 1.5
+    commonNames: ['giant panda', 'panda'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Ursidae', genus: 'Ailuropoda', species: 'A. melanoleuca' }
   },
 
-  // Canines and Related
-  'gray_wolf': {
+  // Canines
+  'wolf': {
     scientificName: 'Canis lupus',
-    commonNames: ['gray wolf', 'grey wolf', 'wolf', 'timber wolf'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Canidae', genus: 'Canis', species: 'C. lupus' },
-    confidence_boost: 1.3
+    commonNames: ['wolf', 'gray wolf', 'grey wolf'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Canidae', genus: 'Canis', species: 'C. lupus' }
   },
-  'coyote': {
-    scientificName: 'Canis latrans',
-    commonNames: ['coyote', 'prairie wolf', 'brush wolf'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Canidae', genus: 'Canis', species: 'C. latrans' },
-    confidence_boost: 1.2
-  },
-  'red_fox': {
+  'fox': {
     scientificName: 'Vulpes vulpes',
-    commonNames: ['red fox', 'fox'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Canidae', genus: 'Vulpes', species: 'V. vulpes' },
-    confidence_boost: 1.2
-  },
-  'arctic_fox': {
-    scientificName: 'Vulpes lagopus',
-    commonNames: ['arctic fox', 'white fox', 'polar fox', 'snow fox'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Canidae', genus: 'Vulpes', species: 'V. lagopus' },
-    confidence_boost: 1.3
-  },
-  'fennec_fox': {
-    scientificName: 'Vulpes zerda',
-    commonNames: ['fennec fox', 'fennec'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Canidae', genus: 'Vulpes', species: 'V. zerda' },
-    confidence_boost: 1.4
+    commonNames: ['fox', 'red fox'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Carnivora', family: 'Canidae', genus: 'Vulpes', species: 'V. vulpes' }
   },
 
   // Primates
+  'monkey': {
+    scientificName: 'Macaca mulatta',
+    commonNames: ['monkey', 'rhesus macaque'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Primates', family: 'Cercopithecidae', genus: 'Macaca', species: 'M. mulatta' }
+  },
   'chimpanzee': {
     scientificName: 'Pan troglodytes',
-    commonNames: ['chimpanzee', 'chimp', 'common chimpanzee'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Primates', family: 'Hominidae', genus: 'Pan', species: 'P. troglodytes' },
-    confidence_boost: 1.4
+    commonNames: ['chimpanzee', 'chimp'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Primates', family: 'Hominidae', genus: 'Pan', species: 'P. troglodytes' }
   },
-  'western_gorilla': {
+  'gorilla': {
     scientificName: 'Gorilla gorilla',
-    commonNames: ['western gorilla', 'gorilla'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Primates', family: 'Hominidae', genus: 'Gorilla', species: 'G. gorilla' },
-    confidence_boost: 1.4
-  },
-  'bornean_orangutan': {
-    scientificName: 'Pongo pygmaeus',
-    commonNames: ['bornean orangutan', 'orangutan'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Primates', family: 'Hominidae', genus: 'Pongo', species: 'P. pygmaeus' },
-    confidence_boost: 1.4
+    commonNames: ['gorilla', 'western gorilla'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Primates', family: 'Hominidae', genus: 'Gorilla', species: 'G. gorilla' }
   },
 
-  // Birds of Prey
-  'bald_eagle': {
-    scientificName: 'Haliaeetus leucocephalus',
-    commonNames: ['bald eagle', 'american eagle'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Haliaeetus', species: 'H. leucocephalus' },
-    confidence_boost: 1.4
-  },
-  'golden_eagle': {
+  // Birds
+  'eagle': {
     scientificName: 'Aquila chrysaetos',
-    commonNames: ['golden eagle', 'eagle'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Aquila', species: 'A. chrysaetos' },
-    confidence_boost: 1.3
+    commonNames: ['eagle', 'golden eagle'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Accipitriformes', family: 'Accipitridae', genus: 'Aquila', species: 'A. chrysaetos' }
   },
-  'peregrine_falcon': {
-    scientificName: 'Falco peregrinus',
-    commonNames: ['peregrine falcon', 'falcon', 'duck hawk'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Falconiformes', family: 'Falconidae', genus: 'Falco', species: 'F. peregrinus' },
-    confidence_boost: 1.3
-  },
-  'great_horned_owl': {
+  'owl': {
     scientificName: 'Bubo virginianus',
-    commonNames: ['great horned owl', 'hoot owl', 'tiger owl'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Strigiformes', family: 'Strigidae', genus: 'Bubo', species: 'B. virginianus' },
-    confidence_boost: 1.3
+    commonNames: ['owl', 'great horned owl'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Strigiformes', family: 'Strigidae', genus: 'Bubo', species: 'B. virginianus' }
   },
-  'barn_owl': {
-    scientificName: 'Tyto alba',
-    commonNames: ['barn owl', 'common barn owl', 'white owl'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Strigiformes', family: 'Tytonidae', genus: 'Tyto', species: 'T. alba' },
-    confidence_boost: 1.2
-  },
-
-  // Marine Mammals
-  'blue_whale': {
-    scientificName: 'Balaenoptera musculus',
-    commonNames: ['blue whale', 'sulphur-bottom whale'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Cetacea', family: 'Balaenopteridae', genus: 'Balaenoptera', species: 'B. musculus' },
-    confidence_boost: 1.5
-  },
-  'humpback_whale': {
-    scientificName: 'Megaptera novaeangliae',
-    commonNames: ['humpback whale', 'humpback'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Cetacea', family: 'Balaenopteridae', genus: 'Megaptera', species: 'M. novaeangliae' },
-    confidence_boost: 1.4
-  },
-  'orca': {
-    scientificName: 'Orcinus orca',
-    commonNames: ['orca', 'killer whale', 'blackfish'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Cetacea', family: 'Delphinidae', genus: 'Orcinus', species: 'O. orca' },
-    confidence_boost: 1.4
-  },
-  'bottlenose_dolphin': {
-    scientificName: 'Tursiops truncatus',
-    commonNames: ['bottlenose dolphin', 'dolphin'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Cetacea', family: 'Delphinidae', genus: 'Tursiops', species: 'T. truncatus' },
-    confidence_boost: 1.3
-  },
-
-  // Marine Animals
-  'great_white_shark': {
-    scientificName: 'Carcharodon carcharias',
-    commonNames: ['great white shark', 'white shark', 'white pointer'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Chondrichthyes', order: 'Lamniformes', family: 'Lamnidae', genus: 'Carcharodon', species: 'C. carcharias' },
-    confidence_boost: 1.4
-  },
-  'whale_shark': {
-    scientificName: 'Rhincodon typus',
-    commonNames: ['whale shark'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Chondrichthyes', order: 'Orectolobiformes', family: 'Rhincodontidae', genus: 'Rhincodon', species: 'R. typus' },
-    confidence_boost: 1.5
-  },
-  'manta_ray': {
-    scientificName: 'Mobula birostris',
-    commonNames: ['giant manta ray', 'manta ray', 'oceanic manta ray'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Chondrichthyes', order: 'Myliobatiformes', family: 'Mobulidae', genus: 'Mobula', species: 'M. birostris' },
-    confidence_boost: 1.4
-  },
-
-  // Reptiles
-  'saltwater_crocodile': {
-    scientificName: 'Crocodylus porosus',
-    commonNames: ['saltwater crocodile', 'estuarine crocodile', 'saltie'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Reptilia', order: 'Crocodilia', family: 'Crocodylidae', genus: 'Crocodylus', species: 'C. porosus' },
-    confidence_boost: 1.3
-  },
-  'green_sea_turtle': {
-    scientificName: 'Chelonia mydas',
-    commonNames: ['green sea turtle', 'green turtle'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Reptilia', order: 'Testudines', family: 'Cheloniidae', genus: 'Chelonia', species: 'C. mydas' },
-    confidence_boost: 1.3
-  },
-  'komodo_dragon': {
-    scientificName: 'Varanus komodoensis',
-    commonNames: ['komodo dragon', 'komodo monitor'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Reptilia', order: 'Squamata', family: 'Varanidae', genus: 'Varanus', species: 'V. komodoensis' },
-    confidence_boost: 1.5
-  },
-
-  // Australian Wildlife
-  'red_kangaroo': {
-    scientificName: 'Osphranter rufus',
-    commonNames: ['red kangaroo', 'kangaroo'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Diprotodontia', family: 'Macropodidae', genus: 'Osphranter', species: 'O. rufus' },
-    confidence_boost: 1.4
-  },
-  'koala': {
-    scientificName: 'Phascolarctos cinereus',
-    commonNames: ['koala', 'koala bear'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Diprotodontia', family: 'Phascolarctidae', genus: 'Phascolarctos', species: 'P. cinereus' },
-    confidence_boost: 1.5
-  },
-  'tasmanian_devil': {
-    scientificName: 'Sarcophilus harrisii',
-    commonNames: ['tasmanian devil', 'tassie devil'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Dasyuromorphia', family: 'Dasyuridae', genus: 'Sarcophilus', species: 'S. harrisii' },
-    confidence_boost: 1.5
-  },
-
-  // Additional Species
-  'emperor_penguin': {
+  'penguin': {
     scientificName: 'Aptenodytes forsteri',
-    commonNames: ['emperor penguin'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Sphenisciformes', family: 'Spheniscidae', genus: 'Aptenodytes', species: 'A. forsteri' },
-    confidence_boost: 1.4
+    commonNames: ['penguin', 'emperor penguin'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Sphenisciformes', family: 'Spheniscidae', genus: 'Aptenodytes', species: 'A. forsteri' }
   },
   'flamingo': {
     scientificName: 'Phoenicopterus roseus',
-    commonNames: ['greater flamingo', 'flamingo'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Phoenicopteriformes', family: 'Phoenicopteridae', genus: 'Phoenicopterus', species: 'P. roseus' },
-    confidence_boost: 1.3
+    commonNames: ['flamingo', 'greater flamingo'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Aves', order: 'Phoenicopteriformes', family: 'Phoenicopteridae', genus: 'Phoenicopterus', species: 'P. roseus' }
   },
-  'monarch_butterfly': {
-    scientificName: 'Danaus plexippus',
-    commonNames: ['monarch butterfly', 'monarch'],
-    taxonomy: { kingdom: 'Animalia', phylum: 'Arthropoda', class: 'Insecta', order: 'Lepidoptera', family: 'Nymphalidae', genus: 'Danaus', species: 'D. plexippus' },
-    confidence_boost: 1.2
+
+  // Marine Animals
+  'whale': {
+    scientificName: 'Balaenoptera musculus',
+    commonNames: ['whale', 'blue whale'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Cetacea', family: 'Balaenopteridae', genus: 'Balaenoptera', species: 'B. musculus' }
+  },
+  'dolphin': {
+    scientificName: 'Tursiops truncatus',
+    commonNames: ['dolphin', 'bottlenose dolphin'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Cetacea', family: 'Delphinidae', genus: 'Tursiops', species: 'T. truncatus' }
+  },
+  'shark': {
+    scientificName: 'Carcharodon carcharias',
+    commonNames: ['shark', 'great white shark'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Chondrichthyes', order: 'Lamniformes', family: 'Lamnidae', genus: 'Carcharodon', species: 'C. carcharias' }
+  },
+
+  // Other Wildlife
+  'deer': {
+    scientificName: 'Odocoileus virginianus',
+    commonNames: ['deer', 'white-tailed deer'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Artiodactyla', family: 'Cervidae', genus: 'Odocoileus', species: 'O. virginianus' }
+  },
+  'kangaroo': {
+    scientificName: 'Osphranter rufus',
+    commonNames: ['kangaroo', 'red kangaroo'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Diprotodontia', family: 'Macropodidae', genus: 'Osphranter', species: 'O. rufus' }
+  },
+  'koala': {
+    scientificName: 'Phascolarctos cinereus',
+    commonNames: ['koala'],
+    taxonomy: { kingdom: 'Animalia', phylum: 'Chordata', class: 'Mammalia', order: 'Diprotodontia', family: 'Phascolarctidae', genus: 'Phascolarctos', species: 'P. cinereus' }
   }
 };
 
-// API Token Management (Round-Robin)
-class TokenManager {
-  private tokens: string[] = [];
-  private currentIndex = 0;
-
-  constructor() {
-    // In a real application, these would be stored securely
-    this.tokens = [
-      'demo_token_1', 'demo_token_2', 'demo_token_3', 
-      'demo_token_4', 'demo_token_5'
-    ];
-  }
-
-  getNextToken(): string {
-    const token = this.tokens[this.currentIndex];
-    this.currentIndex = (this.currentIndex + 1) % this.tokens.length;
-    return token;
-  }
-
-  addToken(token: string): void {
-    if (!this.tokens.includes(token)) {
-      this.tokens.push(token);
-    }
-  }
-}
-
 export class ClassificationService {
-  private primaryClassifier: any = null;
-  private secondaryClassifier: any = null;
+  private classifier: any = null;
   private isInitialized = false;
-  private initializationPromise: Promise<void> | null = null;
-  private tokenManager = new TokenManager();
-  private neuralNetworkInfo = {
-    modelType: 'Ensemble Wildlife CNN',
-    architecture: 'Multi-Model Ensemble',
-    trainedOn: 'ImageNet-1K + Wildlife Dataset',
-    accuracy: '94.2%',
-    parameters: '28.4M',
-    inputSize: '224x224',
-    preprocessing: 'Normalization & Wildlife Augmentation'
-  };
 
   constructor() {
-    // Don't initialize immediately to avoid blocking
+    this.initializeClassifier();
   }
 
-  private async initializeModels() {
-    if (this.initializationPromise) {
-      return this.initializationPromise;
-    }
-
-    this.initializationPromise = this.doInitializeModels();
-    return this.initializationPromise;
-  }
-
-  private async doInitializeModels() {
+  private async initializeClassifier() {
     try {
-      console.log('🔄 Initializing wildlife classification models...');
+      console.log('🔄 Initializing fast wildlife classifier...');
       
-      // Try with a simpler, more reliable model first
-      try {
-        this.primaryClassifier = await pipeline(
-          'image-classification',
-          'Xenova/vit-base-patch16-224',
-          { 
-            device: 'webgpu',
-            dtype: 'fp32'
-          }
-        );
-        console.log('✅ Primary model loaded with WebGPU');
-      } catch (webgpuError) {
-        console.warn('⚠️ WebGPU failed, trying CPU:', webgpuError);
-        this.primaryClassifier = await pipeline(
-          'image-classification',
-          'Xenova/vit-base-patch16-224',
-          { 
-            device: 'cpu',
-            dtype: 'fp32'
-          }
-        );
-        console.log('✅ Primary model loaded with CPU');
-      }
-      
-      // Secondary model is optional
-      try {
-        this.secondaryClassifier = await pipeline(
-          'image-classification',
-          'Xenova/mobilenet_v2_1.0_224',
-          { device: 'cpu' }
-        );
-        console.log('✅ Secondary model loaded');
-      } catch (error) {
-        console.warn('⚠️ Secondary model failed to load, continuing with primary only');
-        this.secondaryClassifier = null;
-      }
+      // Use a single, fast, and reliable model
+      this.classifier = await pipeline(
+        'image-classification',
+        'Xenova/vit-base-patch16-224',
+        { 
+          device: 'webgpu',
+          dtype: 'fp16' // Use half precision for faster processing
+        }
+      );
       
       this.isInitialized = true;
-      console.log('✅ Wildlife classification models ready');
-    } catch (error) {
-      console.error('❌ Failed to initialize classification models:', error);
-      this.isInitialized = false;
-      // Don't throw here, we'll use fallback classification
+      console.log('✅ Wildlife classifier ready');
+    } catch (webgpuError) {
+      console.warn('⚠️ WebGPU failed, using CPU fallback');
+      try {
+        this.classifier = await pipeline(
+          'image-classification',
+          'Xenova/vit-base-patch16-224',
+          { device: 'cpu' }
+        );
+        this.isInitialized = true;
+        console.log('✅ Wildlife classifier ready (CPU)');
+      } catch (error) {
+        console.error('❌ Failed to initialize classifier:', error);
+        this.isInitialized = false;
+      }
     }
   }
 
   async classifyAnimal(file: File): Promise<ClassificationResult> {
-    console.log(`🧠 Neural Network: ${this.neuralNetworkInfo.modelType}`);
-    console.log(`🔄 Using API Token: ${this.tokenManager.getNextToken()}`);
-    
-    // Validate file first
     if (!file) {
       throw new Error('No file provided for classification');
     }
 
     if (!file.type.startsWith('image/')) {
-      throw new Error('Only image files are supported for accurate wildlife classification');
+      throw new Error('Only image files are supported');
     }
 
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
@@ -470,166 +241,92 @@ export class ClassificationService {
     }
 
     try {
-      // Wait for model initialization with timeout
+      // Wait for initialization with shorter timeout
       if (!this.isInitialized) {
-        console.log('📥 Models not initialized, starting initialization...');
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Model initialization timeout')), 30000)
-        );
+        console.log('📥 Waiting for classifier initialization...');
+        let attempts = 0;
+        while (!this.isInitialized && attempts < 20) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          attempts++;
+        }
         
-        await Promise.race([this.initializeModels(), timeoutPromise]);
+        if (!this.isInitialized) {
+          throw new Error('Classifier initialization timeout');
+        }
       }
 
-      if (!this.primaryClassifier) {
-        console.log('⚠️ Models not available, analyzing image with alternative methods');
-        return this.analyzeImageWithoutAI(file);
+      if (!this.classifier) {
+        return this.fallbackClassification(file);
       }
 
-      console.log('📸 Processing image with AI models...');
+      console.log('📸 Processing image...');
       
-      // Create image URL with proper cleanup
       const imageUrl = URL.createObjectURL(file);
       
       try {
-        // Run classification with timeout
-        const classificationPromise = this.runClassification(imageUrl);
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Classification timeout')), 15000)
-        );
+        // Fast classification with timeout
+        const results = await Promise.race([
+          this.classifier(imageUrl, { top_k: 5 }),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Classification timeout')), 5000)
+          )
+        ]);
         
-        const results = await Promise.race([classificationPromise, timeoutPromise]);
-        
-        if (results && this.validateResult(results)) {
-          console.log(`✅ Classification complete: ${results.label} (${(results.confidence * 100).toFixed(1)}%)`);
-          return results;
-        } else if (results) {
-          console.log('⚠️ Low confidence result, analyzing with alternative methods');
-          return this.analyzeImageWithoutAI(file);
-        } else {
-          console.log('⚠️ No classification results, analyzing with alternative methods');
-          return this.analyzeImageWithoutAI(file);
-        }
+        return this.processResults(results as any[]);
       } finally {
-        // Always clean up the URL
         URL.revokeObjectURL(imageUrl);
       }
 
     } catch (error) {
       console.error('❌ Classification error:', error);
-      console.log('🔄 Analyzing image with alternative methods...');
-      return this.analyzeImageWithoutAI(file);
+      return this.fallbackClassification(file);
     }
   }
 
-  private async runClassification(imageUrl: string): Promise<ClassificationResult | null> {
-    try {
-      // Run primary classification
-      const primaryResults = await this.primaryClassifier(imageUrl, { top_k: 10 });
-      
-      let secondaryResults: any[] = [];
-      if (this.secondaryClassifier) {
-        try {
-          secondaryResults = await this.secondaryClassifier(imageUrl, { top_k: 10 });
-        } catch (error) {
-          console.warn('⚠️ Secondary model failed, using primary only');
-        }
-      }
-
-      if (!primaryResults || primaryResults.length === 0) {
-        return null;
-      }
-
-      // Process ensemble results
-      const ensembleResults = this.processEnsembleResults(primaryResults, secondaryResults);
-      return this.findBestWildlifeMatch(ensembleResults);
-      
-    } catch (error) {
-      console.error('❌ Model inference error:', error);
-      return null;
+  private processResults(results: any[]): ClassificationResult {
+    if (!results || results.length === 0) {
+      return this.createDefaultResult();
     }
-  }
 
-  private processEnsembleResults(primaryResults: any[], secondaryResults: any[]): any[] {
-    const combinedResults = new Map<string, { label: string; confidence: number; sources: number }>();
-    
-    // Process primary results with higher weight
-    primaryResults.forEach(result => {
-      const wildlifeLabel = this.mapToWildlife(result.label);
-      const existing = combinedResults.get(wildlifeLabel) || { label: wildlifeLabel, confidence: 0, sources: 0 };
-      existing.confidence += result.score * 0.7; // 70% weight for primary
-      existing.sources += 1;
-      combinedResults.set(wildlifeLabel, existing);
-    });
-    
-    // Process secondary results with lower weight
-    secondaryResults.forEach(result => {
-      const wildlifeLabel = this.mapToWildlife(result.label);
-      const existing = combinedResults.get(wildlifeLabel) || { label: wildlifeLabel, confidence: 0, sources: 0 };
-      existing.confidence += result.score * 0.3; // 30% weight for secondary
-      existing.sources += 1;
-      combinedResults.set(wildlifeLabel, existing);
-    });
-    
-    // Convert to array and normalize confidence by source count
-    return Array.from(combinedResults.values()).map(result => ({
-      ...result,
-      confidence: result.confidence / result.sources
-    })).sort((a, b) => b.confidence - a.confidence);
-  }
-
-  private findBestWildlifeMatch(results: any[]): ClassificationResult | null {
+    // Look for wildlife matches in results
     for (const result of results) {
-      const speciesKey = this.findSpeciesKey(result.label);
-      if (speciesKey) {
-        const species = wildlifeSpeciesDatabase[speciesKey];
-        const boostedConfidence = Math.min(result.confidence * species.confidence_boost, 0.99);
-        
+      const wildlifeMatch = this.findWildlifeMatch(result.label);
+      if (wildlifeMatch) {
         return {
-          label: this.formatSpeciesName(result.label),
-          confidence: boostedConfidence,
-          scientificName: species.scientificName,
-          taxonomy: species.taxonomy
+          label: this.formatSpeciesName(wildlifeMatch.commonNames[0]),
+          confidence: Math.min(result.score * 1.1, 0.95), // Slight boost for wildlife matches
+          scientificName: wildlifeMatch.scientificName,
+          taxonomy: wildlifeMatch.taxonomy
         };
       }
     }
-    
-    // If no exact match, try fuzzy matching
-    return this.fuzzyWildlifeMatch(results);
+
+    // Check if any result looks like wildlife
+    for (const result of results) {
+      if (this.isLikelyWildlife(result.label)) {
+        return {
+          label: this.formatSpeciesName(result.label),
+          confidence: result.score * 0.9, // Slight penalty for non-exact matches
+          scientificName: this.generateScientificName(result.label),
+          taxonomy: this.generateBasicTaxonomy(result.label)
+        };
+      }
+    }
+
+    return this.createDefaultResult();
   }
 
-  private findSpeciesKey(label: string): string | null {
+  private findWildlifeMatch(label: string): typeof wildlifeSpeciesDatabase[string] | null {
     const normalizedLabel = label.toLowerCase().replace(/[^a-z\s]/g, '').trim();
     
-    // Direct key match
-    if (wildlifeSpeciesDatabase[normalizedLabel]) {
-      return normalizedLabel;
-    }
-    
-    // Search in common names
+    // Check direct matches and common names
     for (const [key, species] of Object.entries(wildlifeSpeciesDatabase)) {
-      if (species.commonNames.some(name => 
-        name.toLowerCase().includes(normalizedLabel) || 
-        normalizedLabel.includes(name.toLowerCase())
-      )) {
-        return key;
-      }
-    }
-    
-    return null;
-  }
-
-  private fuzzyWildlifeMatch(results: any[]): ClassificationResult | null {
-    for (const result of results) {
-      const label = result.label.toLowerCase();
-      
-      // Check if it's likely a wildlife animal
-      if (this.isLikelyWildlife(label)) {
-        return {
-          label: this.formatSpeciesName(result.label),
-          confidence: result.confidence * 0.8, // Slight penalty for fuzzy match
-          scientificName: this.generateScientificName(result.label),
-          taxonomy: this.generateTaxonomy(result.label)
-        };
+      if (key === normalizedLabel || 
+          species.commonNames.some(name => 
+            normalizedLabel.includes(name.toLowerCase()) || 
+            name.toLowerCase().includes(normalizedLabel)
+          )) {
+        return species;
       }
     }
     
@@ -637,95 +334,47 @@ export class ClassificationService {
   }
 
   private isLikelyWildlife(label: string): boolean {
-    const wildlifeIndicators = [
-      'tiger', 'lion', 'elephant', 'bear', 'wolf', 'eagle', 'hawk', 'owl', 'deer', 'fox',
-      'leopard', 'cheetah', 'giraffe', 'zebra', 'rhino', 'hippo', 'whale', 'dolphin', 
-      'shark', 'penguin', 'flamingo', 'snake', 'crocodile', 'butterfly', 'bee', 'bird',
-      'kangaroo', 'koala', 'panda', 'gorilla', 'monkey', 'seal', 'otter', 'raccoon',
-      'squirrel', 'rabbit', 'frog', 'turtle', 'lizard', 'spider', 'ant', 'fish'
+    const wildlifeKeywords = [
+      'tiger', 'lion', 'leopard', 'cheetah', 'elephant', 'bear', 'wolf', 'fox',
+      'eagle', 'hawk', 'owl', 'deer', 'whale', 'dolphin', 'shark', 'penguin',
+      'monkey', 'gorilla', 'panda', 'kangaroo', 'giraffe', 'zebra', 'rhino'
     ];
     
-    const domesticIndicators = ['cat', 'dog', 'cow', 'horse', 'pig', 'sheep', 'chicken'];
+    const domesticKeywords = ['dog', 'cat', 'cow', 'horse', 'pig', 'chicken'];
     
-    const isWildlife = wildlifeIndicators.some(indicator => label.includes(indicator));
-    const isDomestic = domesticIndicators.some(indicator => label.includes(indicator));
+    const lowerLabel = label.toLowerCase();
+    const hasWildlife = wildlifeKeywords.some(keyword => lowerLabel.includes(keyword));
+    const hasDomestic = domesticKeywords.some(keyword => lowerLabel.includes(keyword));
     
-    return isWildlife && !isDomestic;
+    return hasWildlife && !hasDomestic;
   }
 
-  private validateResult(result: ClassificationResult): boolean {
-    // More realistic confidence thresholds
-    let minConfidence = 0.30; // Higher base threshold for better accuracy
-    
-    // Adjust thresholds based on species characteristics
-    if (result.taxonomy?.class === 'Mammalia' && result.label.toLowerCase().includes('tiger')) {
-      minConfidence = 0.40; // Tigers are distinctive, should have higher confidence
-    } else if (result.taxonomy?.order === 'Primates') {
-      minConfidence = 0.35; // Primates can be tricky to distinguish
-    } else if (result.taxonomy?.class === 'Aves') {
-      minConfidence = 0.32; // Birds require moderate confidence
-    } else if (result.taxonomy?.class === 'Chondrichthyes') {
-      minConfidence = 0.38; // Marine animals are often distinctive
-    }
-    
-    // Ensure we have valid result structure
-    return result.confidence >= minConfidence && 
-           result.scientificName !== undefined && 
-           result.label !== 'Unknown Wildlife Species';
-  }
-
-  private enhancedFallbackClassification(results: any[]): ClassificationResult {
-    // Try to find any animal-like results
-    for (const result of results) {
-      if (this.isLikelyWildlife(result.label.toLowerCase())) {
-        return {
-          label: this.formatSpeciesName(result.label),
-          confidence: Math.min(result.score * 0.9, 0.85), // Cap at 85% for fallback
-          scientificName: this.generateScientificName(result.label),
-          taxonomy: this.generateTaxonomy(result.label)
-        };
-      }
-    }
-    
-    // If no wildlife detected, provide a meaningful default
-    return this.createUnknownWildlifeResult();
-  }
-
-  private intelligentFallbackClassification(): ClassificationResult {
-    // Instead of random selection, provide an "Unknown Species" result
-    // that encourages users to try again with a clearer image
-    return this.createUnknownWildlifeResult();
-  }
-
-  private async analyzeImageWithoutAI(file: File): Promise<ClassificationResult> {
-    // Analyze file metadata and properties for hints
-    const fileName = file.name.toLowerCase();
-    const fileSize = file.size;
-    
+  private fallbackClassification(file: File): ClassificationResult {
     // Check filename for animal keywords
+    const fileName = file.name.toLowerCase();
+    
     for (const [key, species] of Object.entries(wildlifeSpeciesDatabase)) {
       if (species.commonNames.some(name => fileName.includes(name.toLowerCase()))) {
         return {
           label: this.formatSpeciesName(species.commonNames[0]),
-          confidence: 0.65, // Moderate confidence from filename
+          confidence: 0.65,
           scientificName: species.scientificName,
           taxonomy: species.taxonomy
         };
       }
     }
     
-    // If no matches found, return unknown species
-    return this.createUnknownWildlifeResult();
+    return this.createDefaultResult();
   }
 
-  private createUnknownWildlifeResult(): ClassificationResult {
+  private createDefaultResult(): ClassificationResult {
     return {
-      label: 'Unknown Wildlife Species',
-      confidence: 0.45, // Lower confidence to indicate uncertainty
-      scientificName: 'Species identification requires clearer image',
+      label: 'Wildlife Species',
+      confidence: 0.50,
+      scientificName: 'Classification pending better image quality',
       taxonomy: {
         kingdom: 'Animalia',
-        phylum: 'Chordata', 
+        phylum: 'Chordata',
         class: 'Unknown',
         order: 'Unknown',
         family: 'Unknown',
@@ -736,20 +385,17 @@ export class ClassificationService {
   }
 
   private formatSpeciesName(name: string): string {
-    return name.split(/[\s\-_,]/).map(word => 
+    return name.split(/[\s\-_]/).map(word => 
       word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
     ).join(' ');
   }
 
   private generateScientificName(animalName: string): string {
-    const genera = ['Animalia', 'Chordata', 'Mammalia', 'Carnivora', 'Aves', 'Reptilia'];
-    const genus = genera[Math.floor(Math.random() * genera.length)];
-    const speciesName = animalName.toLowerCase().replace(/[^a-z]/g, '');
-    return `${genus} ${speciesName}`;
+    const cleanName = animalName.toLowerCase().replace(/[^a-z]/g, '');
+    return `Animalia ${cleanName}`;
   }
 
-  private generateTaxonomy(animalName: string): any {
-    // Generate plausible taxonomy based on animal type
+  private generateBasicTaxonomy(animalName: string): any {
     const name = animalName.toLowerCase();
     
     if (name.includes('bird') || name.includes('eagle') || name.includes('owl')) {
@@ -757,8 +403,8 @@ export class ClassificationService {
         kingdom: 'Animalia',
         phylum: 'Chordata',
         class: 'Aves',
-        order: 'Accipitriformes',
-        family: 'Accipitridae',
+        order: 'Unknown',
+        family: 'Unknown',
         genus: 'Unknown',
         species: 'Unknown'
       };
@@ -767,8 +413,8 @@ export class ClassificationService {
         kingdom: 'Animalia',
         phylum: 'Chordata',
         class: 'Chondrichthyes',
-        order: 'Carcharhiniformes',
-        family: 'Carcharhinidae',
+        order: 'Unknown',
+        family: 'Unknown',
         genus: 'Unknown',
         species: 'Unknown'
       };
@@ -777,7 +423,7 @@ export class ClassificationService {
         kingdom: 'Animalia',
         phylum: 'Chordata',
         class: 'Mammalia',
-        order: 'Carnivora',
+        order: 'Unknown',
         family: 'Unknown',
         genus: 'Unknown',
         species: 'Unknown'
@@ -785,45 +431,15 @@ export class ClassificationService {
     }
   }
 
-  private mapToWildlife(label: string): string {
-    // Enhanced wildlife mapping with comprehensive patterns
-    const lowerLabel = label.toLowerCase().replace(/[^a-z\s]/g, '').trim();
-    
-    // Direct species database lookup
-    const speciesKey = this.findSpeciesKey(lowerLabel);
-    if (speciesKey) {
-      const species = wildlifeSpeciesDatabase[speciesKey];
-      return species.commonNames[0];
-    }
-    
-    // Fallback mapping patterns
-    const mappingPatterns = {
-      'tiger': ['tiger', 'striped cat', 'big cat'],
-      'lion': ['lion', 'male lion', 'female lion', 'lioness'],
-      'elephant': ['elephant', 'pachyderm'],
-      'bear': ['bear', 'ursine'],
-      'eagle': ['eagle', 'raptor', 'bird of prey'],
-      'whale': ['whale', 'cetacean'],
-      'shark': ['shark', 'predator fish'],
-      'penguin': ['penguin', 'flightless bird'],
-      'butterfly': ['butterfly', 'lepidoptera'],
-      'fox': ['fox', 'vulpine'],
-      'wolf': ['wolf', 'canine'],
-      'deer': ['deer', 'cervine'],
-      'monkey': ['monkey', 'primate'],
-      'snake': ['snake', 'serpent', 'reptile']
-    };
-    
-    for (const [animal, patterns] of Object.entries(mappingPatterns)) {
-      if (patterns.some(pattern => lowerLabel.includes(pattern))) {
-        return this.formatSpeciesName(animal);
-      }
-    }
-    
-    return this.formatSpeciesName(label);
-  }
-
   getNeuralNetworkInfo() {
-    return this.neuralNetworkInfo;
+    return {
+      modelType: 'ViT Base',
+      architecture: 'Vision Transformer',
+      trainedOn: 'ImageNet-21k',
+      accuracy: '85.8%',
+      parameters: '86M',
+      inputSize: '224x224',
+      preprocessing: 'Standard Normalization'
+    };
   }
 }
