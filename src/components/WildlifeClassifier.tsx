@@ -19,7 +19,8 @@ import {
   BarChart3,
   Shield,
   Globe,
-  ExternalLink
+  ExternalLink,
+  RotateCcw
 } from 'lucide-react';
 import { ClassificationService } from '@/lib/classificationService';
 import { AnimalInfoService } from '@/lib/animalInfoService';
@@ -33,6 +34,10 @@ import { AnimalSizeComparison } from '@/components/AnimalSizeComparison';
 import { WildlifePhotographyTips } from '@/components/WildlifePhotographyTips';
 import { EcoTourismRecommendations } from '@/components/EcoTourismRecommendations';
 import { AnimalSoundLibrary } from '@/components/AnimalSoundLibrary';
+import { ResearchDataExport } from '@/components/ResearchDataExport';
+import { BatchProcessing } from '@/components/BatchProcessing';
+import { CitizenSciencePortal } from '@/components/CitizenSciencePortal';
+import { WildlifeMonitoringDashboard } from '@/components/WildlifeMonitoringDashboard';
 
 interface ClassificationResult {
   label: string;
@@ -81,144 +86,20 @@ interface HabitatSuitability {
 }
 
 export const WildlifeClassifier: React.FC = () => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isClassifying, setIsClassifying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [classificationResult, setClassificationResult] = useState<ClassificationResult | null>(null);
   const [animalInfo, setAnimalInfo] = useState<AnimalInfo | null>(null);
   const [habitatSuitability, setHabitatSuitability] = useState<HabitatSuitability | null>(null);
-  const [activeTab, setActiveTab] = useState('upload');
-  const [showStatistics, setShowStatistics] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [showWebSearch, setShowWebSearch] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [showStatistics, setShowStatistics] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  
   const classificationService = new ClassificationService();
   const animalInfoService = new AnimalInfoService();
   const habitatAnalysisService = new HabitatAnalysisService();
-
-  const handleFileSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type - only images for better accuracy
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-    
-    if (!validImageTypes.includes(file.type)) {
-      toast.error('Please select a valid image file (JPG, PNG, WEBP)');
-      return;
-    }
-
-    setSelectedFile(file);
-    
-    // Create preview for images
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-
-    // Clear previous results
-    setClassificationResult(null);
-    setAnimalInfo(null);
-    setHabitatSuitability(null);
-    setActiveTab('upload');
-    
-    toast.success(`File selected: ${file.name}`);
-  }, []);
-
-  const handleClassify = useCallback(async () => {
-    if (!selectedFile) {
-      toast.error('Please select a file first');
-      return;
-    }
-
-    setIsClassifying(true);
-    setUploadProgress(0);
-    
-    try {
-      // Show progress for model loading
-      setUploadProgress(10);
-      toast.info('Initializing AI models...', { duration: 2000 });
-      
-      // Simulate upload progress
-      for (let i = 20; i <= 80; i += 20) {
-        setUploadProgress(i);
-        await new Promise(resolve => setTimeout(resolve, 150));
-      }
-
-      setUploadProgress(90);
-      toast.info('Processing image...', { duration: 2000 });
-
-      // Classify the animal
-      const result = await classificationService.classifyAnimal(selectedFile);
-      setClassificationResult(result);
-      
-      setUploadProgress(95);
-      
-      // Provide different feedback based on confidence level
-      if (result.confidence < 0.50) {
-        toast.warning(`Low confidence classification: ${result.label} (${(result.confidence * 100).toFixed(1)}%). Please try with a clearer image.`);
-      } else if (result.confidence < 0.70) {
-        toast.info(`Moderate confidence: ${result.label} (${(result.confidence * 100).toFixed(1)}%). Result may need verification.`);
-      } else {
-        toast.success(`High confidence classification: ${result.label} (${(result.confidence * 100).toFixed(1)}%)`);
-      }
-      
-      // Get animal information
-      const info = await animalInfoService.getAnimalInfo(result.label);
-      setAnimalInfo(info);
-      
-      // Analyze habitat suitability
-      const habitat = await habitatAnalysisService.analyzeHabitat(result.label);
-      setHabitatSuitability(habitat);
-      
-      setUploadProgress(100);
-      setActiveTab('results');
-      
-    } catch (error) {
-      console.error('Classification error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Classification failed. Please try again.';
-      
-      if (errorMessage.includes('timeout')) {
-        toast.error('Classification timed out. Please try with a smaller image or try again.');
-      } else if (errorMessage.includes('size')) {
-        toast.error('File too large. Please select an image smaller than 10MB.');
-      } else if (errorMessage.includes('format') || errorMessage.includes('type')) {
-        toast.error('Please select a valid image file (JPG, PNG, WEBP).');
-      } else {
-        toast.error(errorMessage);
-      }
-    } finally {
-      setIsClassifying(false);
-      setUploadProgress(0);
-    }
-  }, [selectedFile, classificationService, animalInfoService, habitatAnalysisService]);
-
-  const handleReset = useCallback(() => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    setClassificationResult(null);
-    setAnimalInfo(null);
-    setHabitatSuitability(null);
-    setActiveTab('upload');
-    setUploadProgress(0);
-    
-    if (fileInputRef.current) fileInputRef.current.value = '';
-    
-    toast.success('Reset completed');
-  }, []);
-
-  const handleImageUpload = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleWebImageSearch = () => {
-    // Open a new window with wildlife image search
-    const searchQuery = 'wildlife animals';
-    const searchUrl = `https://unsplash.com/s/photos/${encodeURIComponent(searchQuery)}`;
-    window.open(searchUrl, '_blank', 'width=1200,height=800');
-    toast.success('Wildlife image gallery opened in new tab');
-  };
 
   console.log('🔍 WildlifeClassifier Debug:', { 
     showIntro, 
@@ -233,541 +114,403 @@ export const WildlifeClassifier: React.FC = () => {
     return <VideoIntro onComplete={() => setShowIntro(false)} />;
   }
 
+  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file');
+      return;
+    }
+
+    if (file.size > 15 * 1024 * 1024) {
+      toast.error('Image too large. Please use an image smaller than 15MB');
+      return;
+    }
+
+    setSelectedFile(file);
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImage(imageUrl);
+    
+    // Reset previous results
+    setClassificationResult(null);
+    setAnimalInfo(null);
+    setHabitatSuitability(null);
+    
+    toast.success('Image uploaded successfully!');
+  }, []);
+
+  const handleClassification = useCallback(async () => {
+    if (!selectedFile) {
+      toast.error('Please select an image first');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      toast.info('🧠 Analyzing with advanced AI models...');
+      
+      // Classification
+      const result = await classificationService.classifyAnimal(selectedFile);
+      setClassificationResult(result);
+      
+      if (result.confidence < 0.60) {
+        toast.warning(`⚠️ Low confidence: ${result.label} (${(result.confidence * 100).toFixed(1)}%)`);
+      } else {
+        toast.success(`✅ Identified: ${result.label} (${(result.confidence * 100).toFixed(1)}%)`);
+      }
+      
+      // Get detailed info
+      const info = await animalInfoService.getAnimalInfo(result.label);
+      setAnimalInfo(info);
+      
+      // Habitat analysis
+      const habitat = await habitatAnalysisService.analyzeHabitat(result.label);
+      setHabitatSuitability(habitat);
+      
+    } catch (error) {
+      console.error('Classification error:', error);
+      toast.error('Classification failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedFile, classificationService, animalInfoService, habitatAnalysisService]);
+
+  const handleReset = useCallback(() => {
+    setSelectedFile(null);
+    setSelectedImage(null);
+    setClassificationResult(null);
+    setAnimalInfo(null);
+    setHabitatSuitability(null);
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    
+    toast.success('Reset completed');
+  }, []);
+
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-hero bg-clip-text text-transparent">
-          Wildlife Classification System
-        </h1>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Advanced neural network-powered system for identifying wildlife from images and audio. 
-          Get instant species identification, habitat analysis, and conservation information.
-        </p>
-      </div>
-
-      {/* Statistics Toggle */}
-      <div className="flex justify-center">
-        <Button 
-          variant="outline" 
-          onClick={() => setShowStatistics(!showStatistics)}
-          className="gap-2"
-        >
-          <BarChart3 className="w-4 h-4" />
-          {showStatistics ? 'Hide' : 'Show'} Statistics
-        </Button>
-      </div>
-
-      {/* Statistics Panel */}
-      {showStatistics && (
-        <div className="space-y-6">
-          <StatisticsPanel />
-          <TechnicalInfoPanel />
+    <div className="min-h-screen wildlife-background p-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-bold mb-4 text-white drop-shadow-lg">
+            🦁 Wildlife Classifier
+          </h1>
+          <p className="text-xl text-white/90 font-medium">
+            Advanced AI-powered wildlife identification system
+          </p>
         </div>
-      )}
 
-      {/* Main Content */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="upload" className="gap-2">
-            <Upload className="w-4 h-4" />
-            Upload
-          </TabsTrigger>
-          <TabsTrigger value="results" disabled={!classificationResult} className="gap-2">
-            <Eye className="w-4 h-4" />
-            Classification
-          </TabsTrigger>
-          <TabsTrigger value="habitat" disabled={!habitatSuitability} className="gap-2">
-            <MapPin className="w-4 h-4" />
-            Habitat Analysis
-          </TabsTrigger>
-          <TabsTrigger value="info" disabled={!animalInfo} className="gap-2">
-            <Info className="w-4 h-4" />
-            Species Info
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Upload Tab */}
-        <TabsContent value="upload" className="space-y-6">
-          <Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Upload Section */}
+          <Card className="wildlife-card p-8 rounded-2xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="w-5 h-5" />
-                Neural Network Classification
+              <CardTitle className="text-3xl text-center text-emerald-700 mb-2">
+                Upload Wildlife Image
               </CardTitle>
-              <CardDescription>
-                Upload an image or audio file to identify wildlife species using advanced AI
-              </CardDescription>
+              <p className="text-center text-gray-600">
+                Identify any wildlife species with AI precision
+              </p>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Upload Buttons */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button 
-                  variant="upload" 
-                  size="xl" 
-                  onClick={handleImageUpload}
-                  className="h-32 flex-col gap-3 shadow-nature hover:shadow-elegant transition-all"
-                >
-                  <Camera className="w-8 h-8" />
-                  <span className="text-lg font-semibold">Upload Image</span>
-                  <span className="text-sm opacity-80">JPG, PNG, WEBP</span>
-                </Button>
-                
-                <Button 
-                  variant="hero" 
-                  size="xl" 
-                  onClick={handleWebImageSearch}
-                  className="h-32 flex-col gap-3 shadow-glow hover:shadow-elegant transition-all"
-                >
-                  <Globe className="w-8 h-8" />
-                  <span className="text-lg font-semibold">Browse Wildlife Images</span>
-                  <span className="text-sm opacity-80">Curated Collection</span>
-                </Button>
+              <div className="text-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  ref={fileInputRef}
+                  disabled={isLoading}
+                />
+                <div className="space-y-4">
+                  <Button 
+                    variant="hero"
+                    size="xl"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isLoading}
+                    className="w-full text-lg py-6 rounded-xl"
+                  >
+                    <Upload className="w-6 h-6 mr-3" />
+                    Choose Image from Device
+                  </Button>
+                  
+                  <div className="flex items-center justify-center space-x-4">
+                    <div className="h-px bg-gray-300 flex-1"></div>
+                    <span className="text-sm text-gray-500 bg-white px-3 rounded-full">or</span>
+                    <div className="h-px bg-gray-300 flex-1"></div>
+                  </div>
+                  
+                  <Button 
+                    variant="upload"
+                    size="xl"
+                    onClick={() => window.open('https://unsplash.com/s/photos/wildlife', '_blank')}
+                    disabled={isLoading}
+                    className="w-full text-lg py-6 rounded-xl"
+                  >
+                    <Globe className="w-6 h-6 mr-3" />
+                    Search Wildlife Images Online
+                  </Button>
+                </div>
               </div>
 
-              {/* Hidden file input */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-
-              {/* Preview */}
-              {selectedFile && (
-                <Card className="bg-gradient-card">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="font-semibold">{selectedFile.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {selectedFile.type} • {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                        </p>
-                      </div>
-                      <Badge variant="secondary">Image File</Badge>
-                    </div>
-                    
-                    {previewUrl && (
-                      <div className="mb-4">
-                        <img 
-                          src={previewUrl} 
-                          alt="Preview" 
-                          className="w-full max-w-md mx-auto rounded-lg shadow-nature"
-                        />
-                      </div>
-                    )}
-
-                    {/* Upload Progress */}
-                    {isClassifying && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Processing...</span>
-                          <span>{uploadProgress}%</span>
-                        </div>
-                        <Progress value={uploadProgress} className="w-full" />
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-3 mt-4">
-                      <Button 
-                        variant="hero" 
-                        onClick={handleClassify} 
-                        disabled={isClassifying}
-                        className="flex-1 gap-2"
-                      >
-                        {isClassifying ? <LoadingSpinner /> : <Zap className="w-4 h-4" />}
-                        {isClassifying ? 'Classifying...' : 'Classify Wildlife'}
-                      </Button>
-                      <Button variant="outline" onClick={handleReset}>
-                        Reset
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+              {isLoading && (
+                <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                  <div className="flex items-center gap-3 mb-2">
+                    <LoadingSpinner />
+                    <span className="font-medium text-blue-800">Processing...</span>
+                  </div>
+                  <p className="text-sm text-blue-600">
+                    Using advanced AI models for accurate species identification
+                  </p>
+                </div>
               )}
             </CardContent>
           </Card>
-        </TabsContent>
 
-        {/* Results Tab */}
-        <TabsContent value="results" className="space-y-6">
-          {classificationResult && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Eye className="w-5 h-5" />
-                  Classification Results
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between p-4 bg-gradient-card rounded-lg">
-                  <div>
-                    <h3 className="text-2xl font-bold">{classificationResult.label}</h3>
-                    {classificationResult.scientificName && (
-                      <p className="text-muted-foreground italic text-lg">{classificationResult.scientificName}</p>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Confidence</p>
-                    <p className="text-3xl font-bold text-nature">
-                      {(classificationResult.confidence * 100).toFixed(1)}%
-                    </p>
+          {/* Results Section */}
+          <Card className="wildlife-card p-8 rounded-2xl">
+            {selectedImage ? (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <div className="relative inline-block">
+                    <img 
+                      src={selectedImage} 
+                      alt="Selected wildlife" 
+                      className="w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover border-4 border-white/50"
+                      style={{ maxHeight: '320px' }}
+                    />
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
                   </div>
                 </div>
                 
-                <div className="w-full">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>Classification Confidence</span>
-                    <span>{(classificationResult.confidence * 100).toFixed(1)}%</span>
-                  </div>
-                  <Progress value={classificationResult.confidence * 100} className="w-full" />
+                <div className="flex gap-4 justify-center">
+                  <Button 
+                    onClick={handleClassification}
+                    disabled={isLoading}
+                    variant="nature"
+                    size="xl"
+                    className="text-lg py-6 px-8 rounded-xl min-w-[140px]"
+                  >
+                    {isLoading ? (
+                      <LoadingSpinner />
+                    ) : (
+                      <>
+                        <Brain className="w-6 h-6 mr-3" />
+                        Classify
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    onClick={handleReset}
+                    variant="outline"
+                    size="xl"
+                    className="text-lg py-6 px-8 rounded-xl border-2 hover:bg-gray-50"
+                  >
+                    <RotateCcw className="w-6 h-6 mr-3" />
+                    Reset
+                  </Button>
                 </div>
-
-                {/* Enhanced Taxonomic Information */}
-                {classificationResult.taxonomy && (
-                  <Card className="bg-gradient-to-br from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-lg">
-                        <BarChart3 className="w-4 h-4" />
-                        Taxonomic Classification
-                      </CardTitle>
-                      <CardDescription>
-                        Complete scientific classification of this species
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        <div className="space-y-1">
-                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Kingdom</p>
-                          <p className="font-semibold">{classificationResult.taxonomy.kingdom}</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Phylum</p>
-                          <p className="font-semibold">{classificationResult.taxonomy.phylum}</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Class</p>
-                          <p className="font-semibold">{classificationResult.taxonomy.class}</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Order</p>
-                          <p className="font-semibold">{classificationResult.taxonomy.order}</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Family</p>
-                          <p className="font-semibold">{classificationResult.taxonomy.family}</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Genus</p>
-                          <p className="font-semibold">{classificationResult.taxonomy.genus}</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Species</p>
-                          <p className="font-semibold">{classificationResult.taxonomy.species}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Classification Quality Indicators */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Shield className="w-4 h-4 text-emerald-600" />
-                        <p className="font-semibold text-emerald-800 dark:text-emerald-200">Quality Score</p>
-                      </div>
-                      <p className="text-2xl font-bold text-emerald-600">
-                        {classificationResult.confidence > 0.8 ? 'Excellent' : 
-                         classificationResult.confidence > 0.6 ? 'Good' : 
-                         classificationResult.confidence > 0.4 ? 'Fair' : 'Low'}
-                      </p>
-                      <p className="text-sm text-emerald-700 dark:text-emerald-300">
-                        {classificationResult.confidence > 0.8 ? 'Highly reliable identification' : 
-                         classificationResult.confidence > 0.6 ? 'Reliable identification' : 
-                         classificationResult.confidence > 0.4 ? 'Moderate confidence' : 'Consider retaking photo'}
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Brain className="w-4 h-4 text-violet-600" />
-                        <p className="font-semibold text-violet-800 dark:text-violet-200">AI Analysis</p>
-                      </div>
-                      <p className="text-2xl font-bold text-violet-600">
-                        {classificationResult.taxonomy ? 'Enhanced' : 'Standard'}
-                      </p>
-                      <p className="text-sm text-violet-700 dark:text-violet-300">
-                        {classificationResult.taxonomy ? 'Complete taxonomic classification' : 'Basic species identification'}
-                      </p>
-                    </CardContent>
-                  </Card>
+              </div>
+            ) : (
+              <div className="text-center py-16 text-gray-400">
+                <div className="relative">
+                  <Camera className="w-20 h-20 mx-auto mb-6 opacity-30" />
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-20 h-20 border-4 border-emerald-200 rounded-full animate-ping"></div>
                 </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
+                <p className="text-xl font-medium text-gray-600 mb-2">No Image Selected</p>
+                <p className="text-gray-500">Upload an image to begin wildlife identification</p>
+              </div>
+            )}
+          </Card>
+        </div>
 
-        {/* Habitat Tab */}
-        <TabsContent value="habitat" className="space-y-6">
-          {habitatSuitability && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
-                  Habitat Suitability Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className={`p-4 rounded-lg border-2 ${
-                  habitatSuitability.suitable 
-                    ? 'bg-nature/10 border-nature' 
-                    : 'bg-destructive/10 border-destructive'
-                }`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-semibold">
-                      {habitatSuitability.suitable ? 'Suitable Habitat' : 'Unsuitable Habitat'}
-                    </h3>
-                    <Badge variant={habitatSuitability.suitable ? 'default' : 'destructive'}>
-                      {(habitatSuitability.confidence * 100).toFixed(0)}% Confidence
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Based on environmental factors and species requirements
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Climate Factors */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-lg">
-                        <Thermometer className="w-4 h-4" />
-                        Climate Requirements
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <p className="text-sm font-medium">Temperature</p>
-                        <p className="text-sm text-muted-foreground">{habitatSuitability.climate.temperature}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">Humidity</p>
-                        <p className="text-sm text-muted-foreground">{habitatSuitability.climate.humidity}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">Precipitation</p>
-                        <p className="text-sm text-muted-foreground">{habitatSuitability.climate.precipitation}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Geographic Factors */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-lg">
-                        <TreePine className="w-4 h-4" />
-                        Geographic Requirements
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <p className="text-sm font-medium">Elevation</p>
-                        <p className="text-sm text-muted-foreground">{habitatSuitability.geography.elevation}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">Terrain</p>
-                        <p className="text-sm text-muted-foreground">{habitatSuitability.geography.terrain}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">Biome</p>
-                        <p className="text-sm text-muted-foreground">{habitatSuitability.geography.biome}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Factors and Recommendations */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold mb-3">Key Factors</h4>
-                    <ul className="space-y-2">
-                      {habitatSuitability.factors.map((factor, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm">
-                          <Badge variant="outline" className="mt-0.5">•</Badge>
-                          {factor}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-3">Recommendations</h4>
-                    <ul className="space-y-2">
-                      {habitatSuitability.recommendations.map((rec, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm">
-                          <Badge variant="secondary" className="mt-0.5">→</Badge>
-                          {rec}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        {/* Species Info Tab - Enhanced with Premium Features */}
-        <TabsContent value="info" className="space-y-6">
-          {animalInfo && classificationResult && (
-            <div className="space-y-6">
-              {/* Main Species Information */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Info className="w-5 h-5" />
-                      Species Information
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <h3 className="font-semibold mb-2">Description</h3>
-                      <p className="text-sm text-muted-foreground">{animalInfo.description}</p>
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="font-medium text-sm">Diet</p>
-                        <p className="text-sm text-muted-foreground">{animalInfo.diet}</p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">Lifespan</p>
-                        <p className="text-sm text-muted-foreground">{animalInfo.lifespan}</p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">Size</p>
-                        <p className="text-sm text-muted-foreground">{animalInfo.size}</p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">Weight</p>
-                        <p className="text-sm text-muted-foreground">{animalInfo.weight}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="space-y-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Native Locations</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {animalInfo.nativeLocations.map((location, index) => (
-                          <Badge key={index} variant="outline">
-                            {location}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-destructive/20">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-lg text-destructive">
-                        <Shield className="w-4 h-4" />
-                        ⚠️ Dangerous Foods
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Foods toxic to {classificationResult.label}:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {animalInfo.dangerousFoods.map((food, index) => (
-                          <Badge key={index} variant="destructive">
-                            {food}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-4">
-                      <Button 
-                        variant="outline" 
-                        className="w-full gap-2"
-                        onClick={() => window.open(animalInfo.wikipediaUrl, '_blank')}
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        Learn More on Wikipedia
-                      </Button>
-                    </CardContent>
-                  </Card>
+        {/* Classification Results */}
+        {classificationResult && (
+          <div className="mt-8">
+            <Card className="species-card p-8 rounded-2xl">
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-bold text-emerald-800 mb-2">
+                  {classificationResult.label}
+                </h2>
+                <p className="text-lg text-emerald-600 italic">
+                  {classificationResult.scientificName}
+                </p>
+                <div className="flex justify-center mt-4">
+                  <Badge 
+                    variant={classificationResult.confidence > 0.8 ? "default" : 
+                             classificationResult.confidence > 0.6 ? "secondary" : "destructive"}
+                    className="text-sm px-4 py-2"
+                  >
+                    {(classificationResult.confidence * 100).toFixed(1)}% Confidence
+                  </Badge>
                 </div>
               </div>
 
-              {/* Premium Features Section */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Conservation Alerts */}
-                <ConservationAlerts 
-                  animalName={classificationResult.label}
-                  conservationStatus={animalInfo.conservationStatus}
-                />
+              {/* Enhanced Tabs for All Information */}
+              <Tabs defaultValue="details" className="w-full">
+                <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 gap-2">
+                  <TabsTrigger value="details">Details</TabsTrigger>
+                  <TabsTrigger value="habitat">Habitat</TabsTrigger>
+                  <TabsTrigger value="conservation">Conservation</TabsTrigger>
+                  <TabsTrigger value="size">Size</TabsTrigger>
+                  <TabsTrigger value="photography">Photography</TabsTrigger>
+                  <TabsTrigger value="tourism">Eco-Tourism</TabsTrigger>
+                  <TabsTrigger value="sounds">Sounds</TabsTrigger>
+                  <TabsTrigger value="research">Research</TabsTrigger>
+                </TabsList>
 
-                {/* Size Comparison */}
-                <AnimalSizeComparison 
-                  animalName={classificationResult.label}
-                  size={animalInfo.size}
-                  weight={animalInfo.weight}
-                />
-              </div>
+                <TabsContent value="details" className="mt-6">
+                  {animalInfo && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-emerald-700 mb-2">Description</h4>
+                          <p className="text-gray-700">{animalInfo.description}</p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-emerald-700 mb-2">Diet</h4>
+                          <p className="text-gray-700">{animalInfo.diet}</p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-emerald-700 mb-2">Conservation Status</h4>
+                          <Badge variant="outline" className="text-sm">
+                            {animalInfo.conservationStatus}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-emerald-700 mb-2">Physical Characteristics</h4>
+                          <p className="text-gray-700">Size: {animalInfo.size}</p>
+                          <p className="text-gray-700">Weight: {animalInfo.weight}</p>
+                          <p className="text-gray-700">Lifespan: {animalInfo.lifespan}</p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-emerald-700 mb-2">Interesting Facts</h4>
+                          <ul className="list-disc list-inside text-gray-700 space-y-1">
+                            {animalInfo.interestingFacts.map((fact, index) => (
+                              <li key={index} className="text-sm">{fact}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
 
-              {/* Wildlife Photography Tips */}
-              <WildlifePhotographyTips 
-                animalName={classificationResult.label}
-                habitat={animalInfo.habitat}
-              />
+                <TabsContent value="habitat" className="mt-6">
+                  {habitatSuitability && (
+                    <div className="space-y-6">
+                      <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-200">
+                        <h4 className="font-semibold text-emerald-800 mb-4">Habitat Analysis</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <h5 className="font-medium text-emerald-700 mb-2">Climate Requirements</h5>
+                            <p className="text-sm text-gray-700">Temperature: {habitatSuitability.climate.temperature}</p>
+                            <p className="text-sm text-gray-700">Humidity: {habitatSuitability.climate.humidity}</p>
+                            <p className="text-sm text-gray-700">Precipitation: {habitatSuitability.climate.precipitation}</p>
+                          </div>
+                          <div>
+                            <h5 className="font-medium text-emerald-700 mb-2">Geographic Features</h5>
+                            <p className="text-sm text-gray-700">Elevation: {habitatSuitability.geography.elevation}</p>
+                            <p className="text-sm text-gray-700">Terrain: {habitatSuitability.geography.terrain}</p>
+                            <p className="text-sm text-gray-700">Biome: {habitatSuitability.geography.biome}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
 
-              {/* Sound Library */}
-              <AnimalSoundLibrary animalName={classificationResult.label} />
+                <TabsContent value="conservation" className="mt-6">
+                  <ConservationAlerts 
+                    animalName={classificationResult.label} 
+                    conservationStatus={animalInfo?.conservationStatus || "Unknown"}
+                  />
+                </TabsContent>
 
-              {/* Eco-Tourism Recommendations */}
-              <EcoTourismRecommendations 
-                animalName={classificationResult.label}
-                nativeLocations={animalInfo.nativeLocations}
-              />
+                <TabsContent value="size" className="mt-6">
+                  <AnimalSizeComparison 
+                    animalName={classificationResult.label}
+                    size={animalInfo?.size || "Unknown"}
+                    weight={animalInfo?.weight || "Unknown"}
+                  />
+                </TabsContent>
 
-              {/* Interesting Facts */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Fascinating Facts</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {animalInfo.interestingFacts.map((fact, index) => (
-                      <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                        <span className="text-nature mt-1">•</span>
-                        {fact}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                <TabsContent value="photography" className="mt-6">
+                  <WildlifePhotographyTips 
+                    animalName={classificationResult.label} 
+                    habitat={animalInfo?.habitat || "Various habitats"} 
+                  />
+                </TabsContent>
+
+                <TabsContent value="tourism" className="mt-6">
+                  <EcoTourismRecommendations 
+                    animalName={classificationResult.label}
+                    nativeLocations={animalInfo?.nativeLocations || []}
+                  />
+                </TabsContent>
+
+                <TabsContent value="sounds" className="mt-6">
+                  <AnimalSoundLibrary animalName={classificationResult.label} />
+                </TabsContent>
+
+                <TabsContent value="research" className="mt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <ResearchDataExport classificationData={[classificationResult]} />
+                    <CitizenSciencePortal />
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </Card>
+          </div>
+        )}
+
+        {/* Additional Features */}
+        <div className="mt-8 space-y-6">
+          {/* Statistics and Technical Info */}
+          <div className="text-center">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowStatistics(!showStatistics)}
+              className="bg-white/90 backdrop-blur-sm"
+            >
+              <BarChart3 className="w-4 h-4 mr-2" />
+              {showStatistics ? 'Hide' : 'Show'} System Statistics
+            </Button>
+          </div>
+
+          {showStatistics && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <StatisticsPanel />
+              <TechnicalInfoPanel />
             </div>
           )}
-        </TabsContent>
-      </Tabs>
+
+          {/* Advanced Features */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="wildlife-card p-6 rounded-xl">
+              <CardHeader>
+                <CardTitle className="text-xl text-emerald-700">Batch Processing</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <BatchProcessing onBatchComplete={() => toast.success('Batch processing completed!')} />
+              </CardContent>
+            </Card>
+
+            <Card className="wildlife-card p-6 rounded-xl">
+              <CardHeader>
+                <CardTitle className="text-xl text-emerald-700">Wildlife Monitoring</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <WildlifeMonitoringDashboard />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
