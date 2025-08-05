@@ -25,6 +25,8 @@ import {
 import { ClassificationService } from '@/lib/classificationService';
 import { AnimalInfoService } from '@/lib/animalInfoService';
 import { HabitatAnalysisService } from '@/lib/habitatAnalysisService';
+import { ImageBrowser } from '@/components/ImageBrowser';
+import { SimilarAnimals } from '@/components/SimilarAnimals';
 import { StatisticsPanel } from '@/components/StatisticsPanel';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { VideoIntro } from '@/components/VideoIntro';
@@ -242,16 +244,14 @@ export const WildlifeClassifier: React.FC = () => {
                     <div className="h-px bg-gray-300 flex-1"></div>
                   </div>
                   
-                  <Button 
-                    variant="upload"
-                    size="xl"
-                    onClick={() => window.open('https://unsplash.com/s/photos/wildlife', '_blank')}
-                    disabled={isLoading}
-                    className="w-full text-lg py-6 rounded-xl"
-                  >
-                    <Globe className="w-6 h-6 mr-3" />
-                    Search Wildlife Images Online
-                  </Button>
+                  <ImageBrowser onImageSelect={(file) => {
+                    setSelectedFile(file);
+                    const imageUrl = URL.createObjectURL(file);
+                    setSelectedImage(imageUrl);
+                    setClassificationResult(null);
+                    setAnimalInfo(null);
+                    setHabitatSuitability(null);
+                  }} />
                 </div>
               </div>
 
@@ -474,6 +474,11 @@ export const WildlifeClassifier: React.FC = () => {
                 </TabsContent>
               </Tabs>
             </Card>
+            
+            {/* Similar Animals Section */}
+            <div className="mt-6">
+              <SimilarAnimals animalLabel={classificationResult.label} />
+            </div>
           </div>
         )}
 

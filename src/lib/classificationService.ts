@@ -1,4 +1,4 @@
-import { GoogleVisionService } from './googleVisionService';
+import { HuggingFaceService } from './huggingFaceService';
 
 interface ClassificationResult {
   label: string;
@@ -16,7 +16,7 @@ interface ClassificationResult {
 }
 
 export class ClassificationService {
-  private googleVisionService = new GoogleVisionService();
+  private huggingFaceService = new HuggingFaceService();
 
   async classifyAnimal(file: File): Promise<ClassificationResult> {
     if (!file || !file.type.startsWith('image/')) {
@@ -28,24 +28,9 @@ export class ClassificationService {
     }
 
     try {
-      console.log('🔍 Starting wildlife classification with Google Vision AI...');
+      console.log('🔍 Starting wildlife classification with Hugging Face Transformers...');
       
-      // Try Google Vision AI first
-      try {
-        const result = await this.googleVisionService.classifyWildlife(file);
-        
-        if (result.confidence >= 0.5) {
-          console.log(`✅ High confidence classification: ${result.label} (${(result.confidence * 100).toFixed(1)}%)`);
-          return result;
-        } else {
-          console.log('⚠️ Low confidence result from Google Vision AI');
-          return result;
-        }
-      } catch (apiError) {
-        console.warn('Google Vision API unavailable, using fallback:', apiError);
-        // Fall back to mock classification
-        return await this.googleVisionService.mockClassification(file);
-      }
+      return await this.huggingFaceService.classifyAnimal(file);
 
     } catch (error) {
       console.error('❌ Classification failed completely:', error);
@@ -61,22 +46,14 @@ export class ClassificationService {
 
   // Get model information for display
   getModelInfo() {
-    return {
-      modelType: 'Google Vision AI',
-      architecture: 'Advanced Computer Vision',
-      accuracy: '95%+ on wildlife datasets',
-      supportedSpecies: '10,000+ species',
-      features: [
-        'Real-time image analysis',
-        'High-accuracy species identification',
-        'Scientific name resolution',
-        'Confidence scoring',
-        'Fallback support'
-      ]
-    };
+    return this.huggingFaceService.getModelInfo();
   }
 
   getSupportedSpeciesCount(): number {
-    return 10000; // Google Vision AI supports thousands of species
+    return 1000; // Hugging Face models support 1000+ animal species
+  }
+
+  async getSimilarAnimals(animalLabel: string): Promise<string[]> {
+    return await this.huggingFaceService.getSimilarAnimals(animalLabel);
   }
 }
