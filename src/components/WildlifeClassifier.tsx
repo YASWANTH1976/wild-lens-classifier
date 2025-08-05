@@ -459,7 +459,16 @@ export const WildlifeClassifier: React.FC = () => {
 
                 <TabsContent value="research" className="mt-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ResearchDataExport classificationData={[classificationResult]} />
+                    <ResearchDataExport classificationData={classificationResult ? [{
+                      id: crypto.randomUUID(),
+                      timestamp: new Date(),
+                      species: classificationResult.label,
+                      confidence: classificationResult.confidence,
+                      scientificName: classificationResult.scientificName || 'Unknown',
+                      habitat: animalInfo?.habitat || 'Unknown',
+                      conservationStatus: animalInfo?.conservationStatus || 'Unknown',
+                      imageUrl: selectedImage || undefined
+                    }] : []} />
                     <CitizenSciencePortal />
                   </div>
                 </TabsContent>
