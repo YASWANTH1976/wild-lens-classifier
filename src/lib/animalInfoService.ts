@@ -203,6 +203,196 @@ const animalDatabase: Record<string, AnimalInfo> = {
       'Some butterflies have eye-spots on their wings to confuse predators',
       'They are cold-blooded and need warmth to fly'
     ]
+  },
+  'leopard': {
+    description: 'Leopards are solitary, adaptable big cats known for their spotted coat and incredible climbing abilities. They are excellent hunters that can adapt to various habitats.',
+    diet: 'Carnivore - antelopes, deer, wild boar, fish, and birds',
+    size: '1.0-1.9 meters (3.3-6.2 feet) in length',
+    weight: '28-90 kg (62-198 lbs)',
+    lifespan: '12-17 years in wild, up to 23 years in captivity',
+    conservationStatus: 'Near Threatened',
+    habitat: 'Rainforests, grasslands, mountains, and deserts across Africa and Asia',
+    nativeLocations: ['Sub-Saharan Africa', 'India', 'China', 'Southeast Asia', 'Russia', 'Central Asia'],
+    dangerousFoods: ['Chocolate', 'Onions', 'Garlic', 'Grapes', 'Processed meat', 'Dairy products', 'Human food'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Leopard',
+    interestingFacts: [
+      'Leopards can carry prey twice their body weight up into trees',
+      'They are excellent swimmers and climbers',
+      'Black panthers are actually leopards with melanism',
+      'Leopards have the largest distribution of any wild land animal except humans',
+      'They can leap 6 meters horizontally and 3 meters vertically'
+    ]
+  },
+  'cheetah': {
+    description: 'Cheetahs are the fastest land animals, built for speed with their lean body, long legs, and distinctive spotted coat. They hunt during the day using incredible acceleration.',
+    diet: 'Carnivore - gazelles, impalas, springboks, and other small antelopes',
+    size: '1.1-1.5 meters (3.6-4.9 feet) in length',
+    weight: '21-72 kg (46-159 lbs)',
+    lifespan: '8-12 years in wild, up to 17 years in captivity',
+    conservationStatus: 'Vulnerable',
+    habitat: 'African savannas, grasslands, and semi-desert regions',
+    nativeLocations: ['Eastern Africa', 'Southern Africa', 'Small population in Iran'],
+    dangerousFoods: ['Chocolate', 'Onions', 'Garlic', 'Grapes', 'Processed foods', 'Dairy products', 'Human food'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Cheetah',
+    interestingFacts: [
+      'Cheetahs can accelerate from 0 to 96 km/h (60 mph) in 3 seconds',
+      'They can only maintain top speed for 30 seconds before overheating',
+      'Cheetahs cannot roar - they chirp, purr, and meow like house cats',
+      'Their claws are semi-retractable, providing traction while running',
+      'They have distinctive "tear marks" from eyes to mouth'
+    ]
+  },
+  'rhinoceros': {
+    description: 'Rhinoceroses are large, thick-skinned herbivores known for their horns made of keratin. They are among the largest land mammals and play crucial roles in their ecosystems.',
+    diet: 'Herbivore - grasses, shoots, leaves, and fruits',
+    size: '2.5-4.0 meters (8.2-13.1 feet) in length',
+    weight: '800-2,300 kg (1,760-5,070 lbs)',
+    lifespan: '35-50 years in wild',
+    conservationStatus: 'Critically Endangered to Near Threatened (varies by species)',
+    habitat: 'Grasslands, savannas, tropical forests, and wetlands',
+    nativeLocations: ['Africa', 'India', 'Nepal', 'Indonesia', 'Malaysia'],
+    dangerousFoods: ['Processed foods', 'Chocolate', 'Human food', 'Toxic plants', 'Pesticides'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Rhinoceros',
+    interestingFacts: [
+      'Rhino horns are made of keratin, the same material as human fingernails',
+      'They can run up to 55 km/h (34 mph) despite their size',
+      'Rhinos have poor eyesight but excellent hearing and smell',
+      'They wallow in mud to protect their skin from sun and insects',
+      'A group of rhinos is called a crash'
+    ]
+  },
+  'hippopotamus': {
+    description: 'Hippos are large, semi-aquatic mammals that spend most of their day in water. Despite their docile appearance, they are among the most dangerous animals in Africa.',
+    diet: 'Herbivore - grasses (up to 35 kg per night)',
+    size: '2.9-5.05 meters (9.5-16.6 feet) in length',
+    weight: '1,300-4,000 kg (2,870-8,820 lbs)',
+    lifespan: '40-50 years in wild',
+    conservationStatus: 'Vulnerable',
+    habitat: 'Rivers, lakes, and wetlands in sub-Saharan Africa',
+    nativeLocations: ['Sub-Saharan Africa', 'Nile River region', 'East Africa', 'Southern Africa'],
+    dangerousFoods: ['Human food', 'Processed foods', 'Meat', 'Dairy products', 'Toxic aquatic plants'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Hippopotamus',
+    interestingFacts: [
+      'Hippos secrete a natural sunscreen that appears red',
+      'They can hold their breath underwater for up to 5 minutes',
+      'Baby hippos are born underwater and must swim to the surface to breathe',
+      'Hippos can run up to 48 km/h (30 mph) on land',
+      'They are responsible for more human deaths in Africa than most other animals'
+    ]
+  },
+  'penguin': {
+    description: 'Penguins are flightless seabirds adapted for life in the water. They are excellent swimmers with streamlined bodies and distinctive black and white coloring.',
+    diet: 'Carnivore - fish, krill, squid, and other marine organisms',
+    size: '30-120 cm (12-47 inches) in height',
+    weight: '1-45 kg (2.2-99 lbs) depending on species',
+    lifespan: '6-30 years depending on species',
+    conservationStatus: 'Varies by species (Least Concern to Endangered)',
+    habitat: 'Antarctic and sub-Antarctic regions, southern coasts',
+    nativeLocations: ['Antarctica', 'Argentina', 'Chile', 'South Africa', 'Australia', 'New Zealand'],
+    dangerousFoods: ['Human food', 'Bread', 'Processed foods', 'Plastic debris', 'Oil contamination'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Penguin',
+    interestingFacts: [
+      'Penguins can swim up to 35 km/h (22 mph)',
+      'They can dive up to 500 meters deep for food',
+      'Emperor penguins can hold their breath for over 20 minutes',
+      'They huddle together for warmth in temperatures as low as -40°C',
+      'Penguins have excellent underwater vision'
+    ]
+  },
+  'shark': {
+    description: 'Sharks are cartilaginous fish that have existed for over 400 million years. They are apex predators with keen senses and play crucial roles in marine ecosystems.',
+    diet: 'Carnivore - fish, seals, squid, and marine mammals',
+    size: '17 cm to 12 meters (6.7 inches to 39 feet) depending on species',
+    weight: '0.15-34,000 kg (0.33-75,000 lbs) depending on species',
+    lifespan: '20-150+ years depending on species',
+    conservationStatus: 'Varies by species (many are threatened)',
+    habitat: 'Oceans worldwide, from surface waters to deep sea',
+    nativeLocations: ['All oceans worldwide', 'Some freshwater systems'],
+    dangerousFoods: ['Plastic debris', 'Fishing lines', 'Chemical pollutants', 'Human interference'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Shark',
+    interestingFacts: [
+      'Sharks have been around longer than dinosaurs',
+      'They can detect electrical fields from other animals',
+      'Sharks never stop swimming - they need water flow over their gills',
+      'They can detect a drop of blood in 25 gallons of water',
+      'Some sharks can live for over 400 years'
+    ]
+  },
+  'monkey': {
+    description: 'Monkeys are intelligent primates with diverse species found in tropical regions. They are highly social animals with complex communication systems and tool use abilities.',
+    diet: 'Omnivore - fruits, leaves, insects, seeds, and occasionally small animals',
+    size: '12-100 cm (5-39 inches) in body length',
+    weight: '0.15-50 kg (0.33-110 lbs) depending on species',
+    lifespan: '10-50 years depending on species',
+    conservationStatus: 'Varies by species (many endangered)',
+    habitat: 'Tropical rainforests, savannas, and mountains',
+    nativeLocations: ['Central and South America', 'Africa', 'Asia'],
+    dangerousFoods: ['Chocolate', 'Onions', 'Garlic', 'Processed foods', 'Alcohol', 'Caffeine', 'Human food'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Monkey',
+    interestingFacts: [
+      'Some monkeys can use tools and solve complex problems',
+      'They have prehensile tails that act like a fifth hand',
+      'Monkeys show emotions and can form lifelong friendships',
+      'They have excellent color vision and depth perception',
+      'Some species have been observed teaching their young'
+    ]
+  },
+  'kangaroo': {
+    description: 'Kangaroos are large marsupials known for their powerful hind legs and hopping locomotion. They are iconic Australian animals with unique reproductive methods.',
+    diet: 'Herbivore - grasses, leaves, shoots, and fruits',
+    size: '0.6-1.6 meters (2-5.25 feet) in body length',
+    weight: '0.5-90 kg (1.1-198 lbs) depending on species',
+    lifespan: '12-25 years',
+    conservationStatus: 'Least Concern to Near Threatened (varies by species)',
+    habitat: 'Grasslands, forests, woodlands, and scrublands',
+    nativeLocations: ['Australia', 'Tasmania', 'New Guinea'],
+    dangerousFoods: ['Human food', 'Bread', 'Processed foods', 'Chocolate', 'Onions'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Kangaroo',
+    interestingFacts: [
+      'Kangaroos can hop at speeds up to 70 km/h (43 mph)',
+      'They cannot walk backward due to their leg structure',
+      'Baby kangaroos are only 2 cm long at birth',
+      'They can pause their pregnancy if environmental conditions are poor',
+      'Kangaroos are excellent swimmers'
+    ]
+  },
+  'koala': {
+    description: 'Koalas are arboreal marsupials known for their eucalyptus diet and sleepy nature. They spend most of their time in trees and are endemic to Australia.',
+    diet: 'Herbivore - eucalyptus leaves (almost exclusively)',
+    size: '60-85 cm (24-33 inches) in body length',
+    weight: '4-15 kg (9-33 lbs)',
+    lifespan: '12-18 years in wild',
+    conservationStatus: 'Vulnerable',
+    habitat: 'Eucalyptus forests and woodlands',
+    nativeLocations: ['Eastern and southeastern Australia'],
+    dangerousFoods: ['Human food', 'Non-eucalyptus plants', 'Processed foods', 'Bread', 'Dairy'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Koala',
+    interestingFacts: [
+      'Koalas sleep 18-22 hours per day',
+      'They rarely drink water - they get moisture from eucalyptus leaves',
+      'Baby koalas eat their mother\'s feces to obtain gut bacteria',
+      'They have fingerprints very similar to humans',
+      'Koalas can eat poisonous eucalyptus leaves that would kill other animals'
+    ]
+  },
+  'panda': {
+    description: 'Giant pandas are beloved bears known for their distinctive black and white coloring and bamboo diet. They are a conservation success story and symbol of wildlife protection.',
+    diet: 'Herbivore - bamboo (99% of diet), occasionally fish and small animals',
+    size: '1.2-1.9 meters (4-6 feet) in length',
+    weight: '70-120 kg (154-264 lbs)',
+    lifespan: '14-20 years in wild, up to 35 years in captivity',
+    conservationStatus: 'Vulnerable',
+    habitat: 'Bamboo forests in central China',
+    nativeLocations: ['Central China (Sichuan, Shaanxi, Gansu provinces)'],
+    dangerousFoods: ['Human food', 'Processed foods', 'Meat', 'Dairy', 'Non-bamboo plants'],
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Giant_panda',
+    interestingFacts: [
+      'Pandas spend 12-16 hours a day eating bamboo',
+      'They have a special "thumb" for gripping bamboo',
+      'Newborn pandas are pink, blind, and smaller than a mouse',
+      'Pandas can only digest about 17% of the bamboo they eat',
+      'They are excellent climbers despite their bulky appearance'
+    ]
   }
 };
 

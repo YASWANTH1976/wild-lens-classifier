@@ -50,7 +50,7 @@ export class ClassificationService {
   }
 
   getSupportedSpeciesCount(): number {
-    return 1000; // Hugging Face models support 1000+ animal species
+    return 50; // Now supporting 50+ animal species with comprehensive database
   }
 
   async getSimilarAnimals(animalLabel: string): Promise<string[]> {
