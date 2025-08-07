@@ -302,7 +302,7 @@ export const WildlifeRecognitionClassifier: React.FC = () => {
           <Separator className="my-4" />
           <div className="text-center">
             <Badge variant="secondary" className="text-sm">
-              Supported Wild Species: {wildlifeRecognitionService.getSupportedWildSpeciesCount()}+
+              Supported Wild Species: {wildlifeRecognitionService.getSupportedWildSpeciesCount()}+ (639+ Total)
             </Badge>
           </div>
         </CardContent>

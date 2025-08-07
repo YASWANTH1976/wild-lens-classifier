@@ -22,7 +22,7 @@ This is an expert wildlife recognition system that correctly classifies animals 
 
 ## Supported Wild Animals
 
-The system recognizes 100+ wild animal species including:
+The system recognizes 639+ wild animal species including:
 
 ### Big Cats
 - Bengal Tiger, African Lion, African Leopard, Cheetah, Jaguar, Eurasian Lynx, Cougar, Snow Leopard
@@ -96,7 +96,7 @@ The system correctly identifies domestic animals such as:
 - Returns only the required information based on the classification
 
 ### Database
-- Comprehensive database of 100+ wild animal species with common and scientific names
+- Comprehensive database of 639+ wild animal species with common and scientific names
 - Database of domestic animals for accurate classification
 
 ## Usage
