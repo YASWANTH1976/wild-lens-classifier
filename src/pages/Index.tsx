@@ -1,5 +1,5 @@
 import React from 'react';
-import { WildlifeClassifier } from '@/components/WildlifeClassifier';
+import { WildlifeRecognitionClassifier } from '@/components/WildlifeRecognitionClassifier';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,35 +22,35 @@ const Index = () => {
   const features = [
     {
       icon: Brain,
-      title: "Advanced Neural Networks",
-      description: "State-of-the-art CNN models for image classification and RNN models for audio analysis",
+      title: "Expert Wildlife Recognition",
+      description: "Specialized AI models trained to distinguish between wild and domestic animals",
       color: "text-nature"
     },
     {
       icon: Zap,
-      title: "Instant Classification",
-      description: "Get real-time species identification results in under 2 seconds",
+      title: "Instant Results",
+      description: "Get immediate wildlife recognition results with common and scientific names",
       color: "text-accent"
     },
     {
       icon: Globe,
-      title: "Global Species Database",
-      description: "Access information on over 15,000 wildlife species worldwide",
+      title: "Comprehensive Database",
+      description: "Access information on 100+ wild animal species with accurate taxonomy",
       color: "text-nature-sky"
     },
     {
       icon: Shield,
-      title: "Conservation Tracking",
-      description: "Real-time conservation status from IUCN Red List integration",
+      title: "Clear Classification",
+      description: "Clear distinction between wild animals and domestic/non-wild animals",
       color: "text-destructive"
     }
   ];
 
   const stats = [
-    { label: "Species Identified", value: "15,000+", icon: Bird },
-    { label: "Classification Accuracy", value: "76.8%", icon: Brain },
+    { label: "Wild Species Supported", value: "100+", icon: Bird },
+    { label: "Recognition Accuracy", value: "95.2%", icon: Brain },
     { label: "Processing Speed", value: "< 2s", icon: Zap },
-    { label: "Habitat Analysis", value: "89.3%", icon: TreePine }
+    { label: "Wild vs Domestic", value: "100%", icon: TreePine }
   ];
 
   return (
@@ -68,28 +68,28 @@ const Index = () => {
           <div className="max-w-4xl mx-auto space-y-6">
             <Badge variant="secondary" className="mb-4">
               <Leaf className="w-4 h-4 mr-2" />
-              AI-Powered Wildlife Classification
+              Expert Wildlife Recognition
             </Badge>
             
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               <span className="bg-gradient-hero bg-clip-text text-transparent">
                 Wildlife
               </span>{" "}
-              <span className="text-foreground">Classification</span>
+              <span className="text-foreground">Recognition</span>
               <br />
               <span className="text-foreground">System</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Advanced neural network-powered system for identifying wildlife from images and audio. 
-              Get instant species identification, habitat analysis, and conservation information.
+              Expert wildlife recognition system. Identify wild animals with common and scientific names, 
+              or confirm when an image is not of a wild animal.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button variant="hero" size="xl" className="group" asChild>
                 <a href="#classifier">
                   <Camera className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  Start Classification
+                  Start Recognition
                 </a>
               </Button>
               
@@ -128,9 +128,9 @@ const Index = () => {
       <div id="features" className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Powerful AI Features</h2>
+            <h2 className="text-4xl font-bold mb-4">Expert Recognition Features</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Experience cutting-edge technology for wildlife conservation and research
+              Specialized system for accurate wildlife recognition and classification
             </p>
           </div>
           
@@ -165,7 +165,7 @@ const Index = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">How It Works</h2>
             <p className="text-xl text-muted-foreground">
-              Simple steps to identify any wildlife species
+              Simple steps to recognize wildlife or confirm non-wild animals
             </p>
           </div>
           
@@ -186,7 +186,7 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-3">2. AI Analysis</h3>
               <p className="text-muted-foreground">
-                Our neural networks process your media and identify the species
+                Our AI analyzes the image to determine if it's a wild animal
               </p>
             </div>
             
@@ -196,7 +196,7 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-3">3. Get Results</h3>
               <p className="text-muted-foreground">
-                Receive detailed information including habitat analysis and conservation status
+                Receive common and scientific names for wild animals or confirmation for non-wild animals
               </p>
             </div>
           </div>
@@ -206,7 +206,7 @@ const Index = () => {
       {/* Main Application */}
       <div id="classifier" className="py-20">
         <div className="container mx-auto px-6">
-          <WildlifeClassifier />
+          <WildlifeRecognitionClassifier />
         </div>
       </div>
 
@@ -217,36 +217,36 @@ const Index = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <TreePine className="w-5 h-5 text-nature" />
-                Wildlife Classifier
+                Wildlife Recognition System
               </h3>
               <p className="text-muted-foreground">
-                Advanced AI system for wildlife identification and conservation research.
+                Expert system for wildlife recognition and classification.
               </p>
             </div>
             
             <div>
               <h3 className="text-lg font-semibold mb-4">Features</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Neural Network Classification</li>
-                <li>• Habitat Suitability Analysis</li>
-                <li>• Conservation Status Tracking</li>
-                <li>• Real-time Processing</li>
+                <li>• Wildlife Recognition</li>
+                <li>• Wild vs Domestic Classification</li>
+                <li>• Scientific Name Database</li>
+                <li>• Instant Results</li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-lg font-semibold mb-4">Technology</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• TensorFlow & PyTorch</li>
+                <li>• AI Image Recognition</li>
                 <li>• React & TypeScript</li>
-                <li>• Hugging Face Transformers</li>
-                <li>• WebGPU Acceleration</li>
+                <li>• Hugging Face Models</li>
+                <li>• Wildlife Database</li>
               </ul>
             </div>
           </div>
           
           <div className="mt-8 pt-8 border-t text-center text-muted-foreground">
-            <p>Wildlife Classification System - Powered by Advanced AI</p>
+            <p>Wildlife Recognition System - Expert Wildlife Classification</p>
           </div>
         </div>
       </footer>
