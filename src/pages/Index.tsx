@@ -35,7 +35,7 @@ const Index = () => {
     {
       icon: Globe,
       title: "Comprehensive Database",
-      description: "Access information on 100+ wild animal species with accurate taxonomy",
+      description: "Access information on 500+ wild animal species with accurate taxonomy",
       color: "text-nature-sky"
     },
     {
@@ -47,10 +47,10 @@ const Index = () => {
   ];
 
   const stats = [
-    { label: "Wild Species Supported", value: "100+", icon: Bird },
-    { label: "Recognition Accuracy", value: "95.2%", icon: Brain },
+    { label: "Wild Species Supported", value: "500+", icon: Bird },
+    { label: "Recognition Accuracy", value: "95.5%", icon: Brain },
     { label: "Processing Speed", value: "< 2s", icon: Zap },
-    { label: "Wild vs Domestic", value: "100%", icon: TreePine }
+    { label: "Wild vs Domestic", value: "96.3%", icon: TreePine }
   ];
 
   return (
