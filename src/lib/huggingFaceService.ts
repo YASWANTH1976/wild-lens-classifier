@@ -151,13 +151,620 @@ export class HuggingFaceService {
           genus: 'Equus',
           species: 'E. quagga'
         }
+      },
+      'leopard': {
+        scientificName: 'Panthera pardus',
+        commonNames: ['Leopard', 'African Leopard'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Carnivora',
+          family: 'Felidae',
+          genus: 'Panthera',
+          species: 'P. pardus'
+        }
+      },
+      'cheetah': {
+        scientificName: 'Acinonyx jubatus',
+        commonNames: ['Cheetah'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Carnivora',
+          family: 'Felidae',
+          genus: 'Acinonyx',
+          species: 'A. jubatus'
+        }
+      },
+      'rhino': {
+        scientificName: 'Ceratotherium simum',
+        commonNames: ['White Rhinoceros', 'Rhino'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Perissodactyla',
+          family: 'Rhinocerotidae',
+          genus: 'Ceratotherium',
+          species: 'C. simum'
+        }
+      },
+      'rhinoceros': {
+        scientificName: 'Ceratotherium simum',
+        commonNames: ['White Rhinoceros', 'Rhino'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Perissodactyla',
+          family: 'Rhinocerotidae',
+          genus: 'Ceratotherium',
+          species: 'C. simum'
+        }
+      },
+      'hippo': {
+        scientificName: 'Hippopotamus amphibius',
+        commonNames: ['Hippopotamus', 'Hippo'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Artiodactyla',
+          family: 'Hippopotamidae',
+          genus: 'Hippopotamus',
+          species: 'H. amphibius'
+        }
+      },
+      'hippopotamus': {
+        scientificName: 'Hippopotamus amphibius',
+        commonNames: ['Hippopotamus', 'Hippo'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Artiodactyla',
+          family: 'Hippopotamidae',
+          genus: 'Hippopotamus',
+          species: 'H. amphibius'
+        }
+      },
+      'buffalo': {
+        scientificName: 'Syncerus caffer',
+        commonNames: ['African Buffalo', 'Cape Buffalo'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Artiodactyla',
+          family: 'Bovidae',
+          genus: 'Syncerus',
+          species: 'S. caffer'
+        }
+      },
+      'bear': {
+        scientificName: 'Ursus americanus',
+        commonNames: ['American Black Bear', 'Black Bear'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Carnivora',
+          family: 'Ursidae',
+          genus: 'Ursus',
+          species: 'U. americanus'
+        }
+      },
+      'wolf': {
+        scientificName: 'Canis lupus',
+        commonNames: ['Gray Wolf', 'Wolf'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Carnivora',
+          family: 'Canidae',
+          genus: 'Canis',
+          species: 'C. lupus'
+        }
+      },
+      'fox': {
+        scientificName: 'Vulpes vulpes',
+        commonNames: ['Red Fox', 'Fox'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Carnivora',
+          family: 'Canidae',
+          genus: 'Vulpes',
+          species: 'V. vulpes'
+        }
+      },
+      'deer': {
+        scientificName: 'Odocoileus virginianus',
+        commonNames: ['White-tailed Deer', 'Deer'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Artiodactyla',
+          family: 'Cervidae',
+          genus: 'Odocoileus',
+          species: 'O. virginianus'
+        }
+      },
+      'moose': {
+        scientificName: 'Alces alces',
+        commonNames: ['Moose', 'Elk'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Artiodactyla',
+          family: 'Cervidae',
+          genus: 'Alces',
+          species: 'A. alces'
+        }
+      },
+      'eagle': {
+        scientificName: 'Haliaeetus leucocephalus',
+        commonNames: ['Bald Eagle', 'Eagle'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Aves',
+          order: 'Accipitriformes',
+          family: 'Accipitridae',
+          genus: 'Haliaeetus',
+          species: 'H. leucocephalus'
+        }
+      },
+      'hawk': {
+        scientificName: 'Buteo jamaicensis',
+        commonNames: ['Red-tailed Hawk', 'Hawk'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Aves',
+          order: 'Accipitriformes',
+          family: 'Accipitridae',
+          genus: 'Buteo',
+          species: 'B. jamaicensis'
+        }
+      },
+      'owl': {
+        scientificName: 'Bubo virginianus',
+        commonNames: ['Great Horned Owl', 'Owl'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Aves',
+          order: 'Strigiformes',
+          family: 'Strigidae',
+          genus: 'Bubo',
+          species: 'B. virginianus'
+        }
+      },
+      'penguin': {
+        scientificName: 'Aptenodytes patagonicus',
+        commonNames: ['King Penguin', 'Penguin'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Aves',
+          order: 'Sphenisciformes',
+          family: 'Spheniscidae',
+          genus: 'Aptenodytes',
+          species: 'A. patagonicus'
+        }
+      },
+      'flamingo': {
+        scientificName: 'Phoenicopterus roseus',
+        commonNames: ['Greater Flamingo', 'Flamingo'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Aves',
+          order: 'Phoenicopteriformes',
+          family: 'Phoenicopteridae',
+          genus: 'Phoenicopterus',
+          species: 'P. roseus'
+        }
+      },
+      'peacock': {
+        scientificName: 'Pavo cristatus',
+        commonNames: ['Indian Peafowl', 'Peacock'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Aves',
+          order: 'Galliformes',
+          family: 'Phasianidae',
+          genus: 'Pavo',
+          species: 'P. cristatus'
+        }
+      },
+      'crocodile': {
+        scientificName: 'Crocodylus niloticus',
+        commonNames: ['Nile Crocodile', 'Crocodile'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Reptilia',
+          order: 'Crocodilia',
+          family: 'Crocodylidae',
+          genus: 'Crocodylus',
+          species: 'C. niloticus'
+        }
+      },
+      'alligator': {
+        scientificName: 'Alligator mississippiensis',
+        commonNames: ['American Alligator', 'Alligator'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Reptilia',
+          order: 'Crocodilia',
+          family: 'Alligatoridae',
+          genus: 'Alligator',
+          species: 'A. mississippiensis'
+        }
+      },
+      'snake': {
+        scientificName: 'Python regius',
+        commonNames: ['Ball Python', 'Royal Python'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Reptilia',
+          order: 'Squamata',
+          family: 'Pythonidae',
+          genus: 'Python',
+          species: 'P. regius'
+        }
+      },
+      'lizard': {
+        scientificName: 'Varanus komodoensis',
+        commonNames: ['Komodo Dragon', 'Komodo Lizard'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Reptilia',
+          order: 'Squamata',
+          family: 'Varanidae',
+          genus: 'Varanus',
+          species: 'V. komodoensis'
+        }
+      },
+      'turtle': {
+        scientificName: 'Chelonia mydas',
+        commonNames: ['Green Sea Turtle', 'Green Turtle'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Reptilia',
+          order: 'Testudines',
+          family: 'Cheloniidae',
+          genus: 'Chelonia',
+          species: 'C. mydas'
+        }
+      },
+      'frog': {
+        scientificName: 'Lithobates catesbeianus',
+        commonNames: ['American Bullfrog', 'Bullfrog'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Amphibia',
+          order: 'Anura',
+          family: 'Ranidae',
+          genus: 'Lithobates',
+          species: 'L. catesbeianus'
+        }
+      },
+      'salamander': {
+        scientificName: 'Ambystoma maculatum',
+        commonNames: ['Spotted Salamander'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Amphibia',
+          order: 'Caudata',
+          family: 'Ambystomatidae',
+          genus: 'Ambystoma',
+          species: 'A. maculatum'
+        }
+      },
+      'shark': {
+        scientificName: 'Carcharodon carcharias',
+        commonNames: ['Great White Shark', 'White Shark'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Chondrichthyes',
+          order: 'Lamniformes',
+          family: 'Lamnidae',
+          genus: 'Carcharodon',
+          species: 'C. carcharias'
+        }
+      },
+      'whale': {
+        scientificName: 'Balaenoptera musculus',
+        commonNames: ['Blue Whale'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Cetacea',
+          family: 'Balaenopteridae',
+          genus: 'Balaenoptera',
+          species: 'B. musculus'
+        }
+      },
+      'dolphin': {
+        scientificName: 'Tursiops truncatus',
+        commonNames: ['Bottlenose Dolphin', 'Common Dolphin'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Cetacea',
+          family: 'Delphinidae',
+          genus: 'Tursiops',
+          species: 'T. truncatus'
+        }
+      },
+      'seal': {
+        scientificName: 'Phoca vitulina',
+        commonNames: ['Harbor Seal', 'Common Seal'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Carnivora',
+          family: 'Phocidae',
+          genus: 'Phoca',
+          species: 'P. vitulina'
+        }
+      },
+      'octopus': {
+        scientificName: 'Octopus vulgaris',
+        commonNames: ['Common Octopus'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Mollusca',
+          class: 'Cephalopoda',
+          order: 'Octopoda',
+          family: 'Octopodidae',
+          genus: 'Octopus',
+          species: 'O. vulgaris'
+        }
+      },
+      'butterfly': {
+        scientificName: 'Danaus plexippus',
+        commonNames: ['Monarch Butterfly'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Arthropoda',
+          class: 'Insecta',
+          order: 'Lepidoptera',
+          family: 'Nymphalidae',
+          genus: 'Danaus',
+          species: 'D. plexippus'
+        }
+      },
+      'bee': {
+        scientificName: 'Apis mellifera',
+        commonNames: ['European Honey Bee', 'Western Honey Bee'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Arthropoda',
+          class: 'Insecta',
+          order: 'Hymenoptera',
+          family: 'Apidae',
+          genus: 'Apis',
+          species: 'A. mellifera'
+        }
+      },
+      'spider': {
+        scientificName: 'Latrodectus mactans',
+        commonNames: ['Black Widow Spider'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Arthropoda',
+          class: 'Arachnida',
+          order: 'Araneae',
+          family: 'Theridiidae',
+          genus: 'Latrodectus',
+          species: 'L. mactans'
+        }
+      },
+      'monkey': {
+        scientificName: 'Macaca mulatta',
+        commonNames: ['Rhesus Macaque', 'Rhesus Monkey'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Primates',
+          family: 'Cercopithecidae',
+          genus: 'Macaca',
+          species: 'M. mulatta'
+        }
+      },
+      'gorilla': {
+        scientificName: 'Gorilla gorilla',
+        commonNames: ['Western Gorilla'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Primates',
+          family: 'Hominidae',
+          genus: 'Gorilla',
+          species: 'G. gorilla'
+        }
+      },
+      'chimpanzee': {
+        scientificName: 'Pan troglodytes',
+        commonNames: ['Common Chimpanzee', 'Chimp'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Primates',
+          family: 'Hominidae',
+          genus: 'Pan',
+          species: 'P. troglodytes'
+        }
+      },
+      'orangutan': {
+        scientificName: 'Pongo pygmaeus',
+        commonNames: ['Bornean Orangutan'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Primates',
+          family: 'Hominidae',
+          genus: 'Pongo',
+          species: 'P. pygmaeus'
+        }
+      },
+      'kangaroo': {
+        scientificName: 'Osphranter rufus',
+        commonNames: ['Red Kangaroo'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Diprotodontia',
+          family: 'Macropodidae',
+          genus: 'Osphranter',
+          species: 'O. rufus'
+        }
+      },
+      'koala': {
+        scientificName: 'Phascolarctos cinereus',
+        commonNames: ['Koala'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Diprotodontia',
+          family: 'Phascolarctidae',
+          genus: 'Phascolarctos',
+          species: 'P. cinereus'
+        }
+      },
+      'panda': {
+        scientificName: 'Ailuropoda melanoleuca',
+        commonNames: ['Giant Panda'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Carnivora',
+          family: 'Ursidae',
+          genus: 'Ailuropoda',
+          species: 'A. melanoleuca'
+        }
+      },
+      'sloth': {
+        scientificName: 'Bradypus tridactylus',
+        commonNames: ['Three-toed Sloth'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Pilosa',
+          family: 'Bradypodidae',
+          genus: 'Bradypus',
+          species: 'B. tridactylus'
+        }
+      },
+      'armadillo': {
+        scientificName: 'Dasypus novemcinctus',
+        commonNames: ['Nine-banded Armadillo'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Cingulata',
+          family: 'Dasypodidae',
+          genus: 'Dasypus',
+          species: 'D. novemcinctus'
+        }
+      },
+      'anteater': {
+        scientificName: 'Myrmecophaga tridactyla',
+        commonNames: ['Giant Anteater'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Pilosa',
+          family: 'Myrmecophagidae',
+          genus: 'Myrmecophaga',
+          species: 'M. tridactyla'
+        }
+      },
+      'antelope': {
+        scientificName: 'Aepyceros melampus',
+        commonNames: ['Impala'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Artiodactyla',
+          family: 'Bovidae',
+          genus: 'Aepyceros',
+          species: 'A. melampus'
+        }
+      },
+      'wildebeest': {
+        scientificName: 'Connochaetes taurinus',
+        commonNames: ['Blue Wildebeest', 'Gnu'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Artiodactyla',
+          family: 'Bovidae',
+          genus: 'Connochaetes',
+          species: 'C. taurinus'
+        }
+      },
+      'gazelle': {
+        scientificName: 'Gazella thomsonii',
+        commonNames: ['Thomson\'s Gazelle'],
+        taxonomy: {
+          kingdom: 'Animalia',
+          phylum: 'Chordata',
+          class: 'Mammalia',
+          order: 'Artiodactyla',
+          family: 'Bovidae',
+          genus: 'Gazella',
+          species: 'G. thomsonii'
+        }
       }
     };
 
     // Find matching animal in database
-    const animalKey = Object.keys(animalDatabase).find(key => 
-      label.includes(key) || prediction.label.toLowerCase().includes(key)
-    );
+    const animalKey = Object.keys(animalDatabase).find(key => {
+      const lowerLabel = label.toLowerCase();
+      const lowerPrediction = prediction.label.toLowerCase();
+      return lowerLabel.includes(key) || 
+             lowerPrediction.includes(key) ||
+             key.includes(lowerLabel) ||
+             // Check if any common names match
+             animalDatabase[key].commonNames?.some((name: string) => 
+               lowerLabel.includes(name.toLowerCase()) || 
+               lowerPrediction.includes(name.toLowerCase())
+             );
+    });
 
     const animalInfo = animalKey ? animalDatabase[animalKey] : null;
 
@@ -190,7 +797,7 @@ export class HuggingFaceService {
         this.models.map(model => this.classifyWithModel(processedImage, model))
       );
 
-      // Get best result from successful predictions
+      // Get best result from successful predictions with enhanced scoring
       const validResults = results
         .filter((result): result is PromiseFulfilledResult<HuggingFaceResult[]> => 
           result.status === 'fulfilled' && result.value.length > 0
@@ -198,20 +805,48 @@ export class HuggingFaceService {
         .map(result => result.value[0])
         .sort((a, b) => b.score - a.score);
 
+      // Log failed models for debugging
+      const failedModels = results
+        .map((result, index) => result.status === 'rejected' ? this.models[index] : null)
+        .filter(Boolean);
+      
+      if (failedModels.length > 0) {
+        console.warn(`⚠️ Some models failed: ${failedModels.join(', ')}`);
+      }
+
       if (validResults.length === 0) {
+        console.error('❌ All classification models failed');
         return {
-          label: 'Animal not recognized. Try another image.',
-          confidence: 0.0
+          label: 'Classification temporarily unavailable. Please try again.',
+          confidence: 0.0,
+          scientificName: 'Service temporarily unavailable'
         };
       }
 
-      const bestResult = validResults[0];
+      // Use ensemble averaging for better confidence if we have multiple results
+      let bestResult = validResults[0];
+      if (validResults.length > 1) {
+        // Simple ensemble: average confidence of top results for same label
+        const sameResults = validResults.filter(r => 
+          r.label.toLowerCase() === bestResult.label.toLowerCase()
+        );
+        
+        if (sameResults.length > 1) {
+          const avgScore = sameResults.reduce((sum, r) => sum + r.score, 0) / sameResults.length;
+          bestResult = { ...bestResult, score: avgScore };
+          console.log(`📊 Ensemble average confidence: ${(avgScore * 100).toFixed(1)}%`);
+        }
+      }
       
       // Check if confidence is too low
-      if (bestResult.score < 0.3) {
+      if (bestResult.score < 0.6) {
+        // Try to provide some useful information even with low confidence
+        const possibleMatch = this.enhanceWithAnimalInfo(bestResult);
         return {
-          label: 'Animal not recognized. Try another image.',
-          confidence: bestResult.score
+          label: `Possible ${bestResult.label} (low confidence)`,
+          confidence: bestResult.score,
+          scientificName: possibleMatch.scientificName || 'Classification uncertain',
+          taxonomy: possibleMatch.taxonomy
         };
       }
 
@@ -226,17 +861,64 @@ export class HuggingFaceService {
   }
 
   async getSimilarAnimals(animalLabel: string): Promise<string[]> {
-    // Mock similar animals - in production, this could use embeddings
+    // Enhanced similar animals with more comprehensive relationships
     const similarityMap: Record<string, string[]> = {
-      'tiger': ['Lion', 'Leopard', 'Cheetah', 'Jaguar'],
-      'lion': ['Tiger', 'Leopard', 'Cheetah', 'Lynx'],
-      'elephant': ['Rhinoceros', 'Hippopotamus', 'Buffalo', 'Giraffe'],
-      'giraffe': ['Elephant', 'Zebra', 'Antelope', 'Okapi'],
-      'zebra': ['Horse', 'Donkey', 'Giraffe', 'Antelope']
+      'tiger': ['Lion', 'Leopard', 'Cheetah', 'Jaguar', 'Lynx'],
+      'lion': ['Tiger', 'Leopard', 'Cheetah', 'Lynx', 'Jaguar'],
+      'leopard': ['Tiger', 'Lion', 'Cheetah', 'Jaguar', 'Lynx'],
+      'cheetah': ['Tiger', 'Lion', 'Leopard', 'Jaguar', 'Lynx'],
+      'elephant': ['Rhinoceros', 'Hippopotamus', 'Buffalo', 'Giraffe', 'Moose'],
+      'rhinoceros': ['Elephant', 'Hippopotamus', 'Buffalo', 'Giraffe'],
+      'rhino': ['Elephant', 'Hippopotamus', 'Buffalo', 'Giraffe'],
+      'hippopotamus': ['Elephant', 'Rhinoceros', 'Buffalo', 'Crocodile'],
+      'hippo': ['Elephant', 'Rhinoceros', 'Buffalo', 'Crocodile'],
+      'giraffe': ['Elephant', 'Zebra', 'Antelope', 'Deer', 'Moose'],
+      'zebra': ['Horse', 'Donkey', 'Giraffe', 'Antelope', 'Gazelle'],
+      'buffalo': ['Elephant', 'Rhinoceros', 'Antelope', 'Wildebeest', 'Gazelle'],
+      'bear': ['Wolf', 'Fox', 'Panda', 'Wolverine', 'Badger'],
+      'panda': ['Bear', 'Koala', 'Sloth', 'Monkey', 'Lemur'],
+      'wolf': ['Fox', 'Bear', 'Coyote', 'Dog', 'Jackal'],
+      'fox': ['Wolf', 'Coyote', 'Dog', 'Cat', 'Raccoon'],
+      'deer': ['Moose', 'Elk', 'Antelope', 'Gazelle', 'Giraffe'],
+      'moose': ['Deer', 'Elk', 'Giraffe', 'Buffalo', 'Antelope'],
+      'eagle': ['Hawk', 'Falcon', 'Owl', 'Vulture', 'Kite'],
+      'hawk': ['Eagle', 'Falcon', 'Owl', 'Vulture', 'Kite'],
+      'owl': ['Eagle', 'Hawk', 'Falcon', 'Vulture', 'Raven'],
+      'penguin': ['Seal', 'Polar Bear', 'Walrus', 'Seagull', 'Albatross'],
+      'flamingo': ['Swan', 'Crane', 'Heron', 'Stork', 'Pelican'],
+      'peacock': ['Turkey', 'Pheasant', 'Rooster', 'Swan', 'Crane'],
+      'crocodile': ['Alligator', 'Lizard', 'Snake', 'Turtle', 'Iguana'],
+      'alligator': ['Crocodile', 'Lizard', 'Snake', 'Turtle', 'Iguana'],
+      'snake': ['Lizard', 'Crocodile', 'Alligator', 'Turtle', 'Iguana'],
+      'lizard': ['Snake', 'Crocodile', 'Alligator', 'Turtle', 'Iguana'],
+      'turtle': ['Tortoise', 'Snake', 'Lizard', 'Crocodile', 'Frog'],
+      'frog': ['Toad', 'Salamander', 'Turtle', 'Lizard', 'Newt'],
+      'salamander': ['Frog', 'Toad', 'Newt', 'Lizard', 'Snake'],
+      'shark': ['Dolphin', 'Whale', 'Ray', 'Barracuda', 'Tuna'],
+      'whale': ['Dolphin', 'Shark', 'Seal', 'Orca', 'Narwhal'],
+      'dolphin': ['Whale', 'Shark', 'Seal', 'Orca', 'Porpoise'],
+      'seal': ['Dolphin', 'Whale', 'Sea Lion', 'Walrus', 'Otter'],
+      'octopus': ['Squid', 'Jellyfish', 'Crab', 'Lobster', 'Starfish'],
+      'butterfly': ['Moth', 'Bee', 'Dragonfly', 'Ladybug', 'Beetle'],
+      'bee': ['Butterfly', 'Wasp', 'Ant', 'Fly', 'Beetle'],
+      'spider': ['Scorpion', 'Crab', 'Ant', 'Beetle', 'Wasp'],
+      'monkey': ['Ape', 'Gorilla', 'Chimpanzee', 'Orangutan', 'Lemur'],
+      'gorilla': ['Chimpanzee', 'Orangutan', 'Monkey', 'Baboon', 'Lemur'],
+      'chimpanzee': ['Gorilla', 'Orangutan', 'Monkey', 'Baboon', 'Lemur'],
+      'orangutan': ['Gorilla', 'Chimpanzee', 'Monkey', 'Gibbon', 'Lemur'],
+      'kangaroo': ['Wallaby', 'Koala', 'Wombat', 'Opossum', 'Rabbit'],
+      'koala': ['Kangaroo', 'Wombat', 'Sloth', 'Panda', 'Lemur'],
+      'sloth': ['Koala', 'Anteater', 'Armadillo', 'Monkey', 'Lemur'],
+      'armadillo': ['Anteater', 'Sloth', 'Pangolin', 'Hedgehog', 'Porcupine'],
+      'anteater': ['Sloth', 'Armadillo', 'Aardvark', 'Pangolin', 'Echidna'],
+      'antelope': ['Gazelle', 'Deer', 'Impala', 'Wildebeest', 'Zebra'],
+      'wildebeest': ['Antelope', 'Buffalo', 'Gazelle', 'Zebra', 'Gnu'],
+      'gazelle': ['Antelope', 'Deer', 'Impala', 'Wildebeest', 'Springbok']
     };
 
+    const lowerLabel = animalLabel.toLowerCase();
     const key = Object.keys(similarityMap).find(k => 
-      animalLabel.toLowerCase().includes(k)
+      lowerLabel.includes(k) || k.includes(lowerLabel)
     );
 
     return key ? similarityMap[key] : [];
