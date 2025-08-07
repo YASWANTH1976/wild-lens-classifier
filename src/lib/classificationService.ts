@@ -50,7 +50,7 @@ export class ClassificationService {
   }
 
   getSupportedSpeciesCount(): number {
-    return 50; // Now supporting 50+ animal species with comprehensive database
+    return 100; // Now supporting 100+ animal species with comprehensive database and advanced AI
   }
 
   async getSimilarAnimals(animalLabel: string): Promise<string[]> {
