@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { supabase } from '@/lib/supabase';
+import { authService } from '@/lib/authService';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Camera, Sparkles } from 'lucide-react';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
@@ -17,17 +17,18 @@ export const LoginPage = () => {
   const [name, setName] = useState('');
   const { toast } = useToast();
 
+  const demoCredentials = authService.getDemoCredentials();
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const result = await authService.login(email, password);
 
-      if (error) throw error;
+      if (!result.success) {
+        throw new Error(result.error);
+      }
 
       toast({
         title: "Welcome back!",
@@ -49,21 +50,15 @@ export const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: name,
-          },
-        },
-      });
+      const result = await authService.signup(email, password, name);
 
-      if (error) throw error;
+      if (!result.success) {
+        throw new Error(result.error);
+      }
 
       toast({
         title: "Account created!",
-        description: "Please check your email to verify your account.",
+        description: "Welcome to Wildlife Classifier!",
       });
     } catch (error: any) {
       toast({
@@ -76,6 +71,18 @@ export const LoginPage = () => {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setEmail(demoCredentials.primary.email);
+    setPassword(demoCredentials.primary.password);
+    
+    const result = await authService.login(demoCredentials.primary.email, demoCredentials.primary.password);
+    if (result.success) {
+      toast({
+        title: "Demo Login Successful!",
+        description: "Welcome to Wildlife Classifier demo.",
+      });
+    }
+  };
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
       {/* Animated Background */}
@@ -183,6 +190,38 @@ export const LoginPage = () => {
                       Sign In
                     </Button>
                   </form>
+                  
+                  {/* Demo Login Section */}
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">
+                          Demo Access
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      className="w-full"
+                      onClick={handleDemoLogin}
+                      disabled={isLoading}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Try Demo Login
+                    </Button>
+                    
+                    <div className="text-xs text-center text-muted-foreground space-y-1">
+                      <p><strong>Demo:</strong> {demoCredentials.primary.email} / {demoCredentials.primary.password}</p>
+                      {demoCredentials.additional.map((cred, i) => (
+                        <p key={i}><strong>{cred.role}:</strong> {cred.email} / {cred.password}</p>
+                      ))}
+                    </div>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="signup">

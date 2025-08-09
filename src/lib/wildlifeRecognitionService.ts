@@ -1,772 +1,464 @@
+import { APIService } from './apiService';
+
 interface WildlifeRecognitionResult {
   isWild: boolean;
   commonName?: string;
   scientificName?: string;
   message?: string;
+  confidence?: number;
+  apiSource?: string;
+  suggestions?: string[];
 }
 
+// Comprehensive wild animal species database
+const WILD_SPECIES_DATABASE = {
+  // Big Cats
+  'tiger': { common: 'Bengal Tiger', scientific: 'Panthera tigris' },
+  'bengal tiger': { common: 'Bengal Tiger', scientific: 'Panthera tigris tigris' },
+  'siberian tiger': { common: 'Siberian Tiger', scientific: 'Panthera tigris altaica' },
+  'lion': { common: 'African Lion', scientific: 'Panthera leo' },
+  'african lion': { common: 'African Lion', scientific: 'Panthera leo' },
+  'leopard': { common: 'African Leopard', scientific: 'Panthera pardus' },
+  'african leopard': { common: 'African Leopard', scientific: 'Panthera pardus' },
+  'cheetah': { common: 'Cheetah', scientific: 'Acinonyx jubatus' },
+  'jaguar': { common: 'Jaguar', scientific: 'Panthera onca' },
+  'lynx': { common: 'Eurasian Lynx', scientific: 'Lynx lynx' },
+  'eurasian lynx': { common: 'Eurasian Lynx', scientific: 'Lynx lynx' },
+  'cougar': { common: 'Cougar', scientific: 'Puma concolor' },
+  'mountain lion': { common: 'Cougar', scientific: 'Puma concolor' },
+  'puma': { common: 'Cougar', scientific: 'Puma concolor' },
+  'snow leopard': { common: 'Snow Leopard', scientific: 'Panthera uncia' },
+
+  // Bears
+  'bear': { common: 'American Black Bear', scientific: 'Ursus americanus' },
+  'black bear': { common: 'American Black Bear', scientific: 'Ursus americanus' },
+  'american black bear': { common: 'American Black Bear', scientific: 'Ursus americanus' },
+  'brown bear': { common: 'Grizzly Bear', scientific: 'Ursus arctos' },
+  'grizzly bear': { common: 'Grizzly Bear', scientific: 'Ursus arctos' },
+  'grizzly': { common: 'Grizzly Bear', scientific: 'Ursus arctos' },
+  'polar bear': { common: 'Polar Bear', scientific: 'Ursus maritimus' },
+  'giant panda': { common: 'Giant Panda', scientific: 'Ailuropoda melanoleuca' },
+  'panda': { common: 'Giant Panda', scientific: 'Ailuropoda melanoleuca' },
+
+  // Canids
+  'wolf': { common: 'Gray Wolf', scientific: 'Canis lupus' },
+  'gray wolf': { common: 'Gray Wolf', scientific: 'Canis lupus' },
+  'grey wolf': { common: 'Gray Wolf', scientific: 'Canis lupus' },
+  'red fox': { common: 'Red Fox', scientific: 'Vulpes vulpes' },
+  'fox': { common: 'Red Fox', scientific: 'Vulpes vulpes' },
+  'arctic fox': { common: 'Arctic Fox', scientific: 'Vulpes lagopus' },
+  'coyote': { common: 'Coyote', scientific: 'Canis latrans' },
+  'jackal': { common: 'Golden Jackal', scientific: 'Canis aureus' },
+  'golden jackal': { common: 'Golden Jackal', scientific: 'Canis aureus' },
+
+  // Elephants and Large Herbivores
+  'elephant': { common: 'African Elephant', scientific: 'Loxodonta africana' },
+  'african elephant': { common: 'African Elephant', scientific: 'Loxodonta africana' },
+  'asian elephant': { common: 'Asian Elephant', scientific: 'Elephas maximus' },
+  'rhinoceros': { common: 'White Rhinoceros', scientific: 'Ceratotherium simum' },
+  'rhino': { common: 'White Rhinoceros', scientific: 'Ceratotherium simum' },
+  'white rhinoceros': { common: 'White Rhinoceros', scientific: 'Ceratotherium simum' },
+  'black rhinoceros': { common: 'Black Rhinoceros', scientific: 'Diceros bicornis' },
+  'hippopotamus': { common: 'Hippopotamus', scientific: 'Hippopotamus amphibius' },
+  'hippo': { common: 'Hippopotamus', scientific: 'Hippopotamus amphibius' },
+
+  // Ungulates
+  'giraffe': { common: 'Northern Giraffe', scientific: 'Giraffa camelopardalis' },
+  'northern giraffe': { common: 'Northern Giraffe', scientific: 'Giraffa camelopardalis' },
+  'zebra': { common: 'Plains Zebra', scientific: 'Equus quagga' },
+  'plains zebra': { common: 'Plains Zebra', scientific: 'Equus quagga' },
+  'buffalo': { common: 'African Buffalo', scientific: 'Syncerus caffer' },
+  'african buffalo': { common: 'African Buffalo', scientific: 'Syncerus caffer' },
+  'cape buffalo': { common: 'African Buffalo', scientific: 'Syncerus caffer' },
+  'deer': { common: 'White-tailed Deer', scientific: 'Odocoileus virginianus' },
+  'white-tailed deer': { common: 'White-tailed Deer', scientific: 'Odocoileus virginianus' },
+  'moose': { common: 'Moose', scientific: 'Alces alces' },
+  'elk': { common: 'Elk', scientific: 'Cervus canadensis' },
+  'impala': { common: 'Impala', scientific: 'Aepyceros melampus' },
+  'wildebeest': { common: 'Blue Wildebeest', scientific: 'Connochaetes taurinus' },
+  'blue wildebeest': { common: 'Blue Wildebeest', scientific: 'Connochaetes taurinus' },
+  'gazelle': { common: "Thomson's Gazelle", scientific: 'Eudorcas thomsonii' },
+  "thomson's gazelle": { common: "Thomson's Gazelle", scientific: 'Eudorcas thomsonii' },
+
+  // Primates
+  'gorilla': { common: 'Western Gorilla', scientific: 'Gorilla gorilla' },
+  'western gorilla': { common: 'Western Gorilla', scientific: 'Gorilla gorilla' },
+  'chimpanzee': { common: 'Common Chimpanzee', scientific: 'Pan troglodytes' },
+  'common chimpanzee': { common: 'Common Chimpanzee', scientific: 'Pan troglodytes' },
+  'chimp': { common: 'Common Chimpanzee', scientific: 'Pan troglodytes' },
+  'orangutan': { common: 'Bornean Orangutan', scientific: 'Pongo pygmaeus' },
+  'bornean orangutan': { common: 'Bornean Orangutan', scientific: 'Pongo pygmaeus' },
+  'monkey': { common: 'Rhesus Macaque', scientific: 'Macaca mulatta' },
+  'rhesus macaque': { common: 'Rhesus Macaque', scientific: 'Macaca mulatta' },
+  'baboon': { common: 'Olive Baboon', scientific: 'Papio anubis' },
+  'olive baboon': { common: 'Olive Baboon', scientific: 'Papio anubis' },
+  'lemur': { common: 'Ring-tailed Lemur', scientific: 'Lemur catta' },
+  'ring-tailed lemur': { common: 'Ring-tailed Lemur', scientific: 'Lemur catta' },
+
+  // Marine Mammals
+  'whale': { common: 'Blue Whale', scientific: 'Balaenoptera musculus' },
+  'blue whale': { common: 'Blue Whale', scientific: 'Balaenoptera musculus' },
+  'humpback whale': { common: 'Humpback Whale', scientific: 'Megaptera novaeangliae' },
+  'dolphin': { common: 'Bottlenose Dolphin', scientific: 'Tursiops truncatus' },
+  'bottlenose dolphin': { common: 'Bottlenose Dolphin', scientific: 'Tursiops truncatus' },
+  'seal': { common: 'Harbor Seal', scientific: 'Phoca vitulina' },
+  'harbor seal': { common: 'Harbor Seal', scientific: 'Phoca vitulina' },
+  'sea lion': { common: 'California Sea Lion', scientific: 'Zalophus californianus' },
+  'california sea lion': { common: 'California Sea Lion', scientific: 'Zalophus californianus' },
+  'walrus': { common: 'Pacific Walrus', scientific: 'Odobenus rosmarus divergens' },
+  'pacific walrus': { common: 'Pacific Walrus', scientific: 'Odobenus rosmarus divergens' },
+  'otter': { common: 'Sea Otter', scientific: 'Enhydra lutris' },
+  'sea otter': { common: 'Sea Otter', scientific: 'Enhydra lutris' },
+
+  // Birds of Prey
+  'eagle': { common: 'Bald Eagle', scientific: 'Haliaeetus leucocephalus' },
+  'bald eagle': { common: 'Bald Eagle', scientific: 'Haliaeetus leucocephalus' },
+  'golden eagle': { common: 'Golden Eagle', scientific: 'Aquila chrysaetos' },
+  'hawk': { common: 'Red-tailed Hawk', scientific: 'Buteo jamaicensis' },
+  'red-tailed hawk': { common: 'Red-tailed Hawk', scientific: 'Buteo jamaicensis' },
+  'owl': { common: 'Great Horned Owl', scientific: 'Bubo virginianus' },
+  'great horned owl': { common: 'Great Horned Owl', scientific: 'Bubo virginianus' },
+  'falcon': { common: 'Peregrine Falcon', scientific: 'Falco peregrinus' },
+  'peregrine falcon': { common: 'Peregrine Falcon', scientific: 'Falco peregrinus' },
+  'vulture': { common: 'Turkey Vulture', scientific: 'Cathartes aura' },
+  'turkey vulture': { common: 'Turkey Vulture', scientific: 'Cathartes aura' },
+
+  // Other Birds
+  'penguin': { common: 'King Penguin', scientific: 'Aptenodytes patagonicus' },
+  'king penguin': { common: 'King Penguin', scientific: 'Aptenodytes patagonicus' },
+  'emperor penguin': { common: 'Emperor Penguin', scientific: 'Aptenodytes forsteri' },
+  'flamingo': { common: 'Greater Flamingo', scientific: 'Phoenicopterus roseus' },
+  'greater flamingo': { common: 'Greater Flamingo', scientific: 'Phoenicopterus roseus' },
+  'peacock': { common: 'Indian Peafowl', scientific: 'Pavo cristatus' },
+  'peafowl': { common: 'Indian Peafowl', scientific: 'Pavo cristatus' },
+  'indian peafowl': { common: 'Indian Peafowl', scientific: 'Pavo cristatus' },
+  'ostrich': { common: 'Common Ostrich', scientific: 'Struthio camelus' },
+  'common ostrich': { common: 'Common Ostrich', scientific: 'Struthio camelus' },
+  'emu': { common: 'Emu', scientific: 'Dromaius novaehollandiae' },
+  'crane': { common: 'Sandhill Crane', scientific: 'Antigone canadensis' },
+  'sandhill crane': { common: 'Sandhill Crane', scientific: 'Antigone canadensis' },
+
+  // Reptiles
+  'crocodile': { common: 'Nile Crocodile', scientific: 'Crocodylus niloticus' },
+  'nile crocodile': { common: 'Nile Crocodile', scientific: 'Crocodylus niloticus' },
+  'alligator': { common: 'American Alligator', scientific: 'Alligator mississippiensis' },
+  'american alligator': { common: 'American Alligator', scientific: 'Alligator mississippiensis' },
+  'snake': { common: 'Ball Python', scientific: 'Python regius' },
+  'python': { common: 'Ball Python', scientific: 'Python regius' },
+  'ball python': { common: 'Ball Python', scientific: 'Python regius' },
+  'lizard': { common: 'Komodo Dragon', scientific: 'Varanus komodoensis' },
+  'komodo dragon': { common: 'Komodo Dragon', scientific: 'Varanus komodoensis' },
+  'iguana': { common: 'Green Iguana', scientific: 'Iguana iguana' },
+  'green iguana': { common: 'Green Iguana', scientific: 'Iguana iguana' },
+  'turtle': { common: 'Green Sea Turtle', scientific: 'Chelonia mydas' },
+  'sea turtle': { common: 'Green Sea Turtle', scientific: 'Chelonia mydas' },
+  'green sea turtle': { common: 'Green Sea Turtle', scientific: 'Chelonia mydas' },
+  'tortoise': { common: 'Galapagos Tortoise', scientific: 'Chelonoidis niger' },
+  'galapagos tortoise': { common: 'Galapagos Tortoise', scientific: 'Chelonoidis niger' },
+
+  // Amphibians
+  'frog': { common: 'American Bullfrog', scientific: 'Lithobates catesbeianus' },
+  'bullfrog': { common: 'American Bullfrog', scientific: 'Lithobates catesbeianus' },
+  'american bullfrog': { common: 'American Bullfrog', scientific: 'Lithobates catesbeianus' },
+  'salamander': { common: 'Spotted Salamander', scientific: 'Ambystoma maculatum' },
+  'spotted salamander': { common: 'Spotted Salamander', scientific: 'Ambystoma maculatum' },
+  'newt': { common: 'Eastern Newt', scientific: 'Notophthalmus viridescens' },
+  'eastern newt': { common: 'Eastern Newt', scientific: 'Notophthalmus viridescens' },
+
+  // Marine Life
+  'shark': { common: 'Great White Shark', scientific: 'Carcharodon carcharias' },
+  'great white shark': { common: 'Great White Shark', scientific: 'Carcharodon carcharias' },
+  'white shark': { common: 'Great White Shark', scientific: 'Carcharodon carcharias' },
+  'octopus': { common: 'Common Octopus', scientific: 'Octopus vulgaris' },
+  'common octopus': { common: 'Common Octopus', scientific: 'Octopus vulgaris' },
+  'squid': { common: 'Giant Squid', scientific: 'Architeuthis dux' },
+  'giant squid': { common: 'Giant Squid', scientific: 'Architeuthis dux' },
+  'jellyfish': { common: 'Moon Jellyfish', scientific: 'Aurelia aurita' },
+  'moon jellyfish': { common: 'Moon Jellyfish', scientific: 'Aurelia aurita' },
+  'coral': { common: 'Staghorn Coral', scientific: 'Acropora cervicornis' },
+  'staghorn coral': { common: 'Staghorn Coral', scientific: 'Acropora cervicornis' },
+
+  // Insects and Arachnids
+  'butterfly': { common: 'Monarch Butterfly', scientific: 'Danaus plexippus' },
+  'monarch butterfly': { common: 'Monarch Butterfly', scientific: 'Danaus plexippus' },
+  'monarch': { common: 'Monarch Butterfly', scientific: 'Danaus plexippus' },
+  'bee': { common: 'European Honey Bee', scientific: 'Apis mellifera' },
+  'honey bee': { common: 'European Honey Bee', scientific: 'Apis mellifera' },
+  'european honey bee': { common: 'European Honey Bee', scientific: 'Apis mellifera' },
+  'spider': { common: 'Black Widow Spider', scientific: 'Latrodectus mactans' },
+  'black widow': { common: 'Black Widow Spider', scientific: 'Latrodectus mactans' },
+  'black widow spider': { common: 'Black Widow Spider', scientific: 'Latrodectus mactans' },
+  'scorpion': { common: 'Arizona Bark Scorpion', scientific: 'Centruroides sculpturatus' },
+  'arizona bark scorpion': { common: 'Arizona Bark Scorpion', scientific: 'Centruroides sculpturatus' },
+
+  // Australian Wildlife
+  'kangaroo': { common: 'Red Kangaroo', scientific: 'Osphranter rufus' },
+  'red kangaroo': { common: 'Red Kangaroo', scientific: 'Osphranter rufus' },
+  'koala': { common: 'Koala', scientific: 'Phascolarctos cinereus' },
+  'wombat': { common: 'Common Wombat', scientific: 'Vombatus ursinus' },
+  'common wombat': { common: 'Common Wombat', scientific: 'Vombatus ursinus' },
+  'platypus': { common: 'Platypus', scientific: 'Ornithorhynchus anatinus' },
+  'echidna': { common: 'Short-beaked Echidna', scientific: 'Tachyglossus aculeatus' },
+  'short-beaked echidna': { common: 'Short-beaked Echidna', scientific: 'Tachyglossus aculeatus' },
+
+  // Other Unique Animals
+  'sloth': { common: 'Three-toed Sloth', scientific: 'Bradypus tridactylus' },
+  'three-toed sloth': { common: 'Three-toed Sloth', scientific: 'Bradypus tridactylus' },
+  'armadillo': { common: 'Nine-banded Armadillo', scientific: 'Dasypus novemcinctus' },
+  'nine-banded armadillo': { common: 'Nine-banded Armadillo', scientific: 'Dasypus novemcinctus' },
+  'anteater': { common: 'Giant Anteater', scientific: 'Myrmecophaga tridactyla' },
+  'giant anteater': { common: 'Giant Anteater', scientific: 'Myrmecophaga tridactyla' },
+  'pangolin': { common: 'Chinese Pangolin', scientific: 'Manis pentadactyla' },
+  'chinese pangolin': { common: 'Chinese Pangolin', scientific: 'Manis pentadactyla' },
+  'hedgehog': { common: 'European Hedgehog', scientific: 'Erinaceus europaeus' },
+  'european hedgehog': { common: 'European Hedgehog', scientific: 'Erinaceus europaeus' },
+  'porcupine': { common: 'North American Porcupine', scientific: 'Erethizon dorsatum' },
+  'north american porcupine': { common: 'North American Porcupine', scientific: 'Erethizon dorsatum' },
+
+  // Arctic Animals
+  'arctic fox': { common: 'Arctic Fox', scientific: 'Vulpes lagopus' },
+  'snowy owl': { common: 'Snowy Owl', scientific: 'Bubo scandiacus' },
+  'reindeer': { common: 'Reindeer', scientific: 'Rangifer tarandus' },
+  'caribou': { common: 'Caribou', scientific: 'Rangifer tarandus' },
+
+  // Desert Animals
+  'camel': { common: 'Dromedary Camel', scientific: 'Camelus dromedarius' },
+  'dromedary': { common: 'Dromedary Camel', scientific: 'Camelus dromedarius' },
+  'dromedary camel': { common: 'Dromedary Camel', scientific: 'Camelus dromedarius' },
+  'fennec fox': { common: 'Fennec Fox', scientific: 'Vulpes zerda' },
+  'fennec': { common: 'Fennec Fox', scientific: 'Vulpes zerda' },
+  'meerkat': { common: 'Meerkat', scientific: 'Suricata suricatta' },
+  'addax': { common: 'Addax', scientific: 'Addax nasomaculatus' }
+};
+
+// Domestic/Non-wild animals database
+const DOMESTIC_SPECIES_DATABASE = {
+  // Common Pets
+  'dog': true, 'puppy': true, 'canine': true,
+  'cat': true, 'kitten': true, 'feline': true,
+  'rabbit': true, 'bunny': true,
+  'hamster': true, 'guinea pig': true, 'gerbil': true,
+  'mouse': true, 'rat': true, 'ferret': true,
+  
+  // Livestock
+  'cow': true, 'cattle': true, 'bull': true, 'calf': true,
+  'pig': true, 'hog': true, 'swine': true, 'piglet': true,
+  'sheep': true, 'lamb': true, 'ewe': true, 'ram': true,
+  'goat': true, 'kid': true, 'billy goat': true,
+  'horse': true, 'pony': true, 'stallion': true, 'mare': true, 'foal': true,
+  'donkey': true, 'mule': true, 'ass': true,
+  
+  // Poultry
+  'chicken': true, 'rooster': true, 'hen': true, 'chick': true,
+  'duck': true, 'duckling': true, 'mallard duck': true,
+  'goose': true, 'gosling': true,
+  'turkey': true, 'turkey chick': true,
+  
+  // Aquarium/Pet Fish
+  'goldfish': true, 'koi': true, 'betta': true, 'guppy': true,
+  'angelfish': true, 'tetra': true, 'molly': true,
+  
+  // Pet Birds
+  'parrot': true, 'parakeet': true, 'budgie': true, 'budgerigar': true,
+  'canary': true, 'cockatiel': true, 'lovebird': true, 'finch': true
+};
+
 export class WildlifeRecognitionService {
-  // Database of wild animals with their common and scientific names
-  private wildAnimalsDatabase: Record<string, { commonName: string; scientificName: string }> = {
-    // Big Cats
-    'tiger': { commonName: 'Bengal Tiger', scientificName: 'Panthera tigris tigris' },
-    'lion': { commonName: 'African Lion', scientificName: 'Panthera leo' },
-    'leopard': { commonName: 'African Leopard', scientificName: 'Panthera pardus' },
-    'cheetah': { commonName: 'Cheetah', scientificName: 'Acinonyx jubatus' },
-    'jaguar': { commonName: 'Jaguar', scientificName: 'Panthera onca' },
-    'lynx': { commonName: 'Eurasian Lynx', scientificName: 'Lynx lynx' },
-    'cougar': { commonName: 'Cougar', scientificName: 'Puma concolor' },
-    'snow leopard': { commonName: 'Snow Leopard', scientificName: 'Panthera uncia' },
-    'clouded leopard': { commonName: 'Clouded Leopard', scientificName: 'Neofelis nebulosa' },
-    'sunda clouded leopard': { commonName: 'Sunda Clouded Leopard', scientificName: 'Neofelis diardi' },
-    'margay': { commonName: 'Margay', scientificName: 'Leopardus wiedii' },
-    'ocelot': { commonName: 'Ocelot', scientificName: 'Leopardus pardalis' },
-    'jaguarundi': { commonName: 'Jaguarundi', scientificName: 'Herpailurus yagouaroundi' },
-    'bobcat': { commonName: 'Bobcat', scientificName: 'Lynx rufus' },
-    'caracal': { commonName: 'Caracal', scientificName: 'Caracal caracal' },
-    'serval': { commonName: 'Serval', scientificName: 'Leptailurus serval' },
-    'african wildcat': { commonName: 'African Wildcat', scientificName: 'Felis lybica' },
-    'eurasian wildcat': { commonName: 'Eurasian Wildcat', scientificName: 'Felis silvestris' },
-    'sand cat': { commonName: 'Sand Cat', scientificName: 'Felis margarita' },
-    'black-footed cat': { commonName: 'Black-footed Cat', scientificName: 'Felis nigripes' },
-    'pallas cat': { commonName: 'Pallas Cat', scientificName: 'Otocolobus manul' },
-    'fishing cat': { commonName: 'Fishing Cat', scientificName: 'Prionailurus viverrinus' },
-    'flat-headed cat': { commonName: 'Flat-headed Cat', scientificName: 'Prionailurus planiceps' },
-    'rusty-spotted cat': { commonName: 'Rusty-spotted Cat', scientificName: 'Prionailurus rubiginosus' },
-    'leopard cat': { commonName: 'Leopard Cat', scientificName: 'Prionailurus bengalensis' },
-    'marbled cat': { commonName: 'Marbled Cat', scientificName: 'Pardofelis marmorata' },
-    'asian golden cat': { commonName: 'Asian Golden Cat', scientificName: 'Catopuma temminckii' },
-    'bay cat': { commonName: 'Bay Cat', scientificName: 'Catopuma badia' },
-    
-    // Bears
-    'bear': { commonName: 'American Black Bear', scientificName: 'Ursus americanus' },
-    'grizzly bear': { commonName: 'Grizzly Bear', scientificName: 'Ursus arctos horribilis' },
-    'panda': { commonName: 'Giant Panda', scientificName: 'Ailuropoda melanoleuca' },
-    'polar bear': { commonName: 'Polar Bear', scientificName: 'Ursus maritimus' },
-    'brown bear': { commonName: 'Brown Bear', scientificName: 'Ursus arctos' },
-    'asiatic black bear': { commonName: 'Asiatic Black Bear', scientificName: 'Ursus thibetanus' },
-    'sun bear': { commonName: 'Sun Bear', scientificName: 'Helarctos malayanus' },
-    'sloth bear': { commonName: 'Sloth Bear', scientificName: 'Melursus ursinus' },
-    'spectacled bear': { commonName: 'Spectacled Bear', scientificName: 'Tremarctos ornatus' },
-    
-    // Canids
-    'wolf': { commonName: 'Gray Wolf', scientificName: 'Canis lupus' },
-    'fox': { commonName: 'Red Fox', scientificName: 'Vulpes vulpes' },
-    'coyote': { commonName: 'Coyote', scientificName: 'Canis latrans' },
-    'jackal': { commonName: 'Golden Jackal', scientificName: 'Canis aureus' },
-    'red wolf': { commonName: 'Red Wolf', scientificName: 'Canis rufus' },
-    'ethiopian wolf': { commonName: 'Ethiopian Wolf', scientificName: 'Canis simensis' },
-    'maned wolf': { commonName: 'Maned Wolf', scientificName: 'Chrysocyon brachyurus' },
-    'african wild dog': { commonName: 'African Wild Dog', scientificName: 'Lycaon pictus' },
-    'dhole': { commonName: 'Dhole', scientificName: 'Cuon alpinus' },
-    'bush dog': { commonName: 'Bush Dog', scientificName: 'Speothos venaticus' },
-    'arctic fox': { commonName: 'Arctic Fox', scientificName: 'Vulpes lagopus' },
-    'fennec fox': { commonName: 'Fennec Fox', scientificName: 'Vulpes zerda' },
-    'kit fox': { commonName: 'Kit Fox', scientificName: 'Vulpes macrotis' },
-    'swift fox': { commonName: 'Swift Fox', scientificName: 'Vulpes velox' },
-    'corsac fox': { commonName: 'Corsac Fox', scientificName: 'Vulpes corsac' },
-    'tibetan fox': { commonName: 'Tibetan Fox', scientificName: 'Vulpes ferrilata' },
-    'pale fox': { commonName: 'Pale Fox', scientificName: 'Vulpes pallida' },
-    'ruppell fox': { commonName: 'Rüppell Fox', scientificName: 'Vulpes rueppellii' },
-    'bengal fox': { commonName: 'Bengal Fox', scientificName: 'Vulpes bengalensis' },
-    'blanford fox': { commonName: 'Blanford Fox', scientificName: 'Vulpes cana' },
-    'cape fox': { commonName: 'Cape Fox', scientificName: 'Vulpes chama' },
-    'side-striped jackal': { commonName: 'Side-striped Jackal', scientificName: 'Lupulella adusta' },
-    'black-backed jackal': { commonName: 'Black-backed Jackal', scientificName: 'Lupulella mesomelas' },
-    
-    // Elephants and Rhinos
-    'elephant': { commonName: 'African Elephant', scientificName: 'Loxodonta africana' },
-    'rhino': { commonName: 'White Rhinoceros', scientificName: 'Ceratotherium simum' },
-    'rhinoceros': { commonName: 'White Rhinoceros', scientificName: 'Ceratotherium simum' },
-    'black rhino': { commonName: 'Black Rhinoceros', scientificName: 'Diceros bicornis' },
-    'indian rhinoceros': { commonName: 'Indian Rhinoceros', scientificName: 'Rhinoceros unicornis' },
-    'javan rhinoceros': { commonName: 'Javan Rhinoceros', scientificName: 'Rhinoceros sondaicus' },
-    'sumatran rhinoceros': { commonName: 'Sumatran Rhinoceros', scientificName: 'Dicerorhinus sumatrensis' },
-    'asian elephant': { commonName: 'Asian Elephant', scientificName: 'Elephas maximus' },
-    'forest elephant': { commonName: 'Forest Elephant', scientificName: 'Loxodonta cyclotis' },
-    
-    // Herbivores
-    'giraffe': { commonName: 'Northern Giraffe', scientificName: 'Giraffa camelopardalis' },
-    'zebra': { commonName: 'Plains Zebra', scientificName: 'Equus quagga' },
-    'hippo': { commonName: 'Hippopotamus', scientificName: 'Hippopotamus amphibius' },
-    'hippopotamus': { commonName: 'Hippopotamus', scientificName: 'Hippopotamus amphibius' },
-    'buffalo': { commonName: 'African Buffalo', scientificName: 'Syncerus caffer' },
-    'deer': { commonName: 'White-tailed Deer', scientificName: 'Odocoileus virginianus' },
-    'moose': { commonName: 'Moose', scientificName: 'Alces alces' },
-    'elk': { commonName: 'Elk', scientificName: 'Cervus canadensis' },
-    'antelope': { commonName: 'Impala', scientificName: 'Aepyceros melampus' },
-    'wildebeest': { commonName: 'Blue Wildebeest', scientificName: 'Connochaetes taurinus' },
-    'gazelle': { commonName: "Thomson's Gazelle", scientificName: 'Gazella thomsonii' },
-    'oryx': { commonName: 'Gemsbok', scientificName: 'Oryx gazella' },
-    'kudu': { commonName: 'Greater Kudu', scientificName: 'Tragelaphus strepsiceros' },
-    'nyala': { commonName: 'Nyala', scientificName: 'Tragelaphus angasii' },
-    'bushbuck': { commonName: 'Bushbuck', scientificName: 'Tragelaphus scriptus' },
-    'sitatunga': { commonName: 'Sitatunga', scientificName: 'Tragelaphus spekii' },
-    'bongo': { commonName: 'Bongo', scientificName: 'Tragelaphus eurycerus' },
-    'eland': { commonName: 'Common Eland', scientificName: 'Taurotragus oryx' },
-    'giant eland': { commonName: 'Giant Eland', scientificName: 'Taurotragus derbianus' },
-    'waterbuck': { commonName: 'Waterbuck', scientificName: 'Kobus ellipsiprymnus' },
-    'lechwe': { commonName: 'Red Lechwe', scientificName: 'Kobus leche' },
-    'puku': { commonName: 'Puku', scientificName: 'Kobus vardonii' },
-    'kob': { commonName: 'Kob', scientificName: 'Kobus kob' },
-    'topi': { commonName: 'Topi', scientificName: 'Damaliscus lunatus' },
-    'hartebeest': { commonName: 'Hartebeest', scientificName: 'Alcelaphus buselaphus' },
-    'tsessebe': { commonName: 'Tsessebe', scientificName: 'Damaliscus lunatus' },
-    'bontebok': { commonName: 'Bontebok', scientificName: 'Damaliscus pygargus' },
-    'springbok': { commonName: 'Springbok', scientificName: 'Antidorcas marsupialis' },
-    'steenbok': { commonName: 'Steenbok', scientificName: 'Raphicerus campestris' },
-    'duiker': { commonName: 'Common Duiker', scientificName: 'Sylvicapra grimmia' },
-    'klipspringer': { commonName: 'Klipspringer', scientificName: 'Oreotragus oreotragus' },
-    'oribi': { commonName: 'Oribi', scientificName: 'Ourebia ourebi' },
-    'grysbok': { commonName: 'Cape Grysbok', scientificName: 'Raphicerus melanotis' },
-    'roan antelope': { commonName: 'Roan Antelope', scientificName: 'Hippotragus equinus' },
-    'sable antelope': { commonName: 'Sable Antelope', scientificName: 'Hippotragus niger' },
-    'addax': { commonName: 'Addax', scientificName: 'Addax nasomaculatus' },
-    'scimitar oryx': { commonName: 'Scimitar Oryx', scientificName: 'Oryx dammah' },
-    'beisa oryx': { commonName: 'Beisa Oryx', scientificName: 'Oryx beisa' },
-    'gemsbok': { commonName: 'Gemsbok', scientificName: 'Oryx gazella' },
-    'arabian oryx': { commonName: 'Arabian Oryx', scientificName: 'Oryx leucoryx' },
-    'saiga': { commonName: 'Saiga Antelope', scientificName: 'Saiga tatarica' },
-    'chiru': { commonName: 'Tibetan Antelope', scientificName: 'Pantholops hodgsonii' },
-    'takin': { commonName: 'Takin', scientificName: 'Budorcas taxicolor' },
-    'muskox': { commonName: 'Muskox', scientificName: 'Ovibos moschatus' },
-    'bighorn sheep': { commonName: 'Bighorn Sheep', scientificName: 'Ovis canadensis' },
-    'dall sheep': { commonName: 'Dall Sheep', scientificName: 'Ovis dalli' },
-    'mouflon': { commonName: 'Mouflon', scientificName: 'Ovis orientalis' },
-    'argali': { commonName: 'Argali', scientificName: 'Ovis ammon' },
-    'urial': { commonName: 'Urial', scientificName: 'Ovis vignei' },
-    'chamois': { commonName: 'Chamois', scientificName: 'Rupicapra rupicapra' },
-    'goral': { commonName: 'Himalayan Goral', scientificName: 'Naemorhedus goral' },
-    'serow': { commonName: 'Himalayan Serow', scientificName: 'Capricornis thar' },
-    'markhor': { commonName: 'Markhor', scientificName: 'Capra falconeri' },
-    'ibex': { commonName: 'Alpine Ibex', scientificName: 'Capra ibex' },
-    'nubian ibex': { commonName: 'Nubian Ibex', scientificName: 'Capra nubiana' },
-    'siberian ibex': { commonName: 'Siberian Ibex', scientificName: 'Capra sibirica' },
-    'walia ibex': { commonName: 'Walia Ibex', scientificName: 'Capra walie' },
-    'tahr': { commonName: 'Himalayan Tahr', scientificName: 'Hemitragus jemlahicus' },
-    'nilgiri tahr': { commonName: 'Nilgiri Tahr', scientificName: 'Nilgiritragus hylocrius' },
-    'arabian tahr': { commonName: 'Arabian Tahr', scientificName: 'Arabitragus jayakari' },
-    
-    // Primates
-    'gorilla': { commonName: 'Western Gorilla', scientificName: 'Gorilla gorilla' },
-    'chimpanzee': { commonName: 'Common Chimpanzee', scientificName: 'Pan troglodytes' },
-    'orangutan': { commonName: 'Bornean Orangutan', scientificName: 'Pongo pygmaeus' },
-    'monkey': { commonName: 'Rhesus Macaque', scientificName: 'Macaca mulatta' },
-    'baboon': { commonName: 'Olive Baboon', scientificName: 'Papio anubis' },
-    'lemur': { commonName: 'Ring-tailed Lemur', scientificName: 'Lemur catta' },
-    'eastern gorilla': { commonName: 'Eastern Gorilla', scientificName: 'Gorilla beringei' },
-    'bonobo': { commonName: 'Bonobo', scientificName: 'Pan paniscus' },
-    'sumatran orangutan': { commonName: 'Sumatran Orangutan', scientificName: 'Pongo abelii' },
-    'tapanuli orangutan': { commonName: 'Tapanuli Orangutan', scientificName: 'Pongo tapanuliensis' },
-    'gibbon': { commonName: 'Lar Gibbon', scientificName: 'Hylobates lar' },
-    'siamang': { commonName: 'Siamang', scientificName: 'Symphalangus syndactylus' },
-    'mandrill': { commonName: 'Mandrill', scientificName: 'Mandrillus sphinx' },
-    'drill': { commonName: 'Drill', scientificName: 'Mandrillus leucophaeus' },
-    'gelada': { commonName: 'Gelada', scientificName: 'Theropithecus gelada' },
-    'colobus': { commonName: 'Black-and-white Colobus', scientificName: 'Colobus guereza' },
-    'langur': { commonName: 'Hanuman Langur', scientificName: 'Semnopithecus entellus' },
-    'proboscis monkey': { commonName: 'Proboscis Monkey', scientificName: 'Nasalis larvatus' },
-    'snub-nosed monkey': { commonName: 'Golden Snub-nosed Monkey', scientificName: 'Rhinopithecus roxellana' },
-    'spider monkey': { commonName: 'Black Spider Monkey', scientificName: 'Ateles paniscus' },
-    'howler monkey': { commonName: 'Black Howler Monkey', scientificName: 'Alouatta caraya' },
-    'capuchin': { commonName: 'White-faced Capuchin', scientificName: 'Cebus capucinus' },
-    'tamarin': { commonName: 'Golden Lion Tamarin', scientificName: 'Leontopithecus rosalia' },
-    'marmoset': { commonName: 'Common Marmoset', scientificName: 'Callithrix jacchus' },
-    'tarsier': { commonName: 'Philippine Tarsier', scientificName: 'Carlito syrichta' },
-    'loris': { commonName: 'Slow Loris', scientificName: 'Nycticebus coucang' },
-    'galago': { commonName: 'Bushbaby', scientificName: 'Galago senegalensis' },
-    'aye-aye': { commonName: 'Aye-aye', scientificName: 'Daubentonia madagascariensis' },
-    'indri': { commonName: 'Indri', scientificName: 'Indri indri' },
-    'sifaka': { commonName: 'Verreaux Sifaka', scientificName: 'Propithecus verreauxi' },
-    'mouse lemur': { commonName: 'Gray Mouse Lemur', scientificName: 'Microcebus murinus' },
-    
-    // Marine Mammals
-    'whale': { commonName: 'Blue Whale', scientificName: 'Balaenoptera musculus' },
-    'dolphin': { commonName: 'Bottlenose Dolphin', scientificName: 'Tursiops truncatus' },
-    'seal': { commonName: 'Harbor Seal', scientificName: 'Phoca vitulina' },
-    'sea lion': { commonName: 'California Sea Lion', scientificName: 'Zalophus californianus' },
-    'walrus': { commonName: 'Pacific Walrus', scientificName: 'Odobenus rosmarus' },
-    'otter': { commonName: 'Sea Otter', scientificName: 'Enhydra lutris' },
-    'humpback whale': { commonName: 'Humpback Whale', scientificName: 'Megaptera novaeangliae' },
-    'sperm whale': { commonName: 'Sperm Whale', scientificName: 'Physeter macrocephalus' },
-    'orca': { commonName: 'Orca', scientificName: 'Orcinus orca' },
-    'beluga': { commonName: 'Beluga Whale', scientificName: 'Delphinapterus leucas' },
-    'narwhal': { commonName: 'Narwhal', scientificName: 'Monodon monoceros' },
-    'fin whale': { commonName: 'Fin Whale', scientificName: 'Balaenoptera physalus' },
-    'sei whale': { commonName: 'Sei Whale', scientificName: 'Balaenoptera borealis' },
-    'minke whale': { commonName: 'Minke Whale', scientificName: 'Balaenoptera acutorostrata' },
-    'bowhead whale': { commonName: 'Bowhead Whale', scientificName: 'Balaena mysticetus' },
-    'right whale': { commonName: 'North Atlantic Right Whale', scientificName: 'Eubalaena glacialis' },
-    'pilot whale': { commonName: 'Long-finned Pilot Whale', scientificName: 'Globicephala melas' },
-    'killer whale': { commonName: 'Orca', scientificName: 'Orcinus orca' },
-    'common dolphin': { commonName: 'Common Dolphin', scientificName: 'Delphinus delphis' },
-    'spinner dolphin': { commonName: 'Spinner Dolphin', scientificName: 'Stenella longirostris' },
-    'spotted dolphin': { commonName: 'Atlantic Spotted Dolphin', scientificName: 'Stenella frontalis' },
-    'striped dolphin': { commonName: 'Striped Dolphin', scientificName: 'Stenella coeruleoalba' },
-    'risso dolphin': { commonName: 'Risso Dolphin', scientificName: 'Grampus griseus' },
-    'white-sided dolphin': { commonName: 'Atlantic White-sided Dolphin', scientificName: 'Lagenorhynchus acutus' },
-    'white-beaked dolphin': { commonName: 'White-beaked Dolphin', scientificName: 'Lagenorhynchus albirostris' },
-    'hourglass dolphin': { commonName: 'Hourglass Dolphin', scientificName: 'Lagenorhynchus cruciger' },
-    'peale dolphin': { commonName: 'Peale Dolphin', scientificName: 'Lagenorhynchus australis' },
-    'dusky dolphin': { commonName: 'Dusky Dolphin', scientificName: 'Lagenorhynchus obscurus' },
-    'pacific white-sided dolphin': { commonName: 'Pacific White-sided Dolphin', scientificName: 'Lagenorhynchus obliquidens' },
-    'rough-toothed dolphin': { commonName: 'Rough-toothed Dolphin', scientificName: 'Steno bredanensis' },
-    'fraser dolphin': { commonName: 'Fraser Dolphin', scientificName: 'Lagenodelphis hosei' },
-    'clymene dolphin': { commonName: 'Clymene Dolphin', scientificName: 'Stenella clymene' },
-    'melon-headed whale': { commonName: 'Melon-headed Whale', scientificName: 'Peponocephala electra' },
-    'pygmy killer whale': { commonName: 'Pygmy Killer Whale', scientificName: 'Feresa attenuata' },
-    'false killer whale': { commonName: 'False Killer Whale', scientificName: 'Pseudorca crassidens' },
-    'short-finned pilot whale': { commonName: 'Short-finned Pilot Whale', scientificName: 'Globicephala macrorhynchus' },
-    'northern right whale dolphin': { commonName: 'Northern Right Whale Dolphin', scientificName: 'Lissodelphis borealis' },
-    'southern right whale dolphin': { commonName: 'Southern Right Whale Dolphin', scientificName: 'Lissodelphis peronii' },
-    'irrawaddy dolphin': { commonName: 'Irrawaddy Dolphin', scientificName: 'Orcaella brevirostris' },
-    'australian snubfin dolphin': { commonName: 'Australian Snubfin Dolphin', scientificName: 'Orcaella heinsohni' },
-    'commerson dolphin': { commonName: 'Commerson Dolphin', scientificName: 'Cephalorhynchus commersonii' },
-    'heaviside dolphin': { commonName: 'Heaviside Dolphin', scientificName: 'Cephalorhynchus heavisidii' },
-    'hector dolphin': { commonName: "Hector's Dolphin", scientificName: 'Cephalorhynchus hectori' },
-    'chilean dolphin': { commonName: 'Chilean Dolphin', scientificName: 'Cephalorhynchus eutropia' },
-    'harbor porpoise': { commonName: 'Harbor Porpoise', scientificName: 'Phocoena phocoena' },
-    'vaquita': { commonName: 'Vaquita', scientificName: 'Phocoena sinus' },
-    'spectacled porpoise': { commonName: 'Spectacled Porpoise', scientificName: 'Phocoena dioptrica' },
-    'burmeister porpoise': { commonName: 'Burmeister Porpoise', scientificName: 'Phocoena spinipinnis' },
-    'dall porpoise': { commonName: "Dall's Porpoise", scientificName: 'Phocoenoides dalli' },
-    'finless porpoise': { commonName: 'Finless Porpoise', scientificName: 'Neophocaena phocaenoides' },
-    'narrow-ridged finless porpoise': { commonName: 'Narrow-ridged Finless Porpoise', scientificName: 'Neophocaena asiaeorientalis' },
-    
-    // Birds of Prey
-    'eagle': { commonName: 'Bald Eagle', scientificName: 'Haliaeetus leucocephalus' },
-    'hawk': { commonName: 'Red-tailed Hawk', scientificName: 'Buteo jamaicensis' },
-    'owl': { commonName: 'Great Horned Owl', scientificName: 'Bubo virginianus' },
-    'falcon': { commonName: 'Peregrine Falcon', scientificName: 'Falco peregrinus' },
-    'vulture': { commonName: 'Turkey Vulture', scientificName: 'Cathartes aura' },
-    'golden eagle': { commonName: 'Golden Eagle', scientificName: 'Aquila chrysaetos' },
-    'white-tailed eagle': { commonName: 'White-tailed Eagle', scientificName: 'Haliaeetus albicilla' },
-    'steller sea eagle': { commonName: "Steller's Sea Eagle", scientificName: 'Haliaeetus pelagicus' },
-    'african fish eagle': { commonName: 'African Fish Eagle', scientificName: 'Haliaeetus vocifer' },
-    'harpy eagle': { commonName: 'Harpy Eagle', scientificName: 'Harpia harpyja' },
-    'philippine eagle': { commonName: 'Philippine Eagle', scientificName: 'Pithecophaga jefferyi' },
-    'martial eagle': { commonName: 'Martial Eagle', scientificName: 'Polemaetus bellicosus' },
-    'crowned eagle': { commonName: 'Crowned Eagle', scientificName: 'Stephanoaetus coronatus' },
-    'wedge-tailed eagle': { commonName: 'Wedge-tailed Eagle', scientificName: 'Aquila audax' },
-    'verreaux eagle': { commonName: "Verreaux's Eagle", scientificName: 'Aquila verreauxii' },
-    'tawny eagle': { commonName: 'Tawny Eagle', scientificName: 'Aquila rapax' },
-    'steppe eagle': { commonName: 'Steppe Eagle', scientificName: 'Aquila nipalensis' },
-    'imperial eagle': { commonName: 'Eastern Imperial Eagle', scientificName: 'Aquila heliaca' },
-    'spanish imperial eagle': { commonName: 'Spanish Imperial Eagle', scientificName: 'Aquila adalberti' },
-    'lesser spotted eagle': { commonName: 'Lesser Spotted Eagle', scientificName: 'Clanga pomarina' },
-    'greater spotted eagle': { commonName: 'Greater Spotted Eagle', scientificName: 'Clanga clanga' },
-    'booted eagle': { commonName: 'Booted Eagle', scientificName: 'Hieraaetus pennatus' },
-    'ayres hawk-eagle': { commonName: "Ayres's Hawk-eagle", scientificName: 'Hieraaetus ayresii' },
-    'african hawk-eagle': { commonName: 'African Hawk-eagle', scientificName: 'Aquila spilogaster' },
-    'cassins hawk-eagle': { commonName: "Cassin's Hawk-eagle", scientificName: 'Aquila africana' },
-    'wahlberg eagle': { commonName: "Wahlberg's Eagle", scientificName: 'Hieraaetus wahlbergi' },
-    'long-crested eagle': { commonName: 'Long-crested Eagle', scientificName: 'Lophaetus occipitalis' },
-    'black eagle': { commonName: 'Black Eagle', scientificName: 'Ictinaetus malaiensis' },
-    'indian spotted eagle': { commonName: 'Indian Spotted Eagle', scientificName: 'Clanga hastata' },
-    'pallas fish eagle': { commonName: "Pallas's Fish Eagle", scientificName: 'Haliaeetus leucoryphus' },
-    'madagascar fish eagle': { commonName: 'Madagascar Fish Eagle', scientificName: 'Haliaeetus vociferoides' },
-    'sanford sea eagle': { commonName: "Sanford's Sea Eagle", scientificName: 'Haliaeetus sanfordi' },
-    'pied harrier': { commonName: 'Pied Harrier', scientificName: 'Circus melanoleucos' },
-    'hen harrier': { commonName: 'Hen Harrier', scientificName: 'Circus cyaneus' },
-    'marsh harrier': { commonName: 'Western Marsh Harrier', scientificName: 'Circus aeruginosus' },
-    'montagu harrier': { commonName: "Montagu's Harrier", scientificName: 'Circus pygargus' },
-    'pallid harrier': { commonName: 'Pallid Harrier', scientificName: 'Circus macrourus' },
-    'cinereous harrier': { commonName: 'Cinereous Harrier', scientificName: 'Circus cinereus' },
-    'spotted harrier': { commonName: 'Spotted Harrier', scientificName: 'Circus assimilis' },
-    'swamp harrier': { commonName: 'Swamp Harrier', scientificName: 'Circus approximans' },
-    'african marsh harrier': { commonName: 'African Marsh Harrier', scientificName: 'Circus ranivorus' },
-    'reunion harrier': { commonName: 'Réunion Harrier', scientificName: 'Circus maillardi' },
-    'madagascar harrier': { commonName: 'Madagascar Harrier', scientificName: 'Circus macrosceles' },
-    'long-winged harrier': { commonName: 'Long-winged Harrier', scientificName: 'Circus buffoni' },
-    'spotted harrier': { commonName: 'Spotted Harrier', scientificName: 'Circus assimilis' },
-    'black harrier': { commonName: 'Black Harrier', scientificName: 'Circus maurus' },
-    'eastern marsh harrier': { commonName: 'Eastern Marsh Harrier', scientificName: 'Circus spilonotus' },
-    'papuan harrier': { commonName: 'Papuan Harrier', scientificName: 'Circus spilothorax' },
-    'red kite': { commonName: 'Red Kite', scientificName: 'Milvus milvus' },
-    'black kite': { commonName: 'Black Kite', scientificName: 'Milvus migrans' },
-    'yellow-billed kite': { commonName: 'Yellow-billed Kite', scientificName: 'Milvus aegyptius' },
-    'whistling kite': { commonName: 'Whistling Kite', scientificName: 'Haliastur sphenurus' },
-    'brahminy kite': { commonName: 'Brahminy Kite', scientificName: 'Haliastur indus' },
-    'white-bellied sea eagle': { commonName: 'White-bellied Sea Eagle', scientificName: 'Haliaeetus leucogaster' },
-    'osprey': { commonName: 'Osprey', scientificName: 'Pandion haliaetus' },
-    'secretary bird': { commonName: 'Secretary Bird', scientificName: 'Sagittarius serpentarius' },
-    
-    // Other Birds
-    'penguin': { commonName: 'King Penguin', scientificName: 'Aptenodytes patagonicus' },
-    'flamingo': { commonName: 'Greater Flamingo', scientificName: 'Phoenicopterus roseus' },
-    'peacock': { commonName: 'Indian Peafowl', scientificName: 'Pavo cristatus' },
-    'ostrich': { commonName: 'Common Ostrich', scientificName: 'Struthio camelus' },
-    'emu': { commonName: 'Emu', scientificName: 'Dromaius novaehollandiae' },
-    'crane': { commonName: 'Sandhill Crane', scientificName: 'Grus canadensis' },
-    'emperor penguin': { commonName: 'Emperor Penguin', scientificName: 'Aptenodytes forsteri' },
-    'adelie penguin': { commonName: 'Adélie Penguin', scientificName: 'Pygoscelis adeliae' },
-    'chinstrap penguin': { commonName: 'Chinstrap Penguin', scientificName: 'Pygoscelis antarcticus' },
-    'gentoo penguin': { commonName: 'Gentoo Penguin', scientificName: 'Pygoscelis papua' },
-    'macaroni penguin': { commonName: 'Macaroni Penguin', scientificName: 'Eudyptes chrysolophus' },
-    'rockhopper penguin': { commonName: 'Rockhopper Penguin', scientificName: 'Eudyptes chrysocome' },
-    'african penguin': { commonName: 'African Penguin', scientificName: 'Spheniscus demersus' },
-    'galapagos penguin': { commonName: 'Galápagos Penguin', scientificName: 'Spheniscus mendiculus' },
-    'humboldt penguin': { commonName: 'Humboldt Penguin', scientificName: 'Spheniscus humboldti' },
-    'magellanic penguin': { commonName: 'Magellanic Penguin', scientificName: 'Spheniscus magellanicus' },
-    'little penguin': { commonName: 'Little Penguin', scientificName: 'Eudyptula minor' },
-    'yellow-eyed penguin': { commonName: 'Yellow-eyed Penguin', scientificName: 'Megadyptes antipodes' },
-    'fiordland penguin': { commonName: 'Fiordland Penguin', scientificName: 'Eudyptes pachyrhynchus' },
-    'snares penguin': { commonName: 'Snares Penguin', scientificName: 'Eudyptes robustus' },
-    'erect-crested penguin': { commonName: 'Erect-crested Penguin', scientificName: 'Eudyptes sclateri' },
-    'royal penguin': { commonName: 'Royal Penguin', scientificName: 'Eudyptes schlegeli' },
-    'chilean flamingo': { commonName: 'Chilean Flamingo', scientificName: 'Phoenicopterus chilensis' },
-    'lesser flamingo': { commonName: 'Lesser Flamingo', scientificName: 'Phoeniconaias minor' },
-    'american flamingo': { commonName: 'American Flamingo', scientificName: 'Phoenicopterus ruber' },
-    'andean flamingo': { commonName: 'Andean Flamingo', scientificName: 'Phoenicoparrus andinus' },
-    'james flamingo': { commonName: "James's Flamingo", scientificName: 'Phoenicoparrus jamesi' },
-    'green peafowl': { commonName: 'Green Peafowl', scientificName: 'Pavo muticus' },
-    'congo peafowl': { commonName: 'Congo Peafowl', scientificName: 'Afropavo congensis' },
-    'somali ostrich': { commonName: 'Somali Ostrich', scientificName: 'Struthio molybdophanes' },
-    'south african ostrich': { commonName: 'South African Ostrich', scientificName: 'Struthio camelus australis' },
-    'north african ostrich': { commonName: 'North African Ostrich', scientificName: 'Struthio camelus camelus' },
-    'masai ostrich': { commonName: 'Masai Ostrich', scientificName: 'Struthio camelus massaicus' },
-    'arabian ostrich': { commonName: 'Arabian Ostrich', scientificName: 'Struthio camelus syriacus' },
-    'whooping crane': { commonName: 'Whooping Crane', scientificName: 'Grus americana' },
-    'siberian crane': { commonName: 'Siberian Crane', scientificName: 'Leucogeranus leucogeranus' },
-    'hooded crane': { commonName: 'Hooded Crane', scientificName: 'Grus monacha' },
-    'black-necked crane': { commonName: 'Black-necked Crane', scientificName: 'Grus nigricollis' },
-    'red-crowned crane': { commonName: 'Red-crowned Crane', scientificName: 'Grus japonensis' },
-    'white-naped crane': { commonName: 'White-naped Crane', scientificName: 'Antigone vipio' },
-    'sarus crane': { commonName: 'Sarus Crane', scientificName: 'Antigone antigone' },
-    'brolga': { commonName: 'Brolga', scientificName: 'Antigone rubicunda' },
-    'wattled crane': { commonName: 'Wattled Crane', scientificName: 'Bugeranus carunculatus' },
-    'blue crane': { commonName: 'Blue Crane', scientificName: 'Anthropoides paradiseus' },
-    'demoiselle crane': { commonName: 'Demoiselle Crane', scientificName: 'Anthropoides virgo' },
-    'common crane': { commonName: 'Common Crane', scientificName: 'Grus grus' },
-    'eurasian crane': { commonName: 'Eurasian Crane', scientificName: 'Grus grus' },
-    'canada goose': { commonName: 'Canada Goose', scientificName: 'Branta canadensis' },
-    'snow goose': { commonName: 'Snow Goose', scientificName: 'Anser caerulescens' },
-    'greylag goose': { commonName: 'Greylag Goose', scientificName: 'Anser anser' },
-    'barnacle goose': { commonName: 'Barnacle Goose', scientificName: 'Branta leucopsis' },
-    'brent goose': { commonName: 'Brent Goose', scientificName: 'Branta bernicla' },
-    'white-fronted goose': { commonName: 'Greater White-fronted Goose', scientificName: 'Anser albifrons' },
-    'pink-footed goose': { commonName: 'Pink-footed Goose', scientificName: 'Anser brachyrhynchus' },
-    'bean goose': { commonName: 'Bean Goose', scientificName: 'Anser fabalis' },
-    'swan goose': { commonName: 'Swan Goose', scientificName: 'Anser cygnoides' },
-    'bar-headed goose': { commonName: 'Bar-headed Goose', scientificName: 'Anser indicus' },
-    'emperor goose': { commonName: 'Emperor Goose', scientificName: 'Anser canagicus' },
-    'ross goose': { commonName: "Ross's Goose", scientificName: 'Anser rossii' },
-    'lesser white-fronted goose': { commonName: 'Lesser White-fronted Goose', scientificName: 'Anser erythropus' },
-    'red-breasted goose': { commonName: 'Red-breasted Goose', scientificName: 'Branta ruficollis' },
-    'hawaiian goose': { commonName: 'Hawaiian Goose', scientificName: 'Branta sandvicensis' },
-    'egyptian goose': { commonName: 'Egyptian Goose', scientificName: 'Alopochen aegyptiaca' },
-    'ruddy shelduck': { commonName: 'Ruddy Shelduck', scientificName: 'Tadorna ferruginea' },
-    'common shelduck': { commonName: 'Common Shelduck', scientificName: 'Tadorna tadorna' },
-    'australian shelduck': { commonName: 'Australian Shelduck', scientificName: 'Tadorna tadornoides' },
-    'paradise shelduck': { commonName: 'Paradise Shelduck', scientificName: 'Tadorna variegata' },
-    'south african shelduck': { commonName: 'South African Shelduck', scientificName: 'Tadorna cana' },
-    'crested shelduck': { commonName: 'Crested Shelduck', scientificName: 'Tadorna cristata' },
-    'mallard': { commonName: 'Mallard', scientificName: 'Anas platyrhynchos' },
-    'northern pintail': { commonName: 'Northern Pintail', scientificName: 'Anas acuta' },
-    'gadwall': { commonName: 'Gadwall', scientificName: 'Anas strepera' },
-    'eurasian wigeon': { commonName: 'Eurasian Wigeon', scientificName: 'Anas penelope' },
-    'american wigeon': { commonName: 'American Wigeon', scientificName: 'Anas americana' },
-    'northern shoveler': { commonName: 'Northern Shoveler', scientificName: 'Anas clypeata' },
-    'blue-winged teal': { commonName: 'Blue-winged Teal', scientificName: 'Anas discors' },
-    'green-winged teal': { commonName: 'Green-winged Teal', scientificName: 'Anas crecca' },
-    'eurasian teal': { commonName: 'Eurasian Teal', scientificName: 'Anas crecca' },
-    'garganey': { commonName: 'Garganey', scientificName: 'Anas querquedula' },
-    'baikal teal': { commonName: 'Baikal Teal', scientificName: 'Anas formosa' },
-    'falcated duck': { commonName: 'Falcated Duck', scientificName: 'Anas falcata' },
-    'baer pochard': { commonName: "Baer's Pochard", scientificName: 'Aythya baeri' },
-    'common pochard': { commonName: 'Common Pochard', scientificName: 'Aythya ferina' },
-    'redhead': { commonName: 'Redhead', scientificName: 'Aythya americana' },
-    'canvasback': { commonName: 'Canvasback', scientificName: 'Aythya valisineria' },
-    'greater scaup': { commonName: 'Greater Scaup', scientificName: 'Aythya marila' },
-    'lesser scaup': { commonName: 'Lesser Scaup', scientificName: 'Aythya affinis' },
-    'tufted duck': { commonName: 'Tufted Duck', scientificName: 'Aythya fuligula' },
-    'ring-necked duck': { commonName: 'Ring-necked Duck', scientificName: 'Aythya collaris' },
-    'ferruginous duck': { commonName: 'Ferruginous Duck', scientificName: 'Aythya nyroca' },
-    'hardhead': { commonName: 'Hardhead', scientificName: 'Aythya australis' },
-    'new zealand scaup': { commonName: 'New Zealand Scaup', scientificName: 'Aythya novaeseelandiae' },
-    'madagascar pochard': { commonName: 'Madagascar Pochard', scientificName: 'Aythya innotata' },
-    'common goldeneye': { commonName: 'Common Goldeneye', scientificName: 'Bucephala clangula' },
-    'barrow goldeneye': { commonName: "Barrow's Goldeneye", scientificName: 'Bucephala islandica' },
-    'bufflehead': { commonName: 'Bufflehead', scientificName: 'Bucephala albeola' },
-    'common merganser': { commonName: 'Common Merganser', scientificName: 'Mergus merganser' },
-    'red-breasted merganser': { commonName: 'Red-breasted Merganser', scientificName: 'Mergus serrator' },
-    'hooded merganser': { commonName: 'Hooded Merganser', scientificName: 'Lophodytes cucullatus' },
-    'smew': { commonName: 'Smew', scientificName: 'Mergellus albellus' },
-    'long-tailed duck': { commonName: 'Long-tailed Duck', scientificName: 'Clangula hyemalis' },
-    'common eider': { commonName: 'Common Eider', scientificName: 'Somateria mollissima' },
-    'king eider': { commonName: 'King Eider', scientificName: 'Somateria spectabilis' },
-    'spectacled eider': { commonName: 'Spectacled Eider', scientificName: 'Somateria fischeri' },
-    'steller eider': { commonName: "Steller's Eider", scientificName: 'Polysticta stelleri' },
-    'harlequin duck': { commonName: 'Harlequin Duck', scientificName: 'Histrionicus histrionicus' },
-    'surf scoter': { commonName: 'Surf Scoter', scientificName: 'Melanitta perspicillata' },
-    'white-winged scoter': { commonName: 'White-winged Scoter', scientificName: 'Melanitta deglandi' },
-    'black scoter': { commonName: 'Black Scoter', scientificName: 'Melanitta americana' },
-    'velvet scoter': { commonName: 'Velvet Scoter', scientificName: 'Melanitta fusca' },
-    'common scoter': { commonName: 'Common Scoter', scientificName: 'Melanitta nigra' },
-    'stejneger scoter': { commonName: "Stejneger's Scoter", scientificName: 'Melanitta stejnegeri' },
-    'oldsquaw': { commonName: 'Long-tailed Duck', scientificName: 'Clangula hyemalis' },
-    
-    // Reptiles
-    'crocodile': { commonName: 'Nile Crocodile', scientificName: 'Crocodylus niloticus' },
-    'alligator': { commonName: 'American Alligator', scientificName: 'Alligator mississippiensis' },
-    'snake': { commonName: 'Ball Python', scientificName: 'Python regius' },
-    'lizard': { commonName: 'Komodo Dragon', scientificName: 'Varanus komodoensis' },
-    'turtle': { commonName: 'Green Sea Turtle', scientificName: 'Chelonia mydas' },
-    'tortoise': { commonName: 'Galapagos Tortoise', scientificName: 'Chelonoidis nigra' },
-    'saltwater crocodile': { commonName: 'Saltwater Crocodile', scientificName: 'Crocodylus porosus' },
-    'american crocodile': { commonName: 'American Crocodile', scientificName: 'Crocodylus acutus' },
-    'cuban crocodile': { commonName: 'Cuban Crocodile', scientificName: 'Crocodylus rhombifer' },
-    'morelet crocodile': { commonName: "Morelet's Crocodile", scientificName: 'Crocodylus moreletii' },
-    'orinoco crocodile': { commonName: 'Orinoco Crocodile', scientificName: 'Crocodylus intermedius' },
-    'philippine crocodile': { commonName: 'Philippine Crocodile', scientificName: 'Crocodylus mindorensis' },
-    'siamese crocodile': { commonName: 'Siamese Crocodile', scientificName: 'Crocodylus siamensis' },
-    'new guinea crocodile': { commonName: 'New Guinea Crocodile', scientificName: 'Crocodylus novaeguineae' },
-    'mugger crocodile': { commonName: 'Mugger Crocodile', scientificName: 'Crocodylus palustris' },
-    'west african crocodile': { commonName: 'West African Crocodile', scientificName: 'Crocodylus suchus' },
-    'dwarf crocodile': { commonName: 'Dwarf Crocodile', scientificName: 'Osteolaemus tetraspis' },
-    'slender-snouted crocodile': { commonName: 'Slender-snouted Crocodile', scientificName: 'Mecistops cataphractus' },
-    'gharial': { commonName: 'Gharial', scientificName: 'Gavialis gangeticus' },
-    'tomistoma': { commonName: 'Tomistoma', scientificName: 'Tomistoma schlegelii' },
-    'chinese alligator': { commonName: 'Chinese Alligator', scientificName: 'Alligator sinensis' },
-    'black caiman': { commonName: 'Black Caiman', scientificName: 'Melanosuchus niger' },
-    'spectacled caiman': { commonName: 'Spectacled Caiman', scientificName: 'Caiman crocodilus' },
-    'yacare caiman': { commonName: 'Yacare Caiman', scientificName: 'Caiman yacare' },
-    'broad-snouted caiman': { commonName: 'Broad-snouted Caiman', scientificName: 'Caiman latirostris' },
-    'dwarf caiman': { commonName: 'Dwarf Caiman', scientificName: 'Paleosuchus palpebrosus' },
-    'smooth-fronted caiman': { commonName: 'Smooth-fronted Caiman', scientificName: 'Paleosuchus trigonatus' },
-    'reticulated python': { commonName: 'Reticulated Python', scientificName: 'Python reticulatus' },
-    'burmese python': { commonName: 'Burmese Python', scientificName: 'Python bivittatus' },
-    'african rock python': { commonName: 'African Rock Python', scientificName: 'Python sebae' },
-    'indian python': { commonName: 'Indian Python', scientificName: 'Python molurus' },
-    'amazon tree boa': { commonName: 'Amazon Tree Boa', scientificName: 'Corallus hortulanus' },
-    'emerald tree boa': { commonName: 'Emerald Tree Boa', scientificName: 'Corallus caninus' },
-    'boa constrictor': { commonName: 'Boa Constrictor', scientificName: 'Boa constrictor' },
-    'anaconda': { commonName: 'Green Anaconda', scientificName: 'Eunectes murinus' },
-    'yellow anaconda': { commonName: 'Yellow Anaconda', scientificName: 'Eunectes notaeus' },
-    'beni anaconda': { commonName: 'Beni Anaconda', scientificName: 'Eunectes beniensis' },
-    'dark-spotted anaconda': { commonName: 'Dark-spotted Anaconda', scientificName: 'Eunectes deschauenseei' },
-    'king cobra': { commonName: 'King Cobra', scientificName: 'Ophiophagus hannah' },
-    'indian cobra': { commonName: 'Indian Cobra', scientificName: 'Naja naja' },
-    'chinese cobra': { commonName: 'Chinese Cobra', scientificName: 'Naja atra' },
-    'egyptian cobra': { commonName: 'Egyptian Cobra', scientificName: 'Naja haje' },
-    'cape cobra': { commonName: 'Cape Cobra', scientificName: 'Naja nivea' },
-    'forest cobra': { commonName: 'Forest Cobra', scientificName: 'Naja melanoleuca' },
-    'black-necked spitting cobra': { commonName: 'Black-necked Spitting Cobra', scientificName: 'Naja nigricollis' },
-    'red spitting cobra': { commonName: 'Red Spitting Cobra', scientificName: 'Naja pallida' },
-    'mozambique spitting cobra': { commonName: 'Mozambique Spitting Cobra', scientificName: 'Naja mossambica' },
-    'black mamba': { commonName: 'Black Mamba', scientificName: 'Dendroaspis polylepis' },
-    'green mamba': { commonName: 'Green Mamba', scientificName: 'Dendroaspis angusticeps' },
-    'jameson mamba': { commonName: "Jameson's Mamba", scientificName: 'Dendroaspis jamesoni' },
-    'western green mamba': { commonName: 'Western Green Mamba', scientificName: 'Dendroaspis viridis' },
-    'taipan': { commonName: 'Inland Taipan', scientificName: 'Oxyuranus microlepidotus' },
-    'coastal taipan': { commonName: 'Coastal Taipan', scientificName: 'Oxyuranus scutellatus' },
-    'central ranges taipan': { commonName: 'Central Ranges Taipan', scientificName: 'Oxyuranus temporalis' },
-    'tiger snake': { commonName: 'Tiger Snake', scientificName: 'Notechis scutatus' },
-    'eastern brown snake': { commonName: 'Eastern Brown Snake', scientificName: 'Pseudonaja textilis' },
-    'western brown snake': { commonName: 'Western Brown Snake', scientificName: 'Pseudonaja mengdeni' },
-    'northern brown snake': { commonName: 'Northern Brown Snake', scientificName: 'Pseudonaja nuchalis' },
-    'death adder': { commonName: 'Common Death Adder', scientificName: 'Acanthophis antarcticus' },
-    'copperhead': { commonName: 'Australian Copperhead', scientificName: 'Austrelaps superbus' },
-    'red-bellied black snake': { commonName: 'Red-bellied Black Snake', scientificName: 'Pseudechis porphyriacus' },
-    'mulga snake': { commonName: 'Mulga Snake', scientificName: 'Pseudechis australis' },
-    'collett snake': { commonName: "Collett's Snake", scientificName: 'Pseudechis colletti' },
-    'blue-bellied black snake': { commonName: 'Blue-bellied Black Snake', scientificName: 'Pseudechis guttatus' },
-    'spotted black snake': { commonName: 'Spotted Black Snake', scientificName: 'Pseudechis butleri' },
-    'pygmy mulga snake': { commonName: 'Pygmy Mulga Snake', scientificName: 'Pseudechis weigeli' },
-    'eastern tiger snake': { commonName: 'Eastern Tiger Snake', scientificName: 'Notechis scutatus' },
-    'western tiger snake': { commonName: 'Western Tiger Snake', scientificName: 'Notechis scutatus occidentalis' },
-    'chappell island tiger snake': { commonName: 'Chappell Island Tiger Snake', scientificName: 'Notechis ater serventyi' },
-    'king island tiger snake': { commonName: 'King Island Tiger Snake', scientificName: 'Notechis ater humphreysi' },
-    'tasmanian tiger snake': { commonName: 'Tasmanian Tiger Snake', scientificName: 'Notechis ater ater' },
-    'peninsula tiger snake': { commonName: 'Peninsula Tiger Snake', scientificName: 'Notechis ater niger' },
-    'rough-scaled snake': { commonName: 'Rough-scaled Snake', scientificName: 'Tropidechis carinatus' },
-    'small-eyed snake': { commonName: 'Small-eyed Snake', scientificName: 'Cryptophis nigrescens' },
-    'white-lipped snake': { commonName: 'White-lipped Snake', scientificName: 'Drysdalia coronoides' },
-    'master snake': { commonName: 'Master Snake', scientificName: 'Drysdalia mastersii' },
-    'green tree snake': { commonName: 'Green Tree Snake', scientificName: 'Dendrelaphis punctulatus' },
-    'brown tree snake': { commonName: 'Brown Tree Snake', scientificName: 'Boiga irregularis' },
-    'carpet python': { commonName: 'Carpet Python', scientificName: 'Morelia spilota' },
-    'diamond python': { commonName: 'Diamond Python', scientificName: 'Morelia spilota spilota' },
-    'jungle carpet python': { commonName: 'Jungle Carpet Python', scientificName: 'Morelia spilota cheynei' },
-    'coastal carpet python': { commonName: 'Coastal Carpet Python', scientificName: 'Morelia spilota mcdowelli' },
-    'inland carpet python': { commonName: 'Inland Carpet Python', scientificName: 'Morelia spilota metcalfei' },
-    'darwin carpet python': { commonName: 'Darwin Carpet Python', scientificName: 'Morelia spilota variegata' },
-    'southwestern carpet python': { commonName: 'Southwestern Carpet Python', scientificName: 'Morelia spilota imbricata' },
-    'centralian carpet python': { commonName: 'Centralian Carpet Python', scientificName: 'Morelia spilota bredli' },
-    'water python': { commonName: 'Water Python', scientificName: 'Liasis fuscus' },
-    'olive python': { commonName: 'Olive Python', scientificName: 'Liasis olivaceus' },
-    'black-headed python': { commonName: 'Black-headed Python', scientificName: 'Aspidites melanocephalus' },
-    'woma python': { commonName: 'Woma Python', scientificName: 'Aspidites ramsayi' },
-    'stimson python': { commonName: "Stimson's Python", scientificName: 'Antaresia stimsoni' },
-    'children python': { commonName: "Children's Python", scientificName: 'Antaresia childreni' },
-    'spotted python': { commonName: 'Spotted Python', scientificName: 'Antaresia maculosa' },
-    'pygmy python': { commonName: 'Pygmy Python', scientificName: 'Antaresia perthensis' },
-    'green tree python': { commonName: 'Green Tree Python', scientificName: 'Morelia viridis' },
-    'amethystine python': { commonName: 'Amethystine Python', scientificName: 'Morelia amethistina' },
-    'scrub python': { commonName: 'Scrub Python', scientificName: 'Morelia kinghorni' },
-    'rough-scaled python': { commonName: 'Rough-scaled Python', scientificName: 'Morelia carinata' },
-    'brown water python': { commonName: 'Brown Water Python', scientificName: 'Liasis mackloti' },
-    'papuan python': { commonName: 'Papuan Python', scientificName: 'Apodora papuana' },
-    'calabar python': { commonName: 'Calabar Python', scientificName: 'Calabaria reinhardtii' },
-    'blood python': { commonName: 'Blood Python', scientificName: 'Python brongersmai' },
-    'borneo python': { commonName: 'Borneo Python', scientificName: 'Python breitensteini' },
-    'sumatran python': { commonName: 'Sumatran Python', scientificName: 'Python curtus' },
-    'angolan python': { commonName: 'Angolan Python', scientificName: 'Python anchietae' },
-    'timor python': { commonName: 'Timor Python', scientificName: 'Python timoriensis' },
-    'ball python': { commonName: 'Ball Python', scientificName: 'Python regius' },
-    'royal python': { commonName: 'Royal Python', scientificName: 'Python regius' },
-    'angolan python': { commonName: 'Angolan Python', scientificName: 'Python anchietae' },
-    'timor python': { commonName: 'Timor Python', scientificName: 'Python timoriensis' },
-    'ball python': { commonName: 'Ball Python', scientificName: 'Python regius' },
-    'royal python': { commonName: 'Royal Python', scientificName: 'Python regius' },
-    
-    // Amphibians
-    'frog': { commonName: 'American Bullfrog', scientificName: 'Lithobates catesbeianus' },
-    'salamander': { commonName: 'Spotted Salamander', scientificName: 'Ambystoma maculatum' },
-    'newt': { commonName: 'Eastern Newt', scientificName: 'Notophthalmus viridescens' },
-    'poison dart frog': { commonName: 'Golden Poison Dart Frog', scientificName: 'Phyllobates terribilis' },
-    'blue poison dart frog': { commonName: 'Blue Poison Dart Frog', scientificName: 'Dendrobates tinctorius' },
-    'strawberry poison dart frog': { commonName: 'Strawberry Poison Dart Frog', scientificName: 'Oophaga pumilio' },
-    'green and black poison dart frog': { commonName: 'Green and Black Poison Dart Frog', scientificName: 'Dendrobates auratus' },
-    'yellow-banded poison dart frog': { commonName: 'Yellow-banded Poison Dart Frog', scientificName: 'Dendrobates leucomelas' },
-    'red-eyed tree frog': { commonName: 'Red-eyed Tree Frog', scientificName: 'Agalychnis callidryas' },
-    'green tree frog': { commonName: 'Green Tree Frog', scientificName: 'Hyla cinerea' },
-    'gray tree frog': { commonName: 'Gray Tree Frog', scientificName: 'Hyla versicolor' },
-    'spring peeper': { commonName: 'Spring Peeper', scientificName: 'Pseudacris crucifer' },
-    'chorus frog': { commonName: 'Western Chorus Frog', scientificName: 'Pseudacris triseriata' },
-    'cricket frog': { commonName: 'Northern Cricket Frog', scientificName: 'Acris crepitans' },
-    'leopard frog': { commonName: 'Northern Leopard Frog', scientificName: 'Lithobates pipiens' },
-    'pickerel frog': { commonName: 'Pickerel Frog', scientificName: 'Lithobates palustris' },
-    'green frog': { commonName: 'Green Frog', scientificName: 'Lithobates clamitans' },
-    'mink frog': { commonName: 'Mink Frog', scientificName: 'Lithobates septentrionalis' },
-    'wood frog': { commonName: 'Wood Frog', scientificName: 'Lithobates sylvaticus' },
-    'carpenter frog': { commonName: 'Carpenter Frog', scientificName: 'Lithobates virgatipes' },
-    'pig frog': { commonName: 'Pig Frog', scientificName: 'Lithobates grylio' },
-    'river frog': { commonName: 'River Frog', scientificName: 'Lithobates heckscheri' },
-    'gopher frog': { commonName: 'Gopher Frog', scientificName: 'Lithobates capito' },
-    'crawfish frog': { commonName: 'Crawfish Frog', scientificName: 'Lithobates areolatus' },
-    'dusky gopher frog': { commonName: 'Dusky Gopher Frog', scientificName: 'Lithobates sevosus' },
-    'relict leopard frog': { commonName: 'Relict Leopard Frog', scientificName: 'Lithobates onca' },
-    'chiricahua leopard frog': { commonName: 'Chiricahua Leopard Frog', scientificName: 'Lithobates chiricahuensis' },
-    'lowland leopard frog': { commonName: 'Lowland Leopard Frog', scientificName: 'Lithobates yavapaiensis' },
-    'rio grande leopard frog': { commonName: 'Rio Grande Leopard Frog', scientificName: 'Lithobates berlandieri' },
-    'plains leopard frog': { commonName: 'Plains Leopard Frog', scientificName: 'Lithobates blairi' },
-    'southern leopard frog': { commonName: 'Southern Leopard Frog', scientificName: 'Lithobates sphenocephalus' },
-    'atlantic coast leopard frog': { commonName: 'Atlantic Coast Leopard Frog', scientificName: 'Lithobates kauffeldi' },
-    'cascades frog': { commonName: 'Cascades Frog', scientificName: 'Rana cascadae' },
-    'columbia spotted frog': { commonName: 'Columbia Spotted Frog', scientificName: 'Rana luteiventris' },
-    'oregon spotted frog': { commonName: 'Oregon Spotted Frog', scientificName: 'Rana pretiosa' },
-    'fowler toad': { commonName: "Fowler's Toad", scientificName: 'Anaxyrus fowleri' },
-    'american toad': { commonName: 'American Toad', scientificName: 'Anaxyrus americanus' },
-    'eastern american toad': { commonName: 'Eastern American Toad', scientificName: 'Anaxyrus americanus americanus' },
-    'dwarf american toad': { commonName: 'Dwarf American Toad', scientificName: 'Anaxyrus americanus charlesmithi' },
-    'hudson bay toad': { commonName: 'Hudson Bay Toad', scientificName: 'Anaxyrus americanus copei' },
-    'western toad': { commonName: 'Western Toad', scientificName: 'Anaxyrus boreas' },
-    'california toad': { commonName: 'California Toad', scientificName: 'Anaxyrus boreas halophilus' },
-    'boreal toad': { commonName: 'Boreal Toad', scientificName: 'Anaxyrus boreas boreas' },
-    'southern toad': { commonName: 'Southern Toad', scientificName: 'Anaxyrus terrestris' },
-    'oak toad': { commonName: 'Oak Toad', scientificName: 'Anaxyrus quercicus' },
-    'gulf coast toad': { commonName: 'Gulf Coast Toad', scientificName: 'Incilius nebulifer' },
-    'cane toad': { commonName: 'Cane Toad', scientificName: 'Rhinella marina' },
-    'colorado river toad': { commonName: 'Colorado River Toad', scientificName: 'Incilius alvarius' },
-    'green toad': { commonName: 'Green Toad', scientificName: 'Anaxyrus debilis' },
-    'red-spotted toad': { commonName: 'Red-spotted Toad', scientificName: 'Anaxyrus punctatus' },
-    'great plains toad': { commonName: 'Great Plains Toad', scientificName: 'Anaxyrus cognatus' },
-    'canadian toad': { commonName: 'Canadian Toad', scientificName: 'Anaxyrus hemiophrys' },
-    'arizona toad': { commonName: 'Arizona Toad', scientificName: 'Anaxyrus microscaphus' },
-    'woodhouse toad': { commonName: "Woodhouse's Toad", scientificName: 'Anaxyrus woodhousii' },
-    'rocky mountain toad': { commonName: 'Rocky Mountain Toad', scientificName: 'Anaxyrus woodhousii woodhousii' },
-    'eastern spadefoot': { commonName: 'Eastern Spadefoot', scientificName: 'Scaphiopus holbrookii' },
-    'western spadefoot': { commonName: 'Western Spadefoot', scientificName: 'Spea hammondii' },
-    'great basin spadefoot': { commonName: 'Great Basin Spadefoot', scientificName: 'Spea intermontana' },
-    'plains spadefoot': { commonName: 'Plains Spadefoot', scientificName: 'Spea bombifrons' },
-    'mexican spadefoot': { commonName: 'Mexican Spadefoot', scientificName: 'Spea multiplicata' },
-    'couch spadefoot': { commonName: "Couch's Spadefoot", scientificName: 'Scaphiopus couchii' },
-    'hurter spadefoot': { commonName: "Hurter's Spadefoot", scientificName: 'Scaphiopus hurterii' },
-    'new mexico spadefoot': { commonName: 'New Mexico Spadefoot', scientificName: 'Spea multiplicata stagnalis' },
-    'desert spadefoot': { commonName: 'Desert Spadefoot', scientificName: 'Notaden nichollsi' },
-    'ornate burrowing frog': { commonName: 'Ornate Burrowing Frog', scientificName: 'Platyplectrum ornatum' },
-    'spotted grass frog': { commonName: 'Spotted Grass Frog', scientificName: 'Limnodynastes tasmaniensis' },
-    'striped marsh frog': { commonName: 'Striped Marsh Frog', scientificName: 'Limnodynastes peronii' },
-    'eastern banjo frog': { commonName: 'Eastern Banjo Frog', scientificName: 'Limnodynastes dumerilii' },
-    'western banjo frog': { commonName: 'Western Banjo Frog', scientificName: 'Limnodynastes dorsalis' },
-    'northern banjo frog': { commonName: 'Northern Banjo Frog', scientificName: 'Limnodynastes terraereginae' },
-    'giant banjo frog': { commonName: 'Giant Banjo Frog', scientificName: 'Limnodynastes interioris' },
-    'southern banjo frog': { commonName: 'Southern Banjo Frog', scientificName: 'Limnodynastes dumerilii insularis' },
-    'eastern pobblebonk': { commonName: 'Eastern Pobblebonk', scientificName: 'Limnodynastes dumerilii dumerilii' },
-    'western pobblebonk': { commonName: 'Western Pobblebonk', scientificName: 'Limnodynastes dorsalis' },
-    'northern pobblebonk': { commonName: 'Northern Pobblebonk', scientificName: 'Limnodynastes terraereginae' },
-    'giant pobblebonk': { commonName: 'Giant Pobblebonk', scientificName: 'Limnodynastes interioris' },
-    'southern pobblebonk': { commonName: 'Southern Pobblebonk', scientificName: 'Limnodynastes dumerilii insularis' },
-    'eastern smooth frog': { commonName: 'Eastern Smooth Frog', scientificName: 'Geocrinia victoriana' },
-    'western smooth frog': { commonName: 'Western Smooth Frog', scientificName: 'Geocrinia alba' },
-    'northern smooth frog': { commonName: 'Northern Smooth Frog', scientificName: 'Geocrinia lutea' },
-    'southern smooth frog': { commonName: 'Southern Smooth Frog', scientificName: 'Geocrinia laevis' },
-    'turtle frog': { commonName: 'Turtle Frog', scientificName: 'Myobatrachus gouldii' },
-    'sandhill frog': { commonName: 'Sandhill Frog', scientificName: 'Arenophryne rotunda' },
-    'water-holding frog': { commonName: 'Water-holding Frog', scientificName: 'Cyclorana platycephala' },
-    'green-striped burrowing frog': { commonName: 'Green-striped Burrowing Frog', scientificName: 'Cyclorana alboguttata' },
-    'northern snapping frog': { commonName: 'Northern Snapping Frog', scientificName: 'Cyclorana australis' },
-    'short-footed frog': { commonName: 'Short-footed Frog', scientificName: 'Cyclorana brevipes' },
-    'long-footed frog': { commonName: 'Long-footed Frog', scientificName: 'Cyclorana longipes' },
-    'rough frog': { commonName: 'Rough Frog', scientificName: 'Cyclorana verrucosa' },
-    'desert spadefoot toad': { commonName: 'Desert Spadefoot Toad', scientificName: 'Notaden nichollsi' },
-    'ornate burrowing toad': { commonName: 'Ornate Burrowing Toad', scientificName: 'Platyplectrum ornatum' },
-    'spotted grass toad': { commonName: 'Spotted Grass Toad', scientificName: 'Limnodynastes tasmaniensis' },
-    'striped marsh toad': { commonName: 'Striped Marsh Toad', scientificName: 'Limnodynastes peronii' },
-    'eastern banjo toad': { commonName: 'Eastern Banjo Toad', scientificName: 'Limnodynastes dumerilii' },
-    'western banjo toad': { commonName: 'Western Banjo Toad', scientificName: 'Limnodynastes dorsalis' },
-    'northern banjo toad': { commonName: 'Northern Banjo Toad', scientificName: 'Limnodynastes terraereginae' },
-    'giant banjo toad': { commonName: 'Giant Banjo Toad', scientificName: 'Limnodynastes interioris' },
-    'southern banjo toad': { commonName: 'Southern Banjo Toad', scientificName: 'Limnodynastes dumerilii insularis' },
-    'eastern pobblebonk toad': { commonName: 'Eastern Pobblebonk Toad', scientificName: 'Limnodynastes dumerilii dumerilii' },
-    'western pobblebonk toad': { commonName: 'Western Pobblebonk Toad', scientificName: 'Limnodynastes dorsalis' },
-    'northern pobblebonk toad': { commonName: 'Northern Pobblebonk Toad', scientificName: 'Limnodynastes terraereginae' },
-    'giant pobblebonk toad': { commonName: 'Giant Pobblebonk Toad', scientificName: 'Limnodynastes interioris' },
-    'southern pobblebonk toad': { commonName: 'Southern Pobblebonk Toad', scientificName: 'Limnodynastes dumerilii insularis' },
-    'eastern smooth toad': { commonName: 'Eastern Smooth Toad', scientificName: 'Geocrinia victoriana' },
-    'western smooth toad': { commonName: 'Western Smooth Toad', scientificName: 'Geocrinia alba' },
-    'northern smooth toad': { commonName: 'Northern Smooth Toad', scientificName: 'Geocrinia lutea' },
-    'southern smooth toad': { commonName: 'Southern Smooth Toad', scientificName: 'Geocrinia laevis' },
-    'turtle toad': { commonName: 'Turtle Toad', scientificName: 'Myobatrachus gouldii' },
-    'sandhill toad': { commonName: 'Sandhill Toad', scientificName: 'Arenophryne rotunda' },
-    'water-holding toad': { commonName: 'Water-holding Toad', scientificName: 'Cyclorana platycephala' },
-    'green-striped burrowing toad': { commonName: 'Green-striped Burrowing Toad', scientificName: 'Cyclorana alboguttata' },
-    'northern snapping toad': { commonName: 'Northern Snapping Toad', scientificName: 'Cyclorana australis' },
-    'short-footed toad': { commonName: 'Short-footed Toad', scientificName: 'Cyclorana brevipes' },
-    'long-footed toad': { commonName: 'Long-footed Toad', scientificName: 'Cyclorana longipes' },
-    'rough toad': { commonName: 'Rough Toad', scientificName: 'Cyclorana verrucosa' },
-    
-    // Marine Life
-    'shark': { commonName: 'Great White Shark', scientificName: 'Carcharodon carcharias' },
-    'octopus': { commonName: 'Common Octopus', scientificName: 'Octopus vulgaris' },
-    'squid': { commonName: 'Giant Squid', scientificName: 'Architeuthis dux' },
-    'jellyfish': { commonName: 'Moon Jellyfish', scientificName: 'Aurelia aurita' },
-    'coral': { commonName: 'Staghorn Coral', scientificName: 'Acropora cervicornis' },
-    
-    // Insects and Arachnids
-    'butterfly': { commonName: 'Monarch Butterfly', scientificName: 'Danaus plexippus' },
-    'bee': { commonName: 'European Honey Bee', scientificName: 'Apis mellifera' },
-    'spider': { commonName: 'Black Widow Spider', scientificName: 'Latrodectus mactans' },
-    'scorpion': { commonName: 'Arizona Bark Scorpion', scientificName: 'Centruroides sculpturatus' },
-    
-    // Australian Wildlife
-    'kangaroo': { commonName: 'Red Kangaroo', scientificName: 'Osphranter rufus' },
-    'koala': { commonName: 'Koala', scientificName: 'Phascolarctos cinereus' },
-    'wombat': { commonName: 'Common Wombat', scientificName: 'Vombatus ursinus' },
-    'platypus': { commonName: 'Platypus', scientificName: 'Ornithorhynchus anatinus' },
-    'echidna': { commonName: 'Short-beaked Echidna', scientificName: 'Tachyglossus aculeatus' },
-    
-    // Other Unique Animals
-    'sloth': { commonName: 'Three-toed Sloth', scientificName: 'Bradypus tridactylus' },
-    'armadillo': { commonName: 'Nine-banded Armadillo', scientificName: 'Dasypus novemcinctus' },
-    'anteater': { commonName: 'Giant Anteater', scientificName: 'Myrmecophaga tridactyla' },
-    'pangolin': { commonName: 'Chinese Pangolin', scientificName: 'Manis pentadactyla' },
-    'hedgehog': { commonName: 'European Hedgehog', scientificName: 'Erinaceus europaeus' },
-    'porcupine': { commonName: 'North American Porcupine', scientificName: 'Erethizon dorsatum' },
-    
-    // Arctic Animals
-    'polar bear': { commonName: 'Polar Bear', scientificName: 'Ursus maritimus' },
-    'arctic fox': { commonName: 'Arctic Fox', scientificName: 'Vulpes lagopus' },
-    'snowy owl': { commonName: 'Snowy Owl', scientificName: 'Bubo scandiacus' },
-    'reindeer': { commonName: 'Reindeer', scientificName: 'Rangifer tarandus' },
-    'caribou': { commonName: 'Caribou', scientificName: 'Rangifer tarandus' },
-    
-    // Desert Animals
-    'camel': { commonName: 'Dromedary Camel', scientificName: 'Camelus dromedarius' },
-    'fennec fox': { commonName: 'Fennec Fox', scientificName: 'Vulpes zerda' },
-    'meerkat': { commonName: 'Meerkat', scientificName: 'Suricata suricatta' },
-    'addax': { commonName: 'Addax', scientificName: 'Addax nasomaculatus' }
-  };
+  private apiService = new APIService();
 
-  // Database of domestic/non-wild animals
-  private domesticAnimals: Set<string> = new Set([
-    'dog', 'cat', 'horse', 'cow', 'pig', 'sheep', 'goat', 'chicken', 'duck', 'turkey',
-    'rabbit', 'hamster', 'guinea pig', 'gerbil', 'mouse', 'rat', 'ferret', 'parrot',
-    'canary', 'budgie', 'goldfish', 'koi', 'tropical fish', 'guinea fowl', 'pigeon',
-    'dove', 'geese', 'goose', 'swan', 'llama', 'alpaca', 'donkey', 'mule', 'yak',
-    'bison', 'buffalo', 'ox', 'bull', 'calf', 'kitten', 'puppy', 'foal', 'piglet',
-    'lamb', 'kid', 'chick', 'duckling', 'gosling', 'cygnet', 'calf', 'fawn', 'cub',
-    'kitten', 'puppy', 'foal', 'piglet', 'lamb', 'kid', 'chick', 'duckling', 'gosling',
-    'cygnet', 'calf', 'fawn', 'cub', 'kitten', 'puppy', 'foal', 'piglet', 'lamb',
-    'kid', 'chick', 'duckling', 'gosling', 'cygnet', 'calf', 'fawn', 'cub'
-  ]);
+  async recognizeWildlife(file: File): Promise<WildlifeRecognitionResult> {
+    if (!file || !file.type.startsWith('image/')) {
+      throw new Error('Please upload a valid image file');
+    }
 
-  async recognizeWildlife(imageFile: File): Promise<WildlifeRecognitionResult> {
     try {
-      // Use the existing classification service to get the initial result
-      const { HuggingFaceService } = await import('./huggingFaceService');
-      const huggingFaceService = new HuggingFaceService();
+      console.log('🔍 Starting enhanced wildlife recognition...');
       
-      const classificationResult = await huggingFaceService.classifyAnimal(imageFile);
-      const animalLabel = classificationResult.label.toLowerCase();
+      // Use enhanced API service with failover
+      const classificationResult = await this.apiService.classifyWithFailover(file);
       
-      // Check if it's a domestic animal
-      if (this.isDomesticAnimal(animalLabel)) {
-        return {
-          isWild: false,
-          message: 'This is not a wild animal.'
-        };
-      }
+      console.log('📊 Classification result:', classificationResult);
       
-      // Check if it's a wild animal
-      const wildAnimalInfo = this.getWildAnimalInfo(animalLabel);
-      if (wildAnimalInfo) {
+      // Determine if this is a wild animal
+      const isWild = this.isWildAnimal(classificationResult.label);
+      
+      if (isWild) {
+        const wildInfo = this.getWildAnimalInfo(classificationResult.label);
         return {
           isWild: true,
-          commonName: wildAnimalInfo.commonName,
-          scientificName: wildAnimalInfo.scientificName
+          commonName: wildInfo.common,
+          scientificName: wildInfo.scientific,
+          confidence: classificationResult.confidence,
+          apiSource: 'enhanced-multi-api'
+        };
+      } else {
+        // Check if it might be a wild animal with low confidence
+        if (classificationResult.confidence < 0.6) {
+          const suggestions = this.generateSuggestions(classificationResult.label);
+          return {
+            isWild: false,
+            message: "This is not a wild animal.",
+            confidence: classificationResult.confidence,
+            apiSource: 'enhanced-multi-api',
+            suggestions: suggestions
+          };
+        }
+        
+        return {
+          isWild: false,
+          message: "This is not a wild animal.",
+          confidence: classificationResult.confidence,
+          apiSource: 'enhanced-multi-api'
         };
       }
-      
-      // If not found in either database, assume it's not a wild animal
-      return {
-        isWild: false,
-        message: 'This is not a wild animal.'
-      };
       
     } catch (error) {
       console.error('Wildlife recognition error:', error);
+      
+      // Emergency fallback with suggestions
       return {
         isWild: false,
-        message: 'This is not a wild animal.'
+        message: "Classification temporarily unavailable. Please try again.",
+        confidence: 0.1,
+        apiSource: 'error-fallback',
+        suggestions: [
+          'Check your internet connection',
+          'Try a clearer image',
+          'Ensure the animal is clearly visible',
+          'Try a different angle or lighting'
+        ]
       };
     }
   }
 
-  private isDomesticAnimal(animalLabel: string): boolean {
-    // Check exact matches
-    if (this.domesticAnimals.has(animalLabel)) {
-      return true;
+  private isWildAnimal(label: string): boolean {
+    const normalizedLabel = label.toLowerCase().trim();
+    
+    // Check if it's explicitly a domestic animal
+    for (const domesticKey of Object.keys(DOMESTIC_SPECIES_DATABASE)) {
+      if (normalizedLabel.includes(domesticKey) || domesticKey.includes(normalizedLabel)) {
+        console.log(`🏠 Identified as domestic: ${domesticKey}`);
+        return false;
+      }
     }
     
-    // Check partial matches
-    for (const domesticAnimal of this.domesticAnimals) {
-      if (animalLabel.includes(domesticAnimal) || domesticAnimal.includes(animalLabel)) {
+    // Check if it's a known wild animal
+    for (const wildKey of Object.keys(WILD_SPECIES_DATABASE)) {
+      if (normalizedLabel.includes(wildKey) || wildKey.includes(normalizedLabel)) {
+        console.log(`🦁 Identified as wild: ${wildKey}`);
         return true;
       }
     }
     
+    // Additional heuristics for wild animals
+    const wildIndicators = [
+      'wild', 'safari', 'jungle', 'forest', 'savanna', 'arctic', 'marine',
+      'predator', 'prey', 'endangered', 'conservation', 'habitat', 'species'
+    ];
+    
+    const domesticIndicators = [
+      'pet', 'domestic', 'farm', 'livestock', 'house', 'home', 'bred',
+      'trained', 'tame', 'companion', 'breed'
+    ];
+    
+    const hasWildIndicators = wildIndicators.some(indicator => 
+      normalizedLabel.includes(indicator)
+    );
+    
+    const hasDomesticIndicators = domesticIndicators.some(indicator => 
+      normalizedLabel.includes(indicator)
+    );
+    
+    if (hasDomesticIndicators && !hasWildIndicators) {
+      console.log(`🏠 Domestic indicators found: ${normalizedLabel}`);
+      return false;
+    }
+    
+    if (hasWildIndicators && !hasDomesticIndicators) {
+      console.log(`🌿 Wild indicators found: ${normalizedLabel}`);
+      return true;
+    }
+    
+    // For ambiguous cases, check if it contains animal-related terms
+    const animalTerms = ['animal', 'mammal', 'bird', 'reptile', 'amphibian', 'insect'];
+    const hasAnimalTerms = animalTerms.some(term => normalizedLabel.includes(term));
+    
+    if (hasAnimalTerms) {
+      console.log(`❓ Ambiguous animal classification, defaulting to wild: ${normalizedLabel}`);
+      return true;
+    }
+    
+    // Default to not wild for non-animal classifications
+    console.log(`❌ Not classified as animal: ${normalizedLabel}`);
     return false;
   }
 
-  private getWildAnimalInfo(animalLabel: string): { commonName: string; scientificName: string } | null {
-    // Check exact matches first
-    if (this.wildAnimalsDatabase[animalLabel]) {
-      return this.wildAnimalsDatabase[animalLabel];
-    }
+  private getWildAnimalInfo(label: string): { common: string; scientific: string } {
+    const normalizedLabel = label.toLowerCase().trim();
     
-    // Check partial matches
-    for (const [key, value] of Object.entries(this.wildAnimalsDatabase)) {
-      if (animalLabel.includes(key) || key.includes(animalLabel)) {
-        return value;
+    // Find exact or partial match in wild species database
+    for (const [key, info] of Object.entries(WILD_SPECIES_DATABASE)) {
+      if (normalizedLabel.includes(key) || key.includes(normalizedLabel)) {
+        return info;
       }
     }
     
-    return null;
+    // If no match found, create generic wild animal info
+    const capitalizedLabel = label.split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+    
+    return {
+      common: capitalizedLabel,
+      scientific: `${capitalizedLabel.split(' ')[0]} species`
+    };
+  }
+
+  private generateSuggestions(label: string): string[] {
+    const suggestions = [
+      'Try uploading a clearer image',
+      'Ensure the animal is the main subject',
+      'Check lighting and image quality',
+      'Try a different angle or closer shot'
+    ];
+
+    // Add specific suggestions based on classification
+    if (label.toLowerCase().includes('blur') || label.toLowerCase().includes('unclear')) {
+      suggestions.unshift('Image appears blurry - try a sharper photo');
+    }
+
+    if (label.toLowerCase().includes('dark') || label.toLowerCase().includes('shadow')) {
+      suggestions.unshift('Image appears too dark - try better lighting');
+    }
+
+    return suggestions.slice(0, 4); // Return top 4 suggestions
   }
 
   getSupportedWildSpeciesCount(): number {
-    return Object.keys(this.wildAnimalsDatabase).length;
+    return Object.keys(WILD_SPECIES_DATABASE).length;
+  }
+
+  getSupportedDomesticSpeciesCount(): number {
+    return Object.keys(DOMESTIC_SPECIES_DATABASE).length;
+  }
+
+  // Get all supported wild species for testing
+  getAllWildSpecies(): string[] {
+    return Object.keys(WILD_SPECIES_DATABASE);
+  }
+
+  // Get all supported domestic species for testing
+  getAllDomesticSpecies(): string[] {
+    return Object.keys(DOMESTIC_SPECIES_DATABASE);
+  }
+
+  // Get API metrics
+  getAPIMetrics() {
+    return this.apiService.getAPIMetrics();
+  }
+
+  // Reset failed APIs
+  resetFailedAPIs() {
+    this.apiService.resetFailedAPIs();
   }
 }
